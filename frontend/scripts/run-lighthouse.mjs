@@ -20,8 +20,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ROUTES = [
   { id: 'home', name: 'Home', path: '' },
-  { id: 'accuracy', name: 'Accuracy', path: '#accuracy' },
-  { id: 'about', name: 'About', path: '#about' },
+  { id: 'accuracy', name: 'Accuracy', path: '#/accuracy' },
+  { id: 'about', name: 'About', path: '#/about' },
 ];
 
 async function main() {

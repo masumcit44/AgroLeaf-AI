@@ -1,6 +1,6 @@
 # Lighthouse & Accessibility Evidence (V1)
 
-**Date / Time:** 2026-11-01 03:37:22 UTC
+**Date / Time:** 2026-11-01 11:36:28 UTC
 **Auditor:** Lighthouse CLI 13.6.0 via Automated Runner
 **Device Profile:** Moto G Power (Emulated Mobile, 412×823 px, DPR 1.75)
 **Network Profile:** Simulated Slow 4G (150ms RTT, 1.638 Mbps throughput)
@@ -9,22 +9,22 @@
 
 | Page / Route | Performance | Accessibility | Best Practices | SEO |
 |---|:---:|:---:|:---:|:---:|
-| **Home** | 77 | 100 | 81 | 100 |
-| **Accuracy** | 99 | 100 | 100 | 100 |
+| **Home** | 70 | 96 | 81 | 100 |
+| **Accuracy** | 97 | 100 | 100 | 100 |
 | **About** | 98 | 100 | 100 | 100 |
 
 ## 2. Core Web Vitals & Loading Metrics
 
 | Page | FCP | LCP | TBT | CLS | Speed Index |
 |---|---|---|---|---|---|
-| **Home** | 1.6 s | 1.6 s | 1,030 ms | 0.003 | 1.6 s |
-| **Accuracy** | 1.6 s | 1.6 s | 0 ms | 0 | 2.4 s |
-| **About** | 1.6 s | 1.6 s | 0 ms | 0.017 | 3.8 s |
+| **Home** | 1.6 s | 1.6 s | 1,720 ms | 0.003 | 4.1 s |
+| **Accuracy** | 1.6 s | 1.6 s | 0 ms | 0 | 3.8 s |
+| **About** | 1.6 s | 1.6 s | 0 ms | 0 | 3.8 s |
 
 ## 3. Accessibility & Optimization Findings
 
 ### Home
-- ✓ 0 accessibility audit failures.
+- ⚠️ **Background and foreground colors do not have a sufficient contrast ratio.:** Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.14/color-contrast).
 
 ### Accuracy
 - ✓ 0 accessibility audit failures.
