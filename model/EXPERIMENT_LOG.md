@@ -105,6 +105,20 @@ See `documentation/research/dataset_verification_2026-11-01.md`.
 - The v1 model is re-scored on the same sets.
 - Version 1 of this run had the wrong Dhan-Shomadhan labels; its results are discarded.
 
+### E-v4 result (job version 3): all three variants trained; the job stopped afterwards in the v1-baseline step (batch of 64 fed to v1's batch-1 ONNX)
+- **Checks logged by the run:**
+  - EXIF: 0 images uncorrected.
+  - Dhan-Shomadhan: 219 relabelled from filename codes; all 769 white-background, report-only.
+  - Identical images with conflicting labels: 68 dropped.
+  - Leakage guard: 2 dropped (Savar 1, Vietnam 1).
+  - ONNX: matches PyTorch to within 6e-6; 15.3 MiB each.
+- **Selection set:** raihan external validation (1,794 rice photos) plus non-rice validation rows. Macro-F1 over 8 classes:
+  - A (all countries, strong augmentation): 0.493; threshold 0.87 reaches the 90% target;
+  - B (Bangladesh only): 0.496; target not reached at any threshold up to 0.95;
+  - C (v3 augmentation): 0.480; target not reached.
+- **Note:** these are the training run's own numbers with a simplified rule. The final comparison is the unified evaluation (`agroleaf-eval-unified`, running): all 6 models, identical images, full app rule.
+- Candidate models are in the private Kaggle dataset `mdmasumakondha/agroleaf-candidates`, with SHA-256 sums.
+
 ## Proposals reviewed (Antigravity, 7cedb31) — not adopted without a run
 
 | Proposal | Problem addressed | Baseline | Experiment | Selection data | Success metric | Risks |
