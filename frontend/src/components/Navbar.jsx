@@ -17,7 +17,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
             onNavigate(ROUTES.HOME);
           }}
           className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 rounded-lg p-0.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
-          aria-label={t('navHome')}
+          aria-label={`${t('appName')} - ${t('navHome')}`}
         >
           <img
             src="/brand/aignite-sticker.png"
