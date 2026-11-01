@@ -53,9 +53,18 @@ def selection_set(model_dir: Path, names):
     return L, y, lf
 
 
+def fit_temperature(L, y):
+    """NLL-optimal temperature over rows the model can actually output: v1's padded
+    reject logits (-1e4) would otherwise give its non-rice rows probability 0 and
+    swamp the fit."""
+    ok = L[np.arange(len(y)), y] > -1e3
+    L, y = L[ok], y[ok]
+    return float(min(np.arange(0.3, 3.01, 0.02), key=lambda t: -np.mean(np.log(softmax_np(L, t)[np.arange(len(y)), y] + 1e-12))))
+
+
 def fit(model_dir: Path, names, base_cal: dict):
     L, y, lf = selection_set(model_dir, names)
-    temp = min(np.arange(0.3, 3.01, 0.02), key=lambda t: -np.mean(np.log(softmax_np(L, t)[np.arange(len(y)), y] + 1e-12)))
+    temp = fit_temperature(L, y)
     rice = y < 7
     for thr in np.arange(0.30, 0.951, 0.01):
         cal = {**base_cal, "temperature": float(temp), "threshold": float(round(thr, 2))}
