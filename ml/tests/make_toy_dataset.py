@@ -12,10 +12,10 @@ from PIL import Image
 CLASSES = [
     "Healthy",
     "Blast",
-    "Brown Spot",
-    "Leaf Smut",
+    "Brown spot",
+    "Leaf smut",
     "Rice Tungro",
-    "Sheath Blight"
+    "Sheath blight"
 ]
 
 

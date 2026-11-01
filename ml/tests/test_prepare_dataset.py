@@ -24,10 +24,10 @@ DATA_DIR = TOY_DIR / "data"
 EXPECTED_CLASSES = {
     "Healthy",
     "Blast",
-    "Brown Spot",
-    "Leaf Smut",
+    "Brown spot",
+    "Leaf smut",
     "Rice Tungro",
-    "Sheath Blight",
+    "Sheath blight",
 }
 
 
