@@ -74,7 +74,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 ### Before the deadline (2–5 Nov)
 
 #### I1 — Model release gate (v1 vs v4-B)
-- **Owner:** Claude. **Branch:** `feat/model-v3`. **Status:** IN_PROGRESS (Kaggle `agroleaf-eval-unified` running).
+- **Owner:** Claude. **Branch:** `feat/model-v3`. **Status:** DONE, decision **NO-GO for v4-B; v1 stays** (`ddd1a41`, `model/experiments/eval_unified/DECISION_RESULT.md`). The integrity checks passed (13,133 images identical to the v4 run; SHA-256 verified; v1 byte-identical to live). v4-B can't reach 30% coverage on raihan and answers 0% at home under its prescribed calibration.
 - **User value:** the best available model, proven on photos it never saw.
 - **Scope:** run `model/experiments/eval_unified/DECISION_PROTOCOL.md` (committed before results, `907a630`) with `ml/tools/coverage_compare.py`.
 - **Non-goals:** no new training; no tuning on Sylhet or Gujarat.
@@ -83,12 +83,12 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Risk:** the job fails again. **Rollback:** not needed; nothing is deployed by this step.
 
 #### I2 — Final independent test
-- **Owner:** Claude. **Depends on:** I1. **Status:** BLOCKED (I1).
+- **Owner:** Claude. **Depends on:** I1. **Status:** DONE (read once 2 Nov 00:47 BST). v1 Sylhet: raw 0.543 / macro-F1 0.548; the app answers 62.2%, 53.7% right; brown spot recall 0.07. Gujarat: 5% right. Recorded in `DECISION_RESULT.md`.
 - **Scope:** score Sylhet and Gujarat once, for the chosen model and v1; analyse the Sylhet failure (brown spot vs tungro confusion, image and background statistics); log the results.
 - **Acceptance:** one run, logged in `model/EXPERIMENT_LOG.md`, nothing changed afterwards.
 
 #### I3a — Integrate the new model (only if I1 = GO)
-- **Owner:** Claude reviews; OpenCode prepares on `feat/model-swap`. **Status:** BLOCKED (I1).
+- **Owner:** –. **Status:** CANCELLED (I1 = NO-GO).
 - **Scope:**
   - 8-class model, calibration and class index;
   - regenerate the decode-parity fixtures for the new model;
@@ -102,8 +102,8 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Rollback:** revert the commit (v1 returns).
 
 #### I3b — Document v1's limits (only if I1 = NO-GO)
-- **Owner:** Claude. **Status:** BLOCKED (I1).
-- **Scope:** the accuracy page and docs state the measured outside-district results and limits.
+- **Owner:** Antigravity. **Branch:** `docs/accuracy-limits`. **Status:** ASSIGNED (`handoff/TASK_I3B_ACCURACY_LIMITS_ANTIGRAVITY.md`).
+- **Scope:** the accuracy page and docs state the measured outside-district results and limits. Exact values come from `results/accuracy_page_entries.json` (`83f0c27`).
 
 #### I4 — Offline second analysis and QA-script false alarms
 - **Owner:** OpenCode. **Branch:** `fix/offline-reanalysis`. **Status:** IN_PROGRESS (branch created, uncommitted work, 2 Nov 00:27).
@@ -120,7 +120,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Review:** the lead spot-checks 10 claims against the files before using it.
 
 #### I6 — Voice intelligibility evidence
-- **Owner:** Antigravity. **Branch:** `qa/voice-asr`. **Status:** IN_PROGRESS (started 2 Nov, 00:27).
+- **Owner:** Antigravity. **Branch:** `qa/voice-asr` (`63592af`). **Status:** REVIEWED + INTEGRATED (report only), **inconclusive**: Whisper medium failed on this Bangla speech (wrong script, loops; character error rate 0.84–0.99), so all key words are marked "needs human listening". Its "Nabanita clearer" remark isn't supported by the transcripts. The user's listening remains the approval.
 - **Note:** the voice is already live (`2779990`) and approved by the user's listening. This is extra evidence only.
 
 #### I7 — Final numbers everywhere
