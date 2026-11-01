@@ -42,7 +42,7 @@
 | `_meta.date` | — | Content date (`2026-11-01`) | Both JSONs | |
 | `_meta.status` | — | Draft status and review note | Both JSONs | BN and EN wording differ; not shown to users. |
 | `_meta.keys_must_match` | — | Says class keys must match `model/class_index.json` | Both JSONs | `model/class_index.json` is not in the repo yet (model not trained). |
-| `_meta.disclaimer_bn` | এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন। | "This is a preliminary screening, not a final answer. Ask your Upazila agriculture officer or call 16123 before using any chemical." | `disease_information_bn.json` → `_meta.disclaimer_bn` | Copied verbatim. EN equivalent is `_meta.disclaimer_en`. |
+| `_meta.disclaimer_bn` | এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন। | "This is a preliminary idea, not a final disease determination. Ask your Upazila agriculture officer or call 16123 before giving any medicine." | `disease_information_bn.json` → `_meta.disclaimer_bn` | Copied verbatim. EN equivalent is `_meta.disclaimer_en`. |
 | `_meta.disclaimer_en` | — | English disclaimer with the same meaning | `disease_information_en.json` → `_meta.disclaimer_en` | |
 | `_meta.helpline` | 16123 | 16123 | `disease_information_bn.json` → `_meta.helpline` | Latin digits. EN `_meta` has no helpline key. |
 
@@ -96,7 +96,7 @@ These are the terms the UI must use. Their source is
 | Key | Bangla | English | Where used | Notes |
 |---|---|---|---|---|
 | `ui.possible_problem` | সম্ভাব্য সমস্যা | Possible problem | `handoff/M05_results_and_content.md` (status chip on the result card); `handoff/M08_polish.md` (share text) | This is the result label. Never label a result as a confirmed disease. |
-| `ui.not_sure` | আমি নিশ্চিত নই | I'm not sure | `handoff/M05_results_and_content.md` (not-sure card title); `documentation/MVP_requirements.md`; `disease_information_bn.json` → `not_sure.voice_script_bn` | The JSON `name_bn` is "নিশ্চিত নই" (without "আমি"); see inconsistency 2. |
+| `ui.not_sure` | আমি নিশ্চিত নই | I'm not sure | `handoff/M05_results_and_content.md` (not-sure card title); `documentation/MVP_requirements.md`; `disease_information_bn.json` → `classes.not_sure.voice_script_bn` | The JSON `name_bn` is "নিশ্চিত নই" (without "আমি"); see inconsistency 2. |
 | `ui.high_confidence` | উচ্চ আস্থা | High confidence | `handoff/M05_results_and_content.md` | Shown in words when the probability is ≥ 0.90; no percentage on the card. |
 | `ui.moderate_confidence` | মাঝারি আস্থা | Moderate confidence | `handoff/M05_results_and_content.md` | Shown in words otherwise; no percentage on the card. |
 | `ui.check` | পরীক্ষা করুন | Check | `documentation/frontend_spec.md` §2; `handoff/M03_image_input.md`; `handoff/M04_inference_engine.md`; `handoff/M08_polish.md` | Button that starts inference from the preview screen. |
