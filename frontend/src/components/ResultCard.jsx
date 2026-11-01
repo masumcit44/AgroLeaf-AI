@@ -2,6 +2,7 @@ import React from 'react';
 import useT from '../i18n/useT.js';
 import { getConfidenceLabel } from '../lib/resultRules.js';
 import OfficialGuidance from './OfficialGuidance.jsx';
+import AudioExplain from './AudioExplain.jsx';
 
 export default function ResultCard({
   classKey,
@@ -70,6 +71,12 @@ export default function ResultCard({
           </p>
         )}
       </div>
+
+      {/* Bangla Audio Explanation */}
+      <AudioExplain
+        classKey={classKey}
+        voiceScriptBn={diseaseData?.voice_script_bn}
+      />
 
       {/* Section: What is this? (Meaning) */}
       {meaning && (

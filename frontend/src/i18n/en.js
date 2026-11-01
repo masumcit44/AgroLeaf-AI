@@ -23,6 +23,17 @@ export default {
   analysingLeaf: "Checking the leaf photo…",
   modelLoadingProgress: "AI model getting ready…",
   demoModelBanner: "Demo model — not trained yet",
+  // M06 Bangla Audio
+  audioListen: "▶ Listen",
+  audioPause: "⏸ Pause",
+  audioReplay: "↺ Replay",
+  audioAriaPlay: "Play audio explanation",
+  audioAriaPause: "Pause audio explanation",
+  audioAiVoice: "AI-generated voice",
+  audioHumanVoice: "Recorded human voice",
+  audioShowText: "Show voice script",
+  audioHideText: "Hide voice script",
+
   // M05 Result and Content Cards
   possibleProblem: "Possible problem",
   healthyLeaf: "Healthy leaf",

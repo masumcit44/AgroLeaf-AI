@@ -23,6 +23,17 @@ export default {
   analysingLeaf: "পাতার ছবি পরীক্ষা করা হচ্ছে…",
   modelLoadingProgress: "এআই মডেল প্রস্তুত হচ্ছে…",
   demoModelBanner: "ডেমো মডেল — এখনো প্রশিক্ষিত নয়",
+  // M06 Bangla Audio
+  audioListen: "▶ শুনুন",
+  audioPause: "⏸ থামান",
+  audioReplay: "↺ আবার",
+  audioAriaPlay: "ব্যাখ্যা অডিও শুনুন",
+  audioAriaPause: "অডিও থামান",
+  audioAiVoice: "এআই-তৈরি কণ্ঠ",
+  audioHumanVoice: "রেকর্ড করা কণ্ঠ",
+  audioShowText: "লেখা দেখুন",
+  audioHideText: "লেখা লুকান",
+
   // M05 Result and Content Cards
   possibleProblem: "সম্ভাব্য সমস্যা",
   healthyLeaf: "সুস্থ পাতা",

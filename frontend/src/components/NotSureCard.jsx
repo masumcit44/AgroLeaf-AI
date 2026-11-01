@@ -1,5 +1,6 @@
 import React from 'react';
 import useT from '../i18n/useT.js';
+import AudioExplain from './AudioExplain.jsx';
 
 export default function NotSureCard({
   top2 = [],
@@ -35,6 +36,12 @@ export default function NotSureCard({
       <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
         {subtitle}
       </p>
+
+      {/* Bangla Audio Explanation */}
+      <AudioExplain
+        classKey="not_sure"
+        voiceScriptBn={notSureData?.voice_script_bn}
+      />
 
       {/* Top-2 Possible Conditions (No Percentages) */}
       {top2 && top2.length > 0 && (

@@ -6,6 +6,7 @@ import NotSureCard from './NotSureCard.jsx';
 import CallHelpButton from './CallHelpButton.jsx';
 import DisclaimerNote from './DisclaimerNote.jsx';
 import BigButton from './BigButton.jsx';
+import { stopActiveAudio } from '../lib/audioManager.js';
 
 export default function ResultScreen({
   canvas,
@@ -16,9 +17,12 @@ export default function ResultScreen({
   const { t } = useT();
   const thumbnailMountRef = useRef(null);
 
-  // Scroll smoothly to top on result screen mount
+  // Scroll smoothly to top on result screen mount and stop any audio on unmount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return () => {
+      stopActiveAudio();
+    };
   }, []);
 
   // Mount downscaled image thumbnail
@@ -86,7 +90,10 @@ export default function ResultScreen({
       <div className="w-full max-w-sm">
         <BigButton
           variant="secondary"
-          onClick={onRetake}
+          onClick={() => {
+            stopActiveAudio();
+            onRetake();
+          }}
           ariaLabel={t('btnRetakePhoto')}
         >
           {t('btnRetakePhoto')}
