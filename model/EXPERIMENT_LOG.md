@@ -63,6 +63,18 @@ How results are scored:
 - The trained not-rice class rejects 100% / 98.1% and wrongly rejects 0% of rice test photos (Sylhet 1.2%).
 - Combined: no gain. **Rejected.**
 
+### E-int1 — app integration dry run with an 8-class model (v3 EfficientNet-B0)
+- **Setup:** v3 ONNX, 8-class `class_index.json` and v3 calibration, swapped temporarily into a production build. Real uploads went through the UI at mobile size (`vite preview`, headless Chrome).
+- **Found a blocker:** the build refused 8 classes because `sync-content.mjs` required disease cards for `not_rice` / `other_rice`. Fixed: reject outputs are skipped there, as they are in `decide.js`.
+- **After the fix:**
+  - podcast poster and a profile photo → "not a rice leaf";
+  - all 10 sample photos → the correct disease or Healthy;
+  - blurry close-up → not sure;
+  - EXIF-rotated photo and transparent PNG handled;
+  - no console or page errors.
+- **Not covered:** the "other rice problem" screen (no such photo locally; its logic is covered by unit tests).
+- v1 files were restored afterwards.
+
 ### Dataset verification
 See `documentation/research/dataset_verification_2026-11-01.md`.
 - raihan150146 ≠ vbookshelf.
