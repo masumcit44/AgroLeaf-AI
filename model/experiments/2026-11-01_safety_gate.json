@@ -1,0 +1,150 @@
+{
+  "selection": {
+    "fitted_on": "internal_val + fit halves of Sylhet/Savar and non-rice sets",
+    "max_val_leaf_rejection": 0.005,
+    "max_outside_district_leaf_rejection": 0.01,
+    "healthy_precision_target": 0.97,
+    "healthy_threshold_rule": "max(precision-target value, app high-confidence band 0.90)"
+  },
+  "leaf_check": {
+    "hue_bin_min": 6,
+    "hue_bin_max": 14,
+    "sat_min": 77,
+    "val_min": 77,
+    "min_fraction": 0.006
+  },
+  "healthy_threshold": 0.9,
+  "before": {
+    "internal_val": {
+      "n": 1426,
+      "coverage": 0.8703,
+      "selective_accuracy": 0.921,
+      "leaf_check_rejected": 0.0,
+      "healthy_said_for_diseased": 23,
+      "healthy_precision": 0.9025
+    },
+    "internal_test": {
+      "n": 1499,
+      "coverage": 0.8786,
+      "selective_accuracy": 0.9089,
+      "leaf_check_rejected": 0.0,
+      "healthy_said_for_diseased": 13,
+      "healthy_precision": 0.9474
+    },
+    "sylhet": {
+      "n": 442,
+      "coverage": 0.7851,
+      "selective_accuracy": 0.4467,
+      "leaf_check_rejected": 0.0,
+      "healthy_said_for_diseased": 16,
+      "healthy_precision": 0.0,
+      "unseen_class_n": 216,
+      "unseen_class_rejection": 0.2824
+    },
+    "savar": {
+      "n": 1367,
+      "coverage": 0.8661,
+      "selective_accuracy": 0.3784,
+      "leaf_check_rejected": 0.0,
+      "healthy_said_for_diseased": 658,
+      "healthy_precision": 0.3963,
+      "unseen_class_n": 222,
+      "unseen_class_rejection": 0.2342
+    }
+  },
+  "after": {
+    "internal_val": {
+      "n": 1426,
+      "coverage": 0.8008,
+      "selective_accuracy": 0.9308,
+      "leaf_check_rejected": 0.0021,
+      "healthy_said_for_diseased": 4,
+      "healthy_precision": 0.971
+    },
+    "internal_test": {
+      "n": 1499,
+      "coverage": 0.8145,
+      "selective_accuracy": 0.9107,
+      "leaf_check_rejected": 0.0027,
+      "healthy_said_for_diseased": 2,
+      "healthy_precision": 0.987
+    },
+    "sylhet": {
+      "n": 442,
+      "coverage": 0.7376,
+      "selective_accuracy": 0.4693,
+      "leaf_check_rejected": 0.0158,
+      "healthy_said_for_diseased": 1,
+      "healthy_precision": 0.0,
+      "unseen_class_n": 216,
+      "unseen_class_rejection": 0.3333
+    },
+    "savar": {
+      "n": 1367,
+      "coverage": 0.3738,
+      "selective_accuracy": 0.5558,
+      "leaf_check_rejected": 0.0176,
+      "healthy_said_for_diseased": 149,
+      "healthy_precision": 0.6427,
+      "unseen_class_n": 222,
+      "unseen_class_rejection": 0.6216
+    }
+  },
+  "non_rice_rejection": {
+    "natural": {
+      "n_report_half": 620,
+      "rejected_before": 0.5065,
+      "rejected_after": 0.9565,
+      "called_healthy_before": 0.3048,
+      "called_healthy_after": 0.0048,
+      "by_reason_after": {
+        "confident": 27,
+        "healthy_needs_high_confidence": 78,
+        "low_confidence": 36,
+        "not_leaf": 477,
+        "suppressed": 2
+      },
+      "rejected_after_by_group": {
+        "airplane": 0.971,
+        "car": 0.957,
+        "cat": 0.985,
+        "dog": 0.91,
+        "flower": 0.875,
+        "fruit": 1.0,
+        "motorbike": 0.962,
+        "person": 1.0
+      }
+    },
+    "plantvillage": {
+      "n_report_half": 419,
+      "rejected_before": 0.3962,
+      "rejected_after": 0.8568,
+      "called_healthy_before": 0.4678,
+      "called_healthy_after": 0.0095,
+      "by_reason_after": {
+        "confident": 60,
+        "healthy_needs_high_confidence": 293,
+        "low_confidence": 60,
+        "not_leaf": 1,
+        "suppressed": 5
+      },
+      "rejected_after_by_group": {
+        "Pepper__bell___Bacterial_spot": 0.815,
+        "Pepper__bell___healthy": 1.0,
+        "Potato___Early_blight": 0.731,
+        "Potato___Late_blight": 0.963,
+        "Potato___healthy": 1.0,
+        "Tomato_Bacterial_spot": 0.667,
+        "Tomato_Early_blight": 0.581,
+        "Tomato_Late_blight": 0.88,
+        "Tomato_Leaf_Mold": 0.862,
+        "Tomato_Septoria_leaf_spot": 0.654,
+        "Tomato_Spider_mites_Two_spotted_spider_mite": 0.903,
+        "Tomato__Target_Spot": 0.966,
+        "Tomato__Tomato_YellowLeaf__Curl_Virus": 0.926,
+        "Tomato__Tomato_mosaic_virus": 1.0,
+        "Tomato_healthy": 0.958
+      }
+    }
+  }
+}

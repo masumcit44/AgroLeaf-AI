@@ -1,7 +1,8 @@
 import * as ort from 'onnxruntime-web/wasm';
 import { loadModel } from './loadModel.js';
-import { toInputTensorData } from './preprocess.js';
+import { resizeAndCrop, normalizeToNCHW } from './preprocess.js';
 import { softmax, decide } from './decide.js';
+import { plantPixelFraction } from './leafCheck.js';
 
 /**
  * Run end-to-end leaf disease inference on an HTMLCanvasElement or OffscreenCanvas.
@@ -19,8 +20,13 @@ export async function predictLeaf(canvas, onProgress) {
   // 1. Ensure model session & configs are loaded (singleton)
   const { session, classIndex, preprocess, calibration } = await loadModel(onProgress);
 
-  // 2. Preprocess canvas into NCHW Float32Array [3, 224, 224]
-  const tensorData = toInputTensorData(canvas, preprocess);
+  // 2. Preprocess canvas into NCHW Float32Array [3, 224, 224]; the leaf-colour
+  //    gate reads the same 224x224 crop the model sees
+  const cropSize = preprocess.crop || 224;
+  const imageData = resizeAndCrop(canvas, preprocess);
+  const tensorData = normalizeToNCHW(imageData.data, cropSize, cropSize, preprocess);
+  const leafCheck = calibration.leaf_check;
+  const leafFraction = leafCheck ? plantPixelFraction(imageData.data, leafCheck) : undefined;
 
   // 3. Construct input tensor
   const inputTensor = new ort.Tensor('float32', tensorData, [1, 3, 224, 224]);
@@ -48,11 +54,16 @@ export async function predictLeaf(canvas, onProgress) {
     probs[classes[i]] = rawProbs[i] ?? 0;
   }
 
-  // 7. Make decision based on calibrated threshold and weak-class suppression
-  const decision = decide(probs, calibration.threshold || 0.60, calibration.suppress || []);
+  // 7. Make decision: safety gate, weak-class suppression, calibrated threshold
+  const decision = decide(probs, calibration.threshold || 0.60, calibration.suppress || [], {
+    leafFraction,
+    leafMinFraction: leafCheck?.min_fraction,
+    healthyThreshold: calibration.healthy_threshold,
+  });
 
   return {
     probs,
+    leafFraction,
     ms,
     calibration,
     decision,

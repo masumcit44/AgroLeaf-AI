@@ -38,14 +38,22 @@ export function softmax(logits, temperature = 1.0) {
  * @param {Record<string, number>} probs - map of class_key -> probability
  * @param {number} [threshold=0.60] - calibrated decision threshold
  * @param {string[]} [suppress=[]] - optional array of weak class keys to suppress to not_sure
+ * @param {{
+ *   leafFraction?: number,
+ *   leafMinFraction?: number,
+ *   healthyThreshold?: number
+ * }} [safety={}] - safety gate (calibration.json): images with too few
+ *   plant-coloured pixels are not leaves; "healthy" needs its own, higher
+ *   threshold because telling a farmer to do nothing is the costliest error.
  * @returns {{
  *   status: 'confident'|'not_sure',
  *   top: { key: string, prob: number } | null,
  *   top2: Array<{ key: string, prob: number }>,
- *   suppressed?: boolean
+ *   suppressed?: boolean,
+ *   reason?: 'not_leaf'|'low_confidence'|'healthy_needs_high_confidence'|'suppressed'
  * }}
  */
-export function decide(probs, threshold = 0.60, suppress = []) {
+export function decide(probs, threshold = 0.60, suppress = [], safety = {}) {
   const entries = Object.entries(probs || {});
   if (entries.length === 0) {
     return {
@@ -72,6 +80,22 @@ export function decide(probs, threshold = 0.60, suppress = []) {
   const top1 = { key: entries[0][0], prob: entries[0][1] };
   const top2 = entries.slice(0, 2).map(([k, p]) => ({ key: k, prob: p }));
 
+  // Safety gate 1: not a leaf photo. Candidates are hidden (top2 empty),
+  // because "possibly blast" for a photo of a wall would be meaningless.
+  const { leafFraction, leafMinFraction, healthyThreshold } = safety || {};
+  if (
+    typeof leafFraction === 'number' &&
+    typeof leafMinFraction === 'number' &&
+    leafFraction < leafMinFraction
+  ) {
+    return {
+      status: 'not_sure',
+      top: null,
+      top2: [],
+      reason: 'not_leaf',
+    };
+  }
+
   // Check for exact tie between top-2
   if (top2.length >= 2 && Math.abs(top2[0].prob - top2[1].prob) < 1e-6) {
     return {
@@ -91,6 +115,17 @@ export function decide(probs, threshold = 0.60, suppress = []) {
       top: top1,
       top2,
       suppressed: true,
+      reason: 'suppressed',
+    };
+  }
+
+  // Safety gate 2: "healthy" must clear its own, stricter threshold.
+  if (top1.key === 'healthy' && typeof healthyThreshold === 'number' && top1.prob < healthyThreshold) {
+    return {
+      status: 'not_sure',
+      top: top1,
+      top2,
+      reason: 'healthy_needs_high_confidence',
     };
   }
 
@@ -100,5 +135,6 @@ export function decide(probs, threshold = 0.60, suppress = []) {
     status: isConfident ? 'confident' : 'not_sure',
     top: top1,
     top2,
+    ...(isConfident ? {} : { reason: 'low_confidence' }),
   };
 }
