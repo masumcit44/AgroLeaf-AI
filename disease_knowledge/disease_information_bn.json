@@ -5,7 +5,7 @@
     "date": "2026-11-01",
     "status": "DRAFT — symptoms and prevention are general descriptions written for this app from the sources in source_references.md and MUST be reviewed by an agronomist (or checked against BRRI/DAE material) before public launch. 'official_guidance' fields are quoted from BAMIS (DAE) as published; they are not written by us.",
     "keys_must_match": "model/class_index.json (class order is decided after the dataset is downloaded)",
-    "disclaimer_bn": "এটি প্রাথমিক স্ক্রীনিং ধারণা, বিশেষজ্ঞের চূড়ান্ত সিদ্ধান্ত নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।",
+    "disclaimer_bn": "এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।",
     "helpline": "16123"
   },
   "classes": {

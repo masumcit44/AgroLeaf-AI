@@ -182,6 +182,22 @@ async function main() {
     const wasmCheck = await checkWasmAsset(baseUrl);
     console.log(`[smoke] WASM Asset: ${wasmCheck.pass ? 'PASS' : 'FAIL'} (${wasmCheck.details})`);
 
+    // Load exempted official disclaimer phrases (rule §4.2 + lead review 09:05)
+    const bnKnowledge = JSON.parse(
+      fs.readFileSync(path.join(REPO_ROOT, 'disease_knowledge', 'disease_information_bn.json'), 'utf-8')
+    );
+    const enKnowledge = JSON.parse(
+      fs.readFileSync(path.join(REPO_ROOT, 'disease_knowledge', 'disease_information_en.json'), 'utf-8')
+    );
+    const allowedDisclaimers = [
+      bnKnowledge._meta?.disclaimer_bn,
+      enKnowledge._meta?.disclaimer_en,
+      'Not a replacement for agronomist field diagnosis or lab pathology. It never invents chemical recipes.',
+      'এটি কৃষিবিদ বা ল্যাব টেস্টের বিকল্প নয়। অ্যাপটি নিজে কোনো রাসায়নিক ডোজ বা চিকিৎসা উদ্ভাবন করে না।',
+      'This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical.',
+      'এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।',
+    ].filter(Boolean);
+
     // Viewports to test
     const viewports = [
       { width: 360, height: 740, label: '360w (Phone standard)' },
@@ -290,13 +306,19 @@ async function main() {
               : `${consoleErrors.length} errors: ${consoleErrors.join('; ').slice(0, 100)}`,
         };
 
-        // 4. Forbidden text check
-        const forbiddenCheck = await page.evaluate(() => {
-          const text = (document.body.innerText || '').toLowerCase();
+        // 4. Forbidden text check (exempting official negated disclaimers)
+        const forbiddenCheck = await page.evaluate((exemptPhrases) => {
+          let rawText = document.body.innerText || '';
+          for (const phrase of exemptPhrases) {
+            if (phrase) {
+              rawText = rawText.split(phrase).join(' ');
+            }
+          }
+          const lower = rawText.toLowerCase();
           const forbidden = ['diagnosis', 'রোগ নির্ণয়', '100%', 'free call'];
           const found = [];
           for (const word of forbidden) {
-            if (text.includes(word.toLowerCase())) {
+            if (lower.includes(word.toLowerCase())) {
               found.push(word);
             }
           }
@@ -305,7 +327,7 @@ async function main() {
             found,
             reason: found.length === 0 ? 'None detected' : `Found forbidden words: ${found.join(', ')}`,
           };
-        });
+        }, allowedDisclaimers);
 
         const routePass =
           stickerCheck.pass && overflowCheck.pass && consoleCheck.pass && forbiddenCheck.pass;
