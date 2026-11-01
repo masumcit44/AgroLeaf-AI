@@ -1,0 +1,596 @@
+{
+  "sylhet__heldout | v1 (selected, as deployed)": {
+    "n": 1423,
+    "label_counts": {
+      "other_rice": 330,
+      "brown_spot": 347,
+      "healthy": 252,
+      "tungro": 494
+    },
+    "raw": {
+      "accuracy": 0.5434583714547118,
+      "macro_f1": 0.5482535338422007,
+      "per_class": {
+        "healthy": {
+          "precision": 0.7700348432055749,
+          "recall": 0.876984126984127,
+          "f1": 0.8200371057513914,
+          "support": 252
+        },
+        "brown_spot": {
+          "precision": 0.2857142857142857,
+          "recall": 0.07492795389048991,
+          "f1": 0.1187214611872146,
+          "support": 347
+        },
+        "tungro": {
+          "precision": 0.7096114519427403,
+          "recall": 0.7024291497975709,
+          "f1": 0.7060020345879959,
+          "support": 494
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "healthy",
+          "blast",
+          "brown_spot",
+          "leaf_smut",
+          "tungro",
+          "sheath_blight",
+          "other_rice",
+          "not_rice"
+        ],
+        "rows_true_cols_pred": [
+          [
+            221,
+            2,
+            0,
+            3,
+            4,
+            22,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            151,
+            26,
+            13,
+            138,
+            12,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            59,
+            5,
+            65,
+            3,
+            347,
+            15,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "ece": 0.1333565542247602,
+      "roc_auc_ovr": {
+        "healthy": 0.9534095842062549,
+        "brown_spot": 0.47730450973877975,
+        "tungro": 0.787270281778673
+      }
+    },
+    "app": {
+      "outcomes": {
+        "healthy_needs_high_confidence": 0.182,
+        "named": 0.6346,
+        "low_confidence": 0.1637,
+        "not_leaf": 0.0063,
+        "suppressed": 0.0134
+      },
+      "coverage": 0.6221408966148216,
+      "selective_accuracy": 0.5367647058823529,
+      "per_class_named_and_correct": {
+        "healthy": 0.23015873015873015,
+        "brown_spot": 0.040345821325648415,
+        "tungro": 0.5931174089068826
+      },
+      "diseased_called_healthy": 0.007134363852556481,
+      "other_rice_no_disease_named": 0.3242424242424242,
+      "other_rice_called_healthy": 0.0,
+      "unsupported_disease_escape_rate": 0.6757575757575758
+    }
+  },
+  "sylhet__heldout | v4-B (reference only)": {
+    "n": 1423,
+    "label_counts": {
+      "other_rice": 330,
+      "brown_spot": 347,
+      "healthy": 252,
+      "tungro": 494
+    },
+    "raw": {
+      "accuracy": 0.36596523330283626,
+      "macro_f1": 0.43508976041587993,
+      "per_class": {
+        "healthy": {
+          "precision": 0.7941176470588235,
+          "recall": 0.75,
+          "f1": 0.7714285714285715,
+          "support": 252
+        },
+        "brown_spot": {
+          "precision": 0.0718562874251497,
+          "recall": 0.0345821325648415,
+          "f1": 0.04669260700389105,
+          "support": 347
+        },
+        "tungro": {
+          "precision": 0.6160990712074303,
+          "recall": 0.402834008097166,
+          "f1": 0.48714810281517745,
+          "support": 494
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "healthy",
+          "blast",
+          "brown_spot",
+          "leaf_smut",
+          "tungro",
+          "sheath_blight",
+          "other_rice",
+          "not_rice"
+        ],
+        "rows_true_cols_pred": [
+          [
+            189,
+            8,
+            4,
+            2,
+            1,
+            45,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            154,
+            12,
+            9,
+            123,
+            9,
+            1,
+            36
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            46,
+            15,
+            151,
+            0,
+            199,
+            82,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "ece": 0.054832325378047095,
+      "roc_auc_ovr": {
+        "healthy": 0.9193420531113753,
+        "brown_spot": 0.3654379553584536,
+        "tungro": 0.6865355890046164
+      }
+    },
+    "app": {
+      "outcomes": {
+        "low_confidence": 0.7857,
+        "healthy_needs_high_confidence": 0.1764,
+        "suppressed": 0.0091,
+        "not_leaf": 0.0281,
+        "other_problem": 0.0007
+      },
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "per_class_named_and_correct": {
+        "healthy": 0.0,
+        "brown_spot": 0.0,
+        "tungro": 0.0
+      },
+      "diseased_called_healthy": 0.0,
+      "other_rice_no_disease_named": 1.0,
+      "other_rice_called_healthy": 0.0,
+      "unsupported_disease_escape_rate": 0.0
+    }
+  },
+  "gujarat_in__heldout | v1 (selected, as deployed)": {
+    "n": 120,
+    "label_counts": {
+      "other_rice": 40,
+      "brown_spot": 40,
+      "leaf_smut": 40
+    },
+    "raw": {
+      "accuracy": 0.0625,
+      "macro_f1": 0.09846153846153846,
+      "per_class": {
+        "brown_spot": {
+          "precision": 0.16666666666666666,
+          "recall": 0.05,
+          "f1": 0.07692307692307693,
+          "support": 40
+        },
+        "leaf_smut": {
+          "precision": 0.3,
+          "recall": 0.075,
+          "f1": 0.12,
+          "support": 40
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "healthy",
+          "blast",
+          "brown_spot",
+          "leaf_smut",
+          "tungro",
+          "sheath_blight",
+          "other_rice",
+          "not_rice"
+        ],
+        "rows_true_cols_pred": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            9,
+            19,
+            2,
+            7,
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            10,
+            13,
+            10,
+            3,
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "ece": 0.5517469917438241,
+      "roc_auc_ovr": {
+        "brown_spot": 0.35,
+        "leaf_smut": 0.510625
+      }
+    },
+    "app": {
+      "outcomes": {
+        "named": 0.525,
+        "healthy_needs_high_confidence": 0.1417,
+        "low_confidence": 0.2083,
+        "suppressed": 0.0833,
+        "not_leaf": 0.0417
+      },
+      "coverage": 0.5,
+      "selective_accuracy": 0.05,
+      "per_class_named_and_correct": {
+        "brown_spot": 0.05,
+        "leaf_smut": 0.0
+      },
+      "diseased_called_healthy": 0.0625,
+      "other_rice_no_disease_named": 0.425,
+      "other_rice_called_healthy": 0.1,
+      "unsupported_disease_escape_rate": 0.575
+    }
+  },
+  "gujarat_in__heldout | v4-B (reference only)": {
+    "n": 120,
+    "label_counts": {
+      "other_rice": 40,
+      "brown_spot": 40,
+      "leaf_smut": 40
+    },
+    "raw": {
+      "accuracy": 0.125,
+      "macro_f1": 0.1694915254237288,
+      "per_class": {
+        "brown_spot": {
+          "precision": 0.5263157894736842,
+          "recall": 0.25,
+          "f1": 0.3389830508474576,
+          "support": 40
+        },
+        "leaf_smut": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 40
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "healthy",
+          "blast",
+          "brown_spot",
+          "leaf_smut",
+          "tungro",
+          "sheath_blight",
+          "other_rice",
+          "not_rice"
+        ],
+        "rows_true_cols_pred": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            22,
+            10,
+            1,
+            1,
+            0,
+            2,
+            2
+          ],
+          [
+            1,
+            17,
+            9,
+            0,
+            1,
+            1,
+            9,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "ece": 0.26055978168609073,
+      "roc_auc_ovr": {
+        "brown_spot": 0.495625,
+        "leaf_smut": 0.4375
+      }
+    },
+    "app": {
+      "outcomes": {
+        "low_confidence": 0.75,
+        "healthy_needs_high_confidence": 0.05,
+        "other_problem": 0.1583,
+        "not_leaf": 0.0333,
+        "suppressed": 0.0083
+      },
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "per_class_named_and_correct": {
+        "brown_spot": 0.0,
+        "leaf_smut": 0.0
+      },
+      "diseased_called_healthy": 0.0,
+      "other_rice_no_disease_named": 1.0,
+      "other_rice_called_healthy": 0.0,
+      "unsupported_disease_escape_rate": 0.0
+    }
+  }
+}

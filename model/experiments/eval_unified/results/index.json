@@ -1,0 +1,82 @@
+{
+  "models": {
+    "v1_mnv3l": {
+      "file": "repo:frontend/public/models/rice-mnv3l-v1.onnx",
+      "sha256": "aaa9e9f7bc920a26f61bc52f6e0ce902c92b29d3c21f412bfcc5d1878c4cbf54",
+      "size_mib": 16.05,
+      "outputs": 6,
+      "cpu_ms_median_1thread": 11.7
+    },
+    "v3_effb0": {
+      "file": "v3_effb0/model.onnx",
+      "sha256": "8bbea6cf546c6c9108f3312ce483fed79589f9bef5b9d88163fd0bf46f05f3a2",
+      "size_mib": 15.3,
+      "outputs": 8,
+      "cpu_ms_median_1thread": 26.1
+    },
+    "v3_convnext_t": {
+      "file": "v3_convnext_t/model.onnx",
+      "sha256": "a76e1188ec2a44a9f9323bb662a5a32de3654ce9927152d8d6fa5921b2235578",
+      "size_mib": 106.22,
+      "outputs": 8,
+      "cpu_ms_median_1thread": 186.3
+    },
+    "v4_A_all_strong": {
+      "file": "v4_A_all_strong/model.onnx",
+      "sha256": "b271e22724e9e8a74a0b52de8388c869a10946f33c9dd110735e8704eee56adc",
+      "size_mib": 15.3,
+      "outputs": 8,
+      "cpu_ms_median_1thread": 26.2
+    },
+    "v4_B_bdonly_strong": {
+      "file": "v4_B_bdonly_strong/model.onnx",
+      "sha256": "cae86b66410a234bf0e3b4b3fdb7466e72c7873e106cd85b03d7cbaf9e04e7ac",
+      "size_mib": 15.3,
+      "outputs": 8,
+      "cpu_ms_median_1thread": 26.8
+    },
+    "v4_C_all_v3aug": {
+      "file": "v4_C_all_v3aug/model.onnx",
+      "sha256": "81c8c04065edbd735367d4472e450003140ef030f3b913b20419ee1a232f4200",
+      "size_mib": 15.3,
+      "outputs": 8,
+      "cpu_ms_median_1thread": 26.2
+    }
+  },
+  "sets": {
+    "gazipur__test": 1499,
+    "gazipur__val": 1426,
+    "savar__test": 313,
+    "savar__val": 299,
+    "sylhet__heldout": 1423,
+    "paddy_doctor_in__test": 1054,
+    "paddy_doctor_in__val": 1026,
+    "sethy_in__val": 307,
+    "sethy_in__test": 285,
+    "vietnam__val": 359,
+    "vietnam__test": 345,
+    "raihan_bd__extval": 1794,
+    "dhan_shomadhan_bd_whitebg__extval": 769,
+    "gujarat_in__heldout": 120,
+    "natural__test": 205,
+    "natural__val": 223,
+    "plantvillage__test": 250,
+    "plantvillage__val": 240,
+    "posters__val": 110,
+    "posters__test": 86,
+    "memes__val": 208,
+    "memes__test": 192,
+    "generated__val": 300,
+    "generated__test": 300
+  },
+  "classes": [
+    "healthy",
+    "blast",
+    "brown_spot",
+    "leaf_smut",
+    "tungro",
+    "sheath_blight",
+    "other_rice",
+    "not_rice"
+  ]
+}
