@@ -77,14 +77,14 @@ export default function AboutPage() {
             {t('aboutDatasetCredit')}
           </p>
           <div className="text-[11px] text-gray-500 pt-1">
-            <strong>অফিসিয়াল তথ্য উৎস:</strong>{' '}
+            <strong>{t('aboutOfficialSource')}:</strong>{' '}
             <a
               href="https://www.bamis.gov.bd/diseases/1/all/76"
               target="_blank"
               rel="noopener noreferrer"
               className="text-leaf-700 font-semibold underline hover:text-leaf-800"
             >
-              বাংলাদেশ কৃষি আবহাওয়া তথ্য পদ্ধতি (BAMIS, DAE) ↗
+              {t('aboutOfficialSourceName')} ↗
             </a>
           </div>
         </div>

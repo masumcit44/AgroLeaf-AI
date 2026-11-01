@@ -129,5 +129,7 @@ export default {
   aboutCompetitionTitle: "প্রতিযোগিতা",
   aboutCompetition: "Ostad Presents YUNet AIgnite Buildathon 2026 (একক অংশগ্রহণ / Solo Entry)",
   aboutDatasetTitle: "উপাত্ত ও কৃতজ্ঞতা (Dataset Credits)",
+  aboutOfficialSource: "অফিসিয়াল তথ্য উৎস",
+  aboutOfficialSourceName: "বাংলাদেশ কৃষি আবহাওয়া তথ্য পদ্ধতি (BAMIS, DAE)",
   aboutDatasetCredit: "RiceLeafDiseaseBD v3 (Munna, M.M.H., Islam, T., Saha, S. et al., Mendeley Data, 1 Sep 2026, DOI: 10.17632/86s4jzj2m4.3), Creative Commons Attribution 4.0 International (CC BY 4.0)। রোগ সংক্রান্ত তথ্যাদি কৃষি তথ্য সার্ভিস ও বামিস (DAE) থেকে সংকলিত।"
 };
