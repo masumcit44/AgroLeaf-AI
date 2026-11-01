@@ -42,7 +42,7 @@
 | X1 | Automated smoke test script | ✅ | 01 Nov 2026 08:54 BST | feat/x1-smoke-test / tag x1 | automated puppeteer smoke test across 360/390/1280px on 10 routes (sticker >=40px, 0px overflow, 0 errors, copy clean, WASM 200), documentation/qa/smoke_report.md generated |
 | X2 | Accuracy page renderer (ready for metrics-v1) | ✅ | 01 Nov 2026 09:05 BST | feat/x2-accuracy-renderer / tag x2 | vitest (37/37 pass), oxlint (0 err), build pass, guard against FIXTURE_NOT_REAL in dist, full renderer tested with synthetic fixture |
 | X3 | Weak-class suppression + dev parity page | ✅ | 01 Nov 2026 09:20 BST | feat/x3-suppression-parity / tag x3 | vitest (44/44 pass), oxlint (0 err), build pass, smoke pass, check A & B parity verified with test fixture |
-| X4 | Automated release guards | ⬜ | | | |
+| X4 | Automated release guards | ✅ | 01 Nov 2026 09:25 BST | feat/x4-release-guards / tag x4 | check:release script (8 guards, exit 1 as expected today awaiting Kaggle bundle), checklist documented in README.md, vitest (44/44 pass), oxlint (0 err), build pass |
 | M07 | Real model + accuracy page | ⬜ | | | |
 | M08 | Polish | 🟨 partial (needs M07) | 01 Nov 2026 08:09 BST | feat/m08-polish / tag m08-partial | items 1-4, 6-12 done: onboarding, error boundary, offline check, samples, share, threshold tuning, about transparency, vitest (26/26 pass), oxlint (0 err), build pass |
 | M09 | QA + release | ⬜ | | | |
@@ -58,6 +58,7 @@
 _(none yet)_
 
 ## Assumptions made
+- [DONE by Antigravity 09:25] X4: check-release.mjs implemented with 8 release guards (fails today exit 1 on 5 expected items pending Kaggle training), release checklist in README.
 - [DONE by Antigravity 09:20] X3: weak-class suppression in decide() / predict(), DevParityPage at #/dev/parity (Check A 1e-3 runtime parity & Check B end-to-end), tested with local fixture.
 - [DONE by Antigravity 08:12] merged track/opencode (track 1 + track 2: QA templates & glossary)
 - [DONE by Antigravity 08:58] merged track/opencode track 3 (QA templates, glossary, release bundle tooling, sample picker)

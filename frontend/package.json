@@ -12,7 +12,8 @@
     "test": "vitest run",
     "lint": "oxlint",
     "preview": "vite preview",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "check:release": "node scripts/check-release.mjs"
   },
   "dependencies": {
     "onnxruntime-web": "1.31.1",

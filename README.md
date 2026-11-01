@@ -76,6 +76,28 @@ The frontend is configured for direct deployment via GitHub integration on Cloud
 5. Save and deploy. Headers from `frontend/public/_headers` are automatically applied for client caching.
 6. Record the generated `*.pages.dev` deployment URL in `README.md` and `handoff/PROGRESS.md`.
 
+## Release checklist
+
+Before final release and competition submission (Module M09), an automated pre-release verification script audits 8 required production guards:
+
+```bash
+cd frontend
+npm run check:release
+```
+
+### The 8 Release Guards:
+1. **Calibration:** `public/data/calibration.json` has real temperature scaling and no placeholder flag.
+2. **Production Model:** `public/models/rice-mnv3l-v1.onnx` exists, is under the Cloudflare 24 MiB asset ceiling, and begins with the ONNX protobuf magic byte (`0x08`).
+3. **Model URL Wiring:** `config.js` `MODEL_URL` points directly at `rice-mnv3l-v1.onnx`, and the placeholder model (`rice-placeholder.onnx`) is deleted.
+4. **Class Index Parity:** `class_index.json` matches the exact 6 target classes (`["healthy","blast","brown_spot","leaf_smut","tungro","sheath_blight"]`).
+5. **Real Metrics:** `public/data/metrics-v1.json` contains verified test evaluations (`internal_test.n > 0`) with zero synthetic fixture leakage (`FIXTURE_NOT_REAL`).
+6. **Sample Images:** `public/samples/manifest.json` specifies ≥ 3 sample images, and every referenced image exists on disk.
+7. **Audio Narration:** `public/audio/manifest.json` lists 7 audio guidance files (warns gracefully if offline MP3s are pending user Azure Speech synthesis).
+8. **Competition Branding:** The official AIgnite Buildathon competition sticker is present in both `assets/brand/` and `frontend/public/brand/`.
+
+> [!NOTE]
+> Today, running `npm run check:release` is **expected to fail (exit 1)** on items 1, 2, 3, 5, and 6 until the Kaggle-trained model run (`run1_for_app.zip`) is bundled via `python ml/tools/make_release_bundle.py` and test samples are picked via `python ml/tools/pick_samples.py`.
+
 ## Project status
 Follow our step-by-step progress, module deliverables, and acceptance verification in [handoff/PROGRESS.md](handoff/PROGRESS.md).
 
