@@ -94,7 +94,7 @@ export default {
   errModelLoad: "Failed to load the AI model. Please check your internet connection.",
   errWasmUnsupported: "Your browser does not support WebAssembly. Please update Chrome or your browser.",
 
-  footerDisclaimer: "This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical.",
+  footerDisclaimer: "This is a preliminary screening, not a definitive expert verdict. Ask your Upazila agriculture officer or call 16123 before using any chemical.",
   footerPrivacy: "The photo stays on your phone and is not sent anywhere",
   footerAboutLink: "About & Licences",
 
@@ -108,7 +108,7 @@ export default {
   whatItIsLabel: "✓ What this app is:",
   whatItIsNotLabel: "✕ What this is not:",
   aboutWhatItIs: "A mobile-first on-device AI screening tool that flags likely foliar conditions and cautiously abstains when uncertain.",
-  aboutWhatItIsNot: "Not a replacement for agronomist field diagnosis or lab pathology. It never invents chemical recipes.",
+  aboutWhatItIsNot: "Not a replacement for agronomist field consultation or lab pathology. It never invents chemical recipes.",
   aboutPrivacyTitle: "On-Device Privacy",
   aboutPrivacyDesc: "Photos never leave your smartphone and are never uploaded to any cloud server. All image processing happens on your device. No user account or tracking cookies.",
   aboutVoiceTitle: "Audio Voice Note",

@@ -5,7 +5,7 @@
     "date": "2026-11-01",
     "status": "DRAFT — general descriptions for the app; review against BRRI/DAE material before launch. No chemical doses are written by us.",
     "keys_must_match": "model/class_index.json",
-    "disclaimer_en": "This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical."
+    "disclaimer_en": "This is a preliminary screening, not a definitive expert verdict. Ask your Upazila agriculture officer or call 16123 before using any chemical."
   },
   "classes": {
     "healthy": {
