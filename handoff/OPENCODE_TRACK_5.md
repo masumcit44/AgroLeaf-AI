@@ -1,5 +1,7 @@
 # OpenCode Track 5 — fill real numbers into the submission drafts
 
+> **STATUS: DONE by the lead in `0cdfb58` (merged here).** Do not edit anything. Append one line to `handoff/OPENCODE_PROGRESS.md` saying "Track 5 done by lead in 0cdfb58", commit, push, and print `TRACK5_DONE`.
+
 Branch: `track/opencode` (this worktree only). Same rules as `OPENCODE_TRACK.md`.
 Docs only. **Edit only these three files:**
 - `documentation/submission/demo_script_en.md`
