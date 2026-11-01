@@ -4,6 +4,7 @@ import useT from '../i18n/useT.js';
 export default function SampleImagesStrip({ onSelectFile, disabled = false, className = '' }) {
   const { lang, t } = useT();
   const [samples, setSamples] = useState([]);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -33,6 +34,7 @@ export default function SampleImagesStrip({ onSelectFile, disabled = false, clas
 
   const handlePickSample = async (sample) => {
     if (disabled) return;
+    setLoadFailed(false);
     try {
       const res = await fetch(sample.src);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -40,7 +42,9 @@ export default function SampleImagesStrip({ onSelectFile, disabled = false, clas
       const file = new File([blob], `${sample.id}.jpg`, { type: 'image/jpeg' });
       onSelectFile(file);
     } catch (err) {
+      // Samples are downloaded on tap, so this fails offline; say so (QA K2)
       console.error('Failed to load sample image:', err);
+      setLoadFailed(true);
     }
   };
 
@@ -72,6 +76,12 @@ export default function SampleImagesStrip({ onSelectFile, disabled = false, clas
           </button>
         ))}
       </div>
+
+      {loadFailed && (
+        <p role="alert" className="text-xs text-red-700 text-center mb-1.5">
+          {t('errSampleLoad')}
+        </p>
+      )}
 
       <span className="block text-[10px] text-gray-400 text-center">
         {t('sampleCredit')}

@@ -163,7 +163,7 @@ export default function AudioExplain({
           <button
             type="button"
             onClick={() => setShowScript((prev) => !prev)}
-            className="text-[11px] font-semibold text-leaf-700 hover:underline cursor-pointer"
+            className="inline-flex items-center min-h-[44px] px-3 text-xs font-semibold text-leaf-700 hover:underline cursor-pointer"
           >
             {showScript ? t('audioHideText') : t('audioShowText')}
           </button>

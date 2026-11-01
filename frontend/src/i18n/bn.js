@@ -93,6 +93,8 @@ export default {
   errUnsupportedType: "শুধু ছবি (JPG/PNG/WebP) দিন",
   errTooLarge: "ছবি ১০ এমবির বেশি",
   errDecodeFailed: "ছবিটি খোলা যাচ্ছে না, আরেকটি দিন",
+  errSampleLoad: "নমুনা ছবিটি আনা যায়নি। ইন্টারনেট সংযোগ দেখুন, অথবা গ্যালারি থেকে নিজের ছবি দিন।",
+  pageLoading: "লোড হচ্ছে...",
   errModelLoad: "মডেল লোড হতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করুন।",
   errWasmUnsupported: "আপনার ব্রাউজার WebAssembly সমর্থন করে না। অনুগ্রহ করে ক্রোম (Chrome) আপডেট করুন।",
 

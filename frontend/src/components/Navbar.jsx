@@ -46,7 +46,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
                 e.preventDefault();
                 onNavigate(ROUTES.ACCURACY);
               }}
-              className={`inline-flex items-center justify-center min-w-[40px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 currentRoute === ROUTES.ACCURACY
                   ? 'bg-leaf-700 text-white'
                   : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
@@ -63,7 +63,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
                 e.preventDefault();
                 onNavigate(ROUTES.ABOUT);
               }}
-              className={`inline-flex items-center justify-center min-w-[40px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 currentRoute === ROUTES.ABOUT
                   ? 'bg-leaf-700 text-white'
                   : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'

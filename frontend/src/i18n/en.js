@@ -93,6 +93,8 @@ export default {
   errUnsupportedType: "Only image files (JPG, PNG, WebP) are supported",
   errTooLarge: "Image file exceeds the 10 MB limit",
   errDecodeFailed: "This image cannot be opened; please try another photo",
+  errSampleLoad: "Couldn't load the sample photo. Check your internet connection, or pick your own photo from the gallery.",
+  pageLoading: "Loading...",
   errModelLoad: "Failed to load the AI model. Please check your internet connection.",
   errWasmUnsupported: "Your browser does not support WebAssembly. Please update Chrome or your browser.",
 

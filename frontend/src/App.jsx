@@ -4,35 +4,24 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
+import useT from './i18n/useT.js';
 
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage.jsx'));
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
 const DevParityPage = lazy(() => import('./pages/DevParityPage.jsx'));
 
 function PageFallback() {
+  const { t } = useT();
   return (
     <div className="flex-1 flex items-center justify-center p-8 text-gray-400 text-xs sm:text-sm">
       <div className="w-5 h-5 border-2 border-leaf-700 border-t-transparent rounded-full animate-spin mr-2" />
-      <span>লোড হচ্ছে... / Loading...</span>
+      <span>{t('pageLoading')}</span>
     </div>
   );
 }
 
 function AppContent() {
   const { route, navigate } = useHashRoute();
-
-  React.useEffect(() => {
-    if (import.meta.env.DEV) {
-      const updateMetrics = () => {
-        const sw = document.documentElement.scrollWidth;
-        const iw = window.innerWidth;
-        document.title = `SW:${sw}_IW:${iw}`;
-      };
-      updateMetrics();
-      const t = setTimeout(updateMetrics, 500);
-      return () => clearTimeout(t);
-    }
-  });
 
   const renderPage = () => {
     switch (route) {
