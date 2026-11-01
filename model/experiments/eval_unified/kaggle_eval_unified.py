@@ -31,10 +31,11 @@ from PIL import Image
 #    in SHA256SUMS.txt). Sub-folders were uploaded as zips; unpack them if Kaggle kept them zipped.
 import zipfile, hashlib
 CAND = "/tmp/candidates"
-for r, d, f in os.walk(IN):
-    if "agroleaf-candidates" in r:
+# keep sub-folders: paths are taken relative to the dataset root, not to each walked folder
+CAND_ROOT = next(r for r, d, f in os.walk(IN) if r.rstrip("/").endswith("agroleaf-candidates"))
+for r, d, f in os.walk(CAND_ROOT):
         for fn in f:
-            src = os.path.join(r, fn); dst = os.path.join(CAND, os.path.relpath(src, r))
+            src = os.path.join(r, fn); dst = os.path.join(CAND, os.path.relpath(src, CAND_ROOT))
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             if fn.endswith(".zip"):
                 with zipfile.ZipFile(src) as z: z.extractall(os.path.join(CAND, fn[:-4]))
