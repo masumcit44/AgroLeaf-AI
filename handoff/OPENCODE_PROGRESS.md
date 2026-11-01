@@ -14,7 +14,7 @@ _Not finished yet._
 | O1 — one-command data preparation | ✅ done | `ml/prepare_dataset.py`, `ml/tests/test_prepare_dataset.py` |
 | O2 — external test-set preparation | ✅ done | `ml/prepare_external.py`, `ml/tests/test_prepare_external.py`, `ml/EXTERNAL_DATA.md` |
 | O3 — Kaggle notebook | ✅ done | `ml/kaggle/agroleaf_train_kaggle.ipynb` |
-| O4 — model card and data card | ⬜ not started | — |
+| O4 — model card and data card | ✅ done | `model/MODEL_CARD.md`, `data/DATA_CARD.md` |
 | O5 — submission drafts | ⬜ not started | — |
 
 ## O1 — `ml/prepare_dataset.py`
@@ -109,7 +109,31 @@ nested class-root detection and the same resize/skip behaviour.
 
 ## O4 — model card and data card
 
-_Not started._
+**Status:** done — 2026-11-01 ~08:05 BST
+
+**Files added**
+- `model/MODEL_CARD.md` — intended use and users, out-of-scope uses,
+  architecture/input contract, training data, evaluation protocol, all metrics
+  as `[[TBD after training]]`, calibration and "not sure", limitations (one
+  district/season, Leaf Smut external gap, sheath symptoms), ethics (no doses,
+  16123 referral with "charges may apply", on-device privacy), and the update
+  procedure.
+- `data/DATA_CARD.md` — the three datasets actually used (RiceLeafDiseaseBD v3,
+  RiceLeafDisease-BD5, RiceLeafBD), with DOI, licence, location, class mapping,
+  known issues, de-duplication/split method, provenance rules, and a list of
+  inventory datasets that are not used and why.
+
+**How tested**
+- Read-only docs; checked every fact against `data/dataset_inventory.csv`,
+  `data/disease_classes.md`, `data/data_quality_report.md`,
+  `research/final_decisions.md`, `model/*plan.md` and the external maps.
+- `grep` for forbidden claims (no "first/only" claims, no "100% accurate",
+  no free-call claim, no partnership, no doses). Unknown values are `[[TBD]]`.
+
+**Notes / problems**
+- The real per-class counts, exclusions, ONNX size and all metrics stay
+  `[[TBD after training]]`; they must be copied from `metrics-v1.json` later.
+- RiceyLeafDisease/Dhan-Shomadhan are documented as not used (no maps yet).
 
 ## O5 — submission drafts
 
