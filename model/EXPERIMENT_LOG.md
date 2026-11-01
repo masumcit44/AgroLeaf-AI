@@ -80,9 +80,20 @@ See `documentation/research/dataset_verification_2026-11-01.md`.
 - raihan150146 ≠ vbookshelf.
 - The Dhan-Shomadhan Kaggle copy has its sheath blight folder mislabelled, and is white-background only.
 
+### Review of Antigravity branch `feat/ml-verification-and-domain-research` (`1e1395e`, `a698760`)
+- `eval_framework.py` adds a Healthy threshold and two metrics. Its 9 tests pass, run by the lead; all are 6-class cases. Not merged:
+  - "unsupported escape" uses `labels >= 6`, which counts not_rice photos as unsupported diseases;
+  - "false healthy" counts not_rice and other_rice rows as diseased;
+  - a confident not_rice answer counts as accepted coverage;
+  - the leaf-colour gate and ties are ignored;
+  - selective accuracy is 0.0 when nothing is answered;
+  - the PyTorch path cannot load v1.
+  - `ml/app_decision.py` + `ml/tools/eval_app.py` already cover these metrics correctly and are tested against `decide.js`.
+- Its visual dataset audits are contradicted by the files (see `documentation/research/dataset_verification_2026-11-01.md`). Not used.
+
 ## Running
 
-### E-v4 (version 2) — `run4_v4`, EfficientNet-B0, selection on outside-district Bangladeshi data
+### E-v4 (job version 3; versions 1-2 stopped: wrong Dhan-Shomadhan labels / EXIF check too narrow) — `run4_v4`, EfficientNet-B0, selection on outside-district Bangladeshi data
 - **External validation:** raihan150146, never trained on. Used for epoch, temperature, threshold (smallest giving ≥ 90% selective accuracy) and variant choice.
 - **Final tests:** Sylhet, Gujarat.
 - **Reported only:** Dhan-Shomadhan, white background, labels from filename codes.
