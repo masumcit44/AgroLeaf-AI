@@ -7,7 +7,7 @@
 | M00 | Repo bootstrap | ✅ | 01 Nov 2026 07:05 BST | main / tag m00 | Git init, .gitignore, clean status, push & tag |
 | M01 | ML pipeline scripts | ✅ | 01 Nov 2026 07:16 BST | ml/m01-training-pipeline / tag m01 | CPU smoke test end-to-end, 0 group leaks, export <24MiB, parity 1.86e-9 < 1e-3 |
 | M01b | ML review fixes | ✅ | 01 Nov 2026 07:28 BST | fix/m01b-ml-review / tag m01b | Regression tests pass, unmapped folder rejected, single-file ONNX |
-| M02 | Frontend scaffold + deploy | ⬜ | | | |
+| M02 | Frontend scaffold + deploy | ✅ | 01 Nov 2026 07:38 BST | feat/m02-frontend-scaffold / tag m02 | npm run lint & build pass, sticker in navbar, i18n persisted, _headers |
 | M03 | Image input + quality | ⬜ | | | |
 | M04 | Inference engine | ⬜ | | | |
 | M05 | Results + content | ⬜ | | | |
@@ -17,7 +17,7 @@
 | M09 | QA + release | ⬜ | | | |
 
 ## USER ACTION NEEDED
-- [ ] Download the AIgnite sticker (Google Drive link in `D:\Desktop\AIgnite 2026\instructions.txt`) → save as `frontend/public/brand/aignite-sticker.png` (needed by M02)
+- [x] Download the AIgnite sticker (archived in `assets/brand/aignite-sticker-original.png` and deployed to `frontend/public/brand/`)
 - [ ] Download RiceLeafDiseaseBD v3 → unzip to `D:\Desktop\AIgnite 2026\datasets_raw\RiceLeafDiseaseBD_v3\` (needed to *run* M01)
 - [ ] Create a free Kaggle account, verify the phone number (needed for GPU)
 - [ ] Create a free Azure account → Speech resource, tier **F0** → put key/region in `.env` (needed by M06)

@@ -6,7 +6,7 @@
 - (a) the sticker file at `frontend/public/brand/aignite-sticker.png`
 - (b) connecting Cloudflare Pages (steps at the end)
 
-If the sticker is missing, use a clearly labelled grey placeholder box ("AIgnite sticker") and mark the gate in PROGRESS.md. **Never ship to judges without the real sticker.**
+Gate (a) is done: the sticker is at `assets/brand/aignite-sticker-original.png`. **Never ship to judges without the real sticker.**
 
 Read first: `documentation/frontend_spec.md`, `documentation/system_architecture.md`.
 
@@ -35,8 +35,8 @@ frontend/
    - font family `"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif`
    - base font 18px, Bangla line-height 1.65
 4b. **Sticker file (official rules, read `documentation/competition_compliance.md`):**
-   - The organiser's file is `Built for AIgnite 2026.png` (1.1 MB). Save the untouched original as `public/brand/aignite-sticker-original.png`.
-   - Create a proportionally resized copy about 120 px tall as `public/brand/aignite-sticker.png`, with Pillow or any resizer. Same image; no recolouring, cropping or redrawing. Commit both.
+   - **The user has already placed the official file at `assets/brand/aignite-sticker-original.png`** (repo root; 2105×747 px, RGB, 1.1 MB; renamed from the organiser's `Built for AIgnite 2026.png`). Leave that file where it is, and commit it in this module as the archived original. **Copy** it (do not move it) to `frontend/public/brand/aignite-sticker-original.png` *after* scaffolding the app.
+   - Create a proportionally resized copy **120 px tall (≈338×120, keep the 2105:747 ratio)** as `frontend/public/brand/aignite-sticker.png`, with Pillow (LANCZOS) or any resizer. Expect it to be well under 100 KB. Same image; no recolouring, cropping or redrawing. Commit both.
    - The rules say the sticker must be near the top and "must not be hidden at the end of the app or placed only in the footer". It must therefore appear on **every route and every state**, and must **never** be inside a collapsed/hamburger menu or covered by a banner or modal.
 5. **Navbar** (sticky, top):
    - **AIgnite sticker, left, height 44–52 px, always visible on mobile**, with `alt="Built for Ostad Presents YUNet AIgnite Buildathon 2026"`

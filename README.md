@@ -61,6 +61,21 @@ npm run dev
 ### Machine learning pipeline
 See `ml/README.md` for dataset preparation, training, calibration, and ONNX export instructions.
 
+## Deployment (Cloudflare Pages)
+
+The frontend is configured for direct deployment via GitHub integration on Cloudflare Pages:
+1. In Cloudflare Dashboard, go to **Workers & Pages** -> **Create** -> **Pages** -> **Connect to Git**.
+2. Select repository: `masumcit44/AgroLeaf-AI`.
+3. Configure build settings:
+   - **Framework preset:** `None` (or `Vite`)
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - **Root directory:** `frontend`
+4. In **Environment variables**, set:
+   - `NODE_VERSION` = `22`
+5. Save and deploy. Headers from `frontend/public/_headers` are automatically applied for client caching.
+6. Record the generated `*.pages.dev` deployment URL in `README.md` and `handoff/PROGRESS.md`.
+
 ## Project status
 Follow our step-by-step progress, module deliverables, and acceptance verification in [handoff/PROGRESS.md](handoff/PROGRESS.md).
 
