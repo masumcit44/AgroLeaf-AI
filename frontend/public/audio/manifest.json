@@ -1,1 +1,44 @@
-{}
+{
+  "healthy": {
+    "file": "/audio/healthy-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 114,
+    "generated_at": "2026-11-01T17:38:04+00:00"
+  },
+  "blast": {
+    "file": "/audio/blast-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 226,
+    "generated_at": "2026-11-01T17:38:08+00:00"
+  },
+  "brown_spot": {
+    "file": "/audio/brown_spot-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 209,
+    "generated_at": "2026-11-01T17:38:12+00:00"
+  },
+  "leaf_smut": {
+    "file": "/audio/leaf_smut-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 208,
+    "generated_at": "2026-11-01T17:38:16+00:00"
+  },
+  "tungro": {
+    "file": "/audio/tungro-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 224,
+    "generated_at": "2026-11-01T17:38:19+00:00"
+  },
+  "sheath_blight": {
+    "file": "/audio/sheath_blight-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 221,
+    "generated_at": "2026-11-01T17:38:23+00:00"
+  },
+  "not_sure": {
+    "file": "/audio/not_sure-v1.mp3",
+    "voice": "bn-BD-NabanitaNeural (edge-tts, rate -10%)",
+    "chars": 149,
+    "generated_at": "2026-11-01T17:38:25+00:00"
+  }
+}
