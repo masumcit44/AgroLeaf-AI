@@ -3,6 +3,7 @@ import { loadModel } from './loadModel.js';
 import { resizeAndCrop, normalizeToNCHW } from './preprocess.js';
 import { softmax, decide } from './decide.js';
 import { plantPixelFraction } from './leafCheck.js';
+import { gateSaysNotRice } from './nonriceGate.js';
 
 /**
  * Run end-to-end leaf disease inference on an HTMLCanvasElement or OffscreenCanvas.
@@ -18,7 +19,7 @@ import { plantPixelFraction } from './leafCheck.js';
  */
 export async function predictLeaf(canvas, onProgress) {
   // 1. Ensure model session & configs are loaded (singleton)
-  const { session, classIndex, preprocess, calibration } = await loadModel(onProgress);
+  const { session, gateSession, classIndex, preprocess, calibration } = await loadModel(onProgress);
 
   // 2. Preprocess canvas into NCHW Float32Array [3, 224, 224]; the leaf-colour
   //    gate reads the same 224x224 crop the model sees
@@ -55,15 +56,25 @@ export async function predictLeaf(canvas, onProgress) {
   }
 
   // 7. Make decision: safety gate, weak-class suppression, calibrated threshold
-  const decision = decide(probs, calibration.threshold || 0.60, calibration.suppress || [], {
+  let decision = decide(probs, calibration.threshold || 0.60, calibration.suppress || [], {
     leafFraction,
     leafMinFraction: leafCheck?.min_fraction,
     healthyThreshold: calibration.healthy_threshold,
   });
 
+  // 8. Non-rice gate (roadmap G1): same input tensor, second model; it can only
+  //    turn an answer into "not a rice leaf", never name a disease
+  let gateNotRice = false;
+  if (gateSession) {
+    const gateOut = await gateSession.run({ [gateSession.inputNames[0] || 'input']: inputTensor });
+    gateNotRice = gateSaysNotRice(gateOut[gateSession.outputNames[0] || 'logits'].data, calibration.nonrice_gate.not_rice_index);
+    if (gateNotRice) decision = { status: 'not_sure', top: null, top2: [], reason: 'not_leaf' };
+  }
+
   return {
     probs,
     leafFraction,
+    gateNotRice,
     ms,
     calibration,
     decision,

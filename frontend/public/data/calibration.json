@@ -16,5 +16,11 @@
     "val_min": 77,
     "min_fraction": 0.006
   },
-  "healthy_threshold": 0.9
+  "healthy_threshold": 0.9,
+  "nonrice_gate": {
+    "model": "/models/rice-nonrice-gate-v4b.onnx",
+    "not_rice_index": 7,
+    "num_outputs": 8,
+    "source": "v4-B (EfficientNet-B0, Bangladesh-only), sha256 cae86b66410a234bf0e3b4b3fdb7466e72c7873e106cd85b03d7cbaf9e04e7ac; rule: argmax == not_rice; see handoff/ROADMAP.md G1"
+  }
 }

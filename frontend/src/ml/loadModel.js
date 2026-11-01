@@ -111,8 +111,27 @@ export function loadModel(onProgress) {
         graphOptimizationLevel: 'all',
       });
 
+      // 3. Optional non-rice gate (calibration.json -> nonrice_gate). If it cannot
+      //    load, the app keeps working with the main model alone, as before G1.
+      let gateSession = null;
+      if (calibRes.nonrice_gate?.model) {
+        try {
+          const gateBuffer = await fetch(calibRes.nonrice_gate.model).then((r) => {
+            if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${calibRes.nonrice_gate.model}`);
+            return r.arrayBuffer();
+          });
+          gateSession = await ort.InferenceSession.create(gateBuffer, {
+            executionProviders: ['wasm'],
+            graphOptimizationLevel: 'all',
+          });
+        } catch (gateErr) {
+          console.warn('[loadModel] non-rice gate unavailable, using the main model alone:', gateErr.message);
+        }
+      }
+
       return {
         session,
+        gateSession,
         classIndex: classIndexRes,
         preprocess: preprocessRes,
         calibration: calibRes,
