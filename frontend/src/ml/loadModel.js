@@ -128,6 +128,15 @@ export function loadModel(onProgress) {
 }
 
 /**
+ * Check whether the model session is already loaded in memory.
+ *
+ * @returns {boolean}
+ */
+export function isModelReady() {
+  return sessionPromise !== null;
+}
+
+/**
  * Reset the model singleton (used on retry).
  */
 export function resetModel() {

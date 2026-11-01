@@ -3,7 +3,7 @@ import { validateImageFile } from '../lib/validateImageFile.js';
 import { decodeImage } from '../lib/decodeImage.js';
 import { checkImageQuality } from '../lib/imageQuality.js';
 import { predictLeaf } from '../ml/predict.js';
-import { resetModel } from '../ml/loadModel.js';
+import { resetModel, isModelReady } from '../ml/loadModel.js';
 
 export const SCAN_STEPS = {
   IDLE: 'idle',
@@ -62,6 +62,11 @@ export function useScanFlow() {
 
   const runInference = useCallback(async () => {
     if (!canvas) return;
+
+    if (!isModelReady() && typeof navigator !== 'undefined' && navigator.onLine === false) {
+      setInferenceError('errOfflineFirstTime');
+      return;
+    }
 
     setInferenceError(null);
     setModelProgress(0);
