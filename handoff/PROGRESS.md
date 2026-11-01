@@ -9,7 +9,7 @@
 | M01b | ML review fixes | ✅ | 01 Nov 2026 07:28 BST | fix/m01b-ml-review / tag m01b | Regression tests pass, unmapped folder rejected, single-file ONNX |
 | M02 | Frontend scaffold + deploy | ✅ | 01 Nov 2026 07:38 BST | feat/m02-frontend-scaffold / tag m02 | npm run lint & build pass, sticker in navbar, i18n persisted, _headers |
 | M03 | Image input + quality | ✅ | 01 Nov 2026 07:42 BST | feat/m03-image-input / tag m03 | vitest (9/9 pass), oxlint (0 err), vite build pass, EXIF decode & quality hints |
-| M04 | Inference engine | ⬜ | | | |
+| M04 | Inference engine | ✅ | 01 Nov 2026 07:51 BST | feat/m04-inference-engine / tag m04 | vitest (17/17 pass), oxlint (0 err), vite build pass, ort-wasm <25MiB checked, CPU WASM singleton inference |
 | M05 | Results + content | ⬜ | | | |
 | M06 | Bangla audio | ⬜ | | | |
 | M07 | Real model + accuracy page | ⬜ | | | |
