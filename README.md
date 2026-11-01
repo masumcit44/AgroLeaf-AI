@@ -56,14 +56,14 @@ flowchart LR
 ---
 
 ## Measured Results
-> **Status:** Measured results: see the in-app accuracy page (evaluation in progress).
+> **Status:** Full measured evaluation results for deployed model v1 are published on the in-app Accuracy page (`#/accuracy`) and in `frontend/public/data/metrics-v1.json`.
 >
-> In accordance with project integrity standards, AgroLeaf AI presents zero invented or synthetic metrics in product documentation. Real validation figures, confusion matrices, and district generalization breakdowns will be published upon completion of the full benchmark run.
+> In accordance with project integrity standards, AgroLeaf AI presents zero invented or synthetic metrics. Real validation figures, per-class metrics, confusion matrices, and outside-district performance limits are documented on the live Accuracy page.
 
 ---
 
 ## Responsible AI Safeguards
-- **Preliminary Screening, Not Final Diagnosis:** AgroLeaf AI is an advisory screening aid designed to assist smallholder farmers in early symptom awareness. It is explicitly not a laboratory-grade diagnosis or a substitute for certified agronomists.
+- **Preliminary Screening, Not Final Diagnosis:** AgroLeaf AI is an advisory screening aid designed to assist smallholder farmers in early symptom awareness. It is explicitly not a laboratory-grade diagnosis or a substitute for certified agronomists. The disease information is preliminary and has not been reviewed by an agronomist.
 - **Strictly No AI-Written Chemical Dosages:** The system strictly rejects generative LLM chemical hallucination. All treatment recommendations are verbatim reproductions of approved DAE/BAMIS advisories.
 - **Quality Advisory Warnings:** Non-blocking heuristics alert the user if an image is underexposed or excessively blurry before running inference.
 - **Helpline Integration:** Direct access to government agricultural extension officers via `16123` (standard operator call rates apply).
@@ -171,7 +171,7 @@ npm run check:release
 8. **Competition Branding:** The official AIgnite Buildathon competition sticker is present in both `assets/brand/` and `frontend/public/brand/`.
 
 > [!NOTE]
-> Today, running `npm run check:release` is **expected to fail (exit 1)** on items 1, 2, 3, 5, and 6 until the Kaggle-trained model run (`run1_for_app.zip`) is bundled via `python ml/tools/make_release_bundle.py` and test samples are picked via `python ml/tools/pick_samples.py`.
+> Running `npm run check:release` in `frontend/` executes all 8 release guards. All 8 guards pass (8 PASSED, 0 FAILED, 0 WARNING(S)), confirming that real calibration parameters, production ONNX model, model wiring, class index parity, verified evaluation metrics, sample images, audio narration files, and competition branding are present and verified.
 
 ---
 

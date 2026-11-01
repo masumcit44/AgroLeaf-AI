@@ -15,7 +15,7 @@ Rules: **maximum 5 slides**, 16:9, short on-slide text, official AIgnite sticker
 > The wrong advice means the wrong spray:
 > wasted money, and a crop still at risk.
 >
-> Rural internet gap: 43.6% vs 75.7% `[[add source]]`
+> Many farmers have limited, costly mobile data.
 >
 > `[official AIgnite sticker — top-right corner]`
 
@@ -24,7 +24,7 @@ Rules: **maximum 5 slides**, 16:9, short on-slide text, official AIgnite sticker
 **Speaker notes (about 30 s):**
 - "A farmer sees spots on a leaf. They ask whoever is nearby — often the pesticide seller. If the problem is not what the seller thought, the spray is wrong, the money is gone, and the crop is still at risk."
 - "This is a rice-first, Bangla-first problem. Many users have a shared phone, a weak connection and limited reading comfort."
-- "The connectivity figure comes from the buildathon notes; add the exact source before presenting. Do not add review percentages or any other unverified number."
+- "Many rural farmers face limited or costly connectivity, so the app must work on-device without requiring continuous internet or server uploads. Do not add review percentages or any other unverified number."
 
 ---
 
@@ -120,7 +120,7 @@ Rules: **maximum 5 slides**, 16:9, short on-slide text, official AIgnite sticker
 **Speaker notes (about 30 s):**
 - "Safety is a design constraint, not a disclaimer. The app never generates a dose. Official guidance is quoted verbatim with a link and a 'confirm with your officer / 16123' note."
 - "Privacy is structural: inference is on-device, with no accounts and no analytics that capture images."
-- "The limits are visible in the product: one district and one season in training, Leaf Smut has no external test, and sheath symptoms may be missed on a leaf-only photo."
+- "The limits are visible in the product: one district and one season in training, Leaf Smut has no external test, and sheath symptoms may be missed on a leaf-only photo. The disease information is preliminary and has not been reviewed by an agronomist."
 - "Next: more districts and phones, a proper negative-example check, more crops, and a field review with an agriculture officer."
 - "Close with the ask: try the live app, open the accuracy page, and tell me what a farmer would still find confusing."
 

@@ -49,8 +49,9 @@ NOTES = [
     "and the crop is still at risk.\n\n"
     "This problem is specific to rice and to Bangla speakers. Many users have a shared phone, "
     "a weak connection and limited reading comfort.\n\n"
-    "The connectivity figure comes from the buildathon notes; add the exact source before "
-    "presenting. Do not add review percentages or any other unverified number.",
+    "Many rural farmers face limited or costly connectivity, so the app must work on-device "
+    "without requiring continuous internet or server uploads. Do not add review percentages or "
+    "any other unverified number.",
     "The flow is deliberately short: photo, check, result.\n\n"
     "The result is in Bangla, with English available, and can be read aloud. Audio starts when "
     "the user taps play; it is labelled as AI voice.\n\n"
@@ -80,7 +81,8 @@ NOTES = [
     "Privacy is structural: inference is on-device, with no accounts and no analytics that "
     "capture images.\n\n"
     "The limits are visible in the product: one district and one season in training, Leaf Smut "
-    "has no external test, and sheath symptoms may be missed on a photo of a leaf.\n\n"
+    "has no external test, and sheath symptoms may be missed on a photo of a leaf. The disease "
+    "information is preliminary and has not been reviewed by an agronomist.\n\n"
     "Next: more districts and phones, a proper negative-example check, more crops, and a field "
     "review with an agriculture officer.\n\n"
     "Close with the ask: try the live app, open the accuracy page, and tell me what a farmer "
@@ -326,8 +328,11 @@ def slide_problem(prs, repo):
             },
             {
                 "runs": [
-                    {"text": "Rural internet gap: ", "size": 16, "color": MUTED},
-                    {"text": "[[TBD]]", "size": 16, "bold": True, "color": GREEN},
+                    {
+                        "text": "Many farmers have limited, costly mobile data.",
+                        "size": 16,
+                        "color": MUTED,
+                    }
                 ]
             },
         ],
