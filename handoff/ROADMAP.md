@@ -102,7 +102,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Rollback:** revert the commit (v1 returns).
 
 #### I3b — Document v1's limits (only if I1 = NO-GO)
-- **Owner:** Antigravity. **Branch:** `docs/accuracy-limits`. **Status:** ASSIGNED (`handoff/TASK_I3B_ACCURACY_LIMITS_ANTIGRAVITY.md`).
+- **Owner:** Antigravity. **Branch:** `docs/accuracy-limits` (`aea02a6`). **Status:** DONE and live 2 Nov 01:09:56 BST. Lead review: the 3 entries byte-identical to `accuracy_page_entries.json`; Savar and all other keys unchanged; tests 54/54, lint clean, build OK, guards 8/8 (re-run by the lead); live page shows the new numbers with no errors.
 - **Scope:** the accuracy page and docs state the measured outside-district results and limits. Exact values come from `results/accuracy_page_entries.json` (`83f0c27`).
 
 #### I4 — Offline second analysis and QA-script false alarms
