@@ -1,4 +1,11 @@
-"""AgroLeaf AI v4: v3 + more Bangladeshi field data, real leaf-smut photos, EXIF-upright images and stronger augmentation.
+"""AgroLeaf AI v4: selection on outside-district Bangladeshi data, data-mix and augmentation ablations.
+
+v3 lesson: a threshold tuned on in-distribution validation (0.30) was far too permissive on the unseen
+Sylhet district (46% of answers right), and adding India/Vietnam data did not help Sylhet. So:
+- raihan150146 (Sirajganj/Pabna) and Dhan-Shomadhan field photos (Dhaka) are an EXTERNAL VALIDATION set,
+  never trained on, used for epoch choice, temperature, threshold and variant choice;
+- Sylhet and Gujarat (leaf smut) are final tests only, never used for any choice;
+- variants A/B/C isolate the data mix (all countries vs Bangladesh only) and the augmentation.
 
 Based on v3: multi-country rice training with two extra outputs ("other rice problem", "not a rice leaf").
 
@@ -86,16 +93,16 @@ add_folder_source("sylhet", find_root("riceleafbd-mendeley"), split_mode="heldou
 add_folder_source("paddy_doctor_in", find_root("paddy-doctor"))
 add_folder_source("sethy_in", find_root("rice-leaf-disease-image"))
 add_folder_source("vietnam", find_root("rice-diseases-image-dataset", min_hits=2))
-def add_all_roots(src, token, exclude=()):
+def add_all_roots(src, token, exclude=(), split_mode="extval"):
     roots = []
     for root, dirs, _ in os.walk(IN):
         rl = root.lower()
         if token in rl and not any(e in rl for e in exclude) and len([d for d in dirs if norm_key(d)]) >= 3: roots.append(root)
     roots = [r for r in roots if not any(r != o and r.startswith(o + os.sep) for o in roots)]
-    for r in roots: add_folder_source(src, r)
+    for r in roots: add_folder_source(src, r, split_mode=split_mode)
     if not roots: print("MISSING SOURCE", src, flush=True)
-add_all_roots("raihan_bd", "rice-leaf-diseases-dataset", exclude=("augment",))
-add_folder_source("dhan_shomadhan_bd", find_root("dhan-shomadhan"))
+add_all_roots("raihan_bd", "rice-leaf-diseases-dataset", exclude=("augment",))  # split set to extval below
+add_folder_source("dhan_shomadhan_bd", find_root("dhan-shomadhan"), split_mode="extval")
 # Gujarat (UCI, 120 photos incl. 40 leaf smut): the only leaf-smut photos from outside Gazipur.
 # Too few to change training, so they are kept as an independent external TEST set (never trained on).
 add_folder_source("gujarat_in", find_root("vbookshelf") or find_root("rice-leaf-diseases/rice_leaf_diseases"), split_mode="heldout")
@@ -118,14 +125,18 @@ def prep(i_row):
     out = f"{CACHE}/{i}.jpg"
     try:
         with Image.open(r["path"]) as im:
+            orient = im.getexif().get(0x0112, 1); raw_w, raw_h = im.size
             im.draft("RGB", (600, 600)); im = ImageOps.exif_transpose(im).convert("RGB")
+            # tags 5-8 are 90-degree turns: the long side must swap after correction
+            turned = orient in (5, 6, 7, 8); swapped = (raw_w > raw_h) != (im.size[0] > im.size[1])
+            exif_ok = raw_w == raw_h or turned == swapped
             w, h = im.size; s = 288 / min(w, h)
             if s < 1: im = im.resize((max(1, round(w * s)), max(1, round(h * s))), Image.BILINEAR)
             im.save(out, quality=92)
             a = np.asarray(im.resize((128, 128))).astype(np.int16)
             border = np.concatenate([a[:16].reshape(-1, 3), a[-16:].reshape(-1, 3), a[:, :16].reshape(-1, 3), a[:, -16:].reshape(-1, 3)])
             white = float(np.mean((border.min(1) > 170) & (np.ptp(border, axis=1) < 40)))
-            return i, (str(imagehash.phash(im)), white)
+            return i, (str(imagehash.phash(im)), white, orient, exif_ok)
     except Exception:
         return i, None
 t0 = time.time()
@@ -134,14 +145,26 @@ with Pool(os.cpu_count()) as pool:
 ok = []
 for i, got in res:
     if got is None: continue
-    r = ROWS[i]; r["cache"] = f"{CACHE}/{i}.jpg"; r["phash"], r["white"] = got; ok.append(r)
+    r = ROWS[i]; r["cache"] = f"{CACHE}/{i}.jpg"; r["phash"], r["white"], r["exif"], r["exif_ok"] = got; ok.append(r)
 ROWS = ok
 print(f"cached {len(ROWS)} images in {time.time()-t0:.0f}s", flush=True)
-# Dhan-Shomadhan: white-paper shots are concentrated in one class (56% of blast vs 13-34% elsewhere,
-# data audit 1 Nov), a background shortcut; keep its field photos only
-white_drop = [r for r in ROWS if r["src"] == "dhan_shomadhan_bd" and r["white"] > 0.5]
-print("Dhan-Shomadhan white-background shots dropped:", dict(Counter(r["label"] for r in white_drop)), flush=True)
-ROWS = [r for r in ROWS if not (r["src"] == "dhan_shomadhan_bd" and r["white"] > 0.5)]
+# EXIF orientation check (raihan150146: 1,734 tagged photos in the data audit)
+print("EXIF orientation tags by source:", {s_: dict(Counter(r["exif"] for r in ROWS if r["src"] == s_ and r["exif"] != 1))
+                                           for s_ in sorted({r["src"] for r in ROWS})}, flush=True)
+bad_exif = [r for r in ROWS if not r["exif_ok"]]
+print("EXIF CHECK: images whose orientation was not corrected:", len(bad_exif), flush=True)
+if bad_exif: sys.exit("EXIF correction failed for: " + ", ".join(os.path.basename(r["path"]) for r in bad_exif[:10]))
+turned = [r for r in ROWS if r["src"] == "raihan_bd" and r["exif"] in (5, 6, 7, 8)][:24]
+if turned:
+    sheet = Image.new("RGB", (6 * 160, 4 * 160), "white")
+    for k, r in enumerate(turned):
+        with Image.open(r["cache"]) as im: im.thumbnail((156, 156)); sheet.paste(im, ((k % 6) * 160, (k // 6) * 160))
+    sheet.save(f"{OUT}/exif_check_raihan.jpg", quality=85)
+# Dhan-Shomadhan white-paper shots (56% of its blast vs 13-34% elsewhere): reported as their own set,
+# kept out of the external-validation selection set so they cannot steer choices
+for r in ROWS: r["white_bg"] = r["src"] == "dhan_shomadhan_bd" and r["white"] > 0.5
+print("Dhan-Shomadhan white-background shots (own report set, not used for selection):",
+      dict(Counter(r["label"] for r in ROWS if r["white_bg"])), flush=True)
 # exact-hash duplicates: drop later copies inside the same source; group by phash for the split
 seen = set(); dedup = []
 for r in ROWS:
@@ -151,8 +174,8 @@ for r in ROWS:
 print("dropped near-identical duplicates:", len(ROWS) - len(dedup), flush=True); ROWS = dedup
 # leakage guard: no training/val image may share a perceptual hash with the held-out Sylhet test set
 # near-duplicates count too: pHash within 4 bits (re-saved or resized copies)
-held = np.array([int(r["phash"], 16) for r in ROWS if r["split"] == "heldout"], dtype=np.uint64)
-cand = [r for r in ROWS if r["split"] != "heldout"]
+held = np.array([int(r["phash"], 16) for r in ROWS if r["split"] in ("heldout", "extval")], dtype=np.uint64)
+cand = [r for r in ROWS if r["split"] not in ("heldout", "extval")]
 ch = np.array([int(r["phash"], 16) for r in cand], dtype=np.uint64)
 is_leak = np.zeros(len(cand), bool)
 for i in range(0, len(ch), 256):
@@ -160,7 +183,7 @@ for i in range(0, len(ch), 256):
     bits = np.unpackbits(x.view(np.uint8).reshape(x.shape + (8,)), axis=-1).sum(-1)
     is_leak[i:i + 256] = bits.min(1) <= 4
 leak = [r for r, b in zip(cand, is_leak) if b]
-print("LEAKAGE GUARD: rows within 4 pHash bits of a held-out test image (Sylhet, Gujarat), dropped:",
+print("LEAKAGE GUARD: training/val rows within 4 pHash bits of a test or external-validation image, dropped:",
       len(leak), dict(Counter(r["src"] for r in leak)), flush=True)
 drop = {id(r) for r in leak}
 ROWS = [r for r in ROWS if id(r) not in drop]
@@ -209,13 +232,14 @@ class JPEG:
     def __call__(self, im):
         if random.random() > self.p: return im
         b = io.BytesIO(); im.save(b, "JPEG", quality=random.randint(30, 90)); b.seek(0); return Image.open(b).convert("RGB")
-train_tf = TV.Compose([
-    Rot90(), JPEG(0.5),
-    TV.RandomResizedCrop(224, scale=(0.25, 1.0), ratio=(0.75, 1.33)),
-    TV.RandomHorizontalFlip(), TV.RandomVerticalFlip(), TV.RandomRotation(20),
-    TV.ColorJitter(0.35, 0.35, 0.3, 0.04), TV.RandomGrayscale(0.03),
-    TV.RandomApply([TV.GaussianBlur(5, (0.1, 2.0))], p=0.2),
-    TV.ToTensor(), TV.Normalize(MEAN, STD), TV.RandomErasing(p=0.15)])
+COMMON_TF = [TV.RandomHorizontalFlip(), TV.RandomVerticalFlip(), TV.RandomRotation(20),
+             TV.ColorJitter(0.35, 0.35, 0.3, 0.04), TV.RandomGrayscale(0.03),
+             TV.RandomApply([TV.GaussianBlur(5, (0.1, 2.0))], p=0.2),
+             TV.ToTensor(), TV.Normalize(MEAN, STD), TV.RandomErasing(p=0.15)]
+AUGS = {
+    "v3": TV.Compose([TV.RandomResizedCrop(224, scale=(0.3, 1.0), ratio=(0.75, 1.33))] + COMMON_TF),
+    "strong": TV.Compose([Rot90(), JPEG(0.5), TV.RandomResizedCrop(224, scale=(0.25, 1.0), ratio=(0.75, 1.33))] + COMMON_TF),
+}
 eval_tf = TV.Compose([TV.Resize(256), TV.CenterCrop(224), TV.ToTensor(), TV.Normalize(MEAN, STD)])  # same as the app
 class DS(Dataset):
     def __init__(self, rows, tf): self.rows, self.tf = rows, tf
@@ -224,12 +248,17 @@ class DS(Dataset):
         r = self.rows[i]
         with Image.open(r["cache"]) as im: x = self.tf(im.convert("RGB"))
         return x, CI[r["label"]]
-tr = [r for r in ROWS if r["split"] == "train"]
-va = [r for r in ROWS if r["split"] == "val"]
-# sampling: every class gets equal mass; inside a class, each source gets mass ~ sqrt(its size)
-cs = Counter((r["label"], r["src"]) for r in tr); cl = defaultdict(float)
-for (lab, src), n in cs.items(): cl[lab] += math.sqrt(n)
-wts = [math.sqrt(cs[(r["label"], r["src"])]) / cl[r["label"]] / cs[(r["label"], r["src"])] for r in tr]
+# Selection set for every variant (epoch, temperature, threshold, variant): external-validation field
+# photos (raihan + Dhan-Shomadhan, not white-paper) plus the not_rice validation rows.
+# Sylhet and Gujarat ("heldout") are never used for any choice, only reported.
+va = [r for r in ROWS if (r["split"] == "extval" and not r["white_bg"]) or (r["split"] == "val" and r["label"] == "not_rice")]
+print("selection set:", dict(Counter((r["src"], r["label"]) for r in va)), flush=True)
+BD_RICE = {"gazipur", "savar"}
+def sample_weights(tr):
+    """Every class gets equal mass; inside a class each source gets mass ~ sqrt(its size)."""
+    cs = Counter((r["label"], r["src"]) for r in tr); cl = defaultdict(float)
+    for (lab, src), n in cs.items(): cl[lab] += math.sqrt(n)
+    return [math.sqrt(cs[(r["label"], r["src"])]) / cl[r["label"]] / cs[(r["label"], r["src"])] for r in tr]
 
 def evaluate(model, rows, bs=128):
     model.eval(); L = []
@@ -245,10 +274,11 @@ def macro_f1(y, p, labels):
         f.append(2 * tp / max(1, 2 * tp + fp + fn))
     return float(np.mean(f))
 
-def train(arch, epochs, lr):
-    print(f"\n===== {arch} =====", flush=True)
+def train(arch, epochs, lr, tr, train_tf):
+    print(f"\n===== {arch}: {len(tr)} training rows =====", flush=True)
+    torch.manual_seed(SEED); random.seed(SEED)
     model = timm.create_model(arch, pretrained=True, num_classes=len(CLASSES)).cuda()
-    sampler = WeightedRandomSampler(wts, num_samples=24000, replacement=True, generator=torch.Generator().manual_seed(SEED))
+    sampler = WeightedRandomSampler(sample_weights(tr), num_samples=24000, replacement=True, generator=torch.Generator().manual_seed(SEED))
     dl = DataLoader(DS(tr, train_tf), batch_size=64, sampler=sampler, num_workers=4, drop_last=True, persistent_workers=True)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.02)
     steps = epochs * len(dl); sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=lr, total_steps=steps, pct_start=0.08)
@@ -280,23 +310,28 @@ def decide(p, thr):
     answer = (top < 6) & (top != CI["leaf_smut"]) & (conf >= thr)
     return top, answer
 
-def report(arch, model):
-    d = f"{OUT}/{arch}"; os.makedirs(d, exist_ok=True)
+TARGET_SELECTIVE_ACC = 0.90
+def report(name, arch, model):
+    d = f"{OUT}/{name}"; os.makedirs(d, exist_ok=True)
     sets = defaultdict(list)
     for r in ROWS:
-        if r["split"] in ("val", "test", "heldout"): sets[(r["src"], r["split"])].append(r)
+        if r["split"] in ("val", "test", "heldout", "extval"):
+            sets[(r["src"] + ("_whitebg" if r.get("white_bg") else ""), r["split"])].append(r)
     logits = {k: evaluate(model, v) for k, v in sets.items()}
     for (src, sp), v in sets.items():
         np.savez_compressed(f"{d}/preds_{src}_{sp}.npz", logits=logits[(src, sp)],
                             y=np.array([CI[r["label"]] for r in v]), files=np.array([os.path.basename(r["path"]) for r in v]))
-    vl = np.concatenate([logits[k] for k in logits if k[1] == "val"]); vy = np.concatenate([[CI[r["label"]] for r in sets[k]] for k in logits if k[1] == "val"])
+    vl = evaluate(model, va); vy = np.array([CI[r["label"]] for r in va])
     temp = fit_temperature(vl, vy); pv = softmax(vl, temp)
-    # threshold: smallest one where answered rice predictions on val are >= 92% correct
-    thr = 0.5
+    # threshold: smallest one where answers on external-validation rice photos are >= 90% right
+    rice = vy < 7
+    thr, reached = 0.95, False
     for t in np.arange(0.30, 0.96, 0.01):
-        top, ans = decide(pv, t)
-        if ans.sum() and np.mean(top[ans] == vy[ans]) >= 0.92: thr = float(round(t, 2)); break
-    M = {"arch": arch, "classes": CLASSES, "temperature": temp, "threshold": thr, "sets": {}}
+        top, ans = decide(pv, t); a = ans & rice
+        if a.sum() and np.mean(top[a] == vy[a]) >= TARGET_SELECTIVE_ACC: thr, reached = float(round(t, 2)), True; break
+    print(name, f"threshold {thr} (target {TARGET_SELECTIVE_ACC} {'reached' if reached else 'NOT reached, capped at 0.95'})", flush=True)
+    M = {"variant": name, "arch": arch, "classes": CLASSES, "temperature": temp, "threshold": thr,
+         "threshold_target_reached": reached, "selection_macro_f1": macro_f1(vy, vl.argmax(1), range(len(CLASSES))), "sets": {}}
     for (src, sp), v in sorted(sets.items()):
         p = softmax(logits[(src, sp)], temp); y = np.array([CI[r["label"]] for r in v]); top, ans = decide(p, thr)
         known = y < 6; m = {"n": int(len(y))}
@@ -312,12 +347,13 @@ def report(arch, model):
             m["not_rice_rejected"] = float(np.mean(~ans[neg]))
             m["not_rice_called_not_rice"] = float(np.mean(top[neg] == CI["not_rice"]))
         M["sets"][f"{src}/{sp}"] = m
-        print(arch, src, sp, json.dumps({k: (round(x, 4) if isinstance(x, float) else x) for k, x in m.items()}), flush=True)
+        print(name, src, sp, json.dumps({k: (round(x, 4) if isinstance(x, float) else x) for k, x in m.items()}), flush=True)
     json.dump(M, open(f"{d}/metrics.json", "w"), indent=2)
     json.dump({"temperature": temp, "threshold": thr, "classes": CLASSES}, open(f"{d}/calibration.json", "w"), indent=2)
     # ONNX export (input "input", output "logits"), then parity against PyTorch
     model.eval().cpu(); x = torch.randn(1, 3, 224, 224)
-    kw = dict(input_names=["input"], output_names=["logits"], opset_version=17)
+    kw = dict(input_names=["input"], output_names=["logits"], opset_version=17,
+              dynamic_axes={"input": {0: "batch"}, "logits": {0: "batch"}})
     try: torch.onnx.export(model, x, f"{d}/model.onnx", dynamo=False, **kw)
     except TypeError: torch.onnx.export(model, x, f"{d}/model.onnx", **kw)  # older torch has no dynamo flag
     import onnxruntime as ort
@@ -325,19 +361,30 @@ def report(arch, model):
     xb = torch.stack([DS(va[:64], eval_tf)[i][0] for i in range(min(64, len(va)))])
     with torch.no_grad(): pt = model(xb).numpy()
     on = s.run(None, {"input": xb.numpy()})[0]
-    print(arch, "ONNX MB", round(os.path.getsize(f"{d}/model.onnx") / 2**20, 2), "parity max|diff|", float(np.abs(pt - on).max()), flush=True)
+    print(name, "ONNX MB", round(os.path.getsize(f"{d}/model.onnx") / 2**20, 2), "parity max|diff|", float(np.abs(pt - on).max()), flush=True)
     model.cuda()
 
-ARCHS = [("efficientnet_b0", 18, 1e-3)]  # set from v3 results
-for arch, ep, lr in ARCHS:
-    m = train(arch, ep, lr); report(arch, m); del m; torch.cuda.empty_cache()
+# Ablation, same backbone/seed/schedule, one change per comparison:
+#   A vs B: all countries vs Bangladesh-only rice data     A vs C: new vs v3 augmentation
+ARCH, EPOCHS, LR = "efficientnet_b0", 14, 1e-3  # v3: best val at the last epoch, about 100 s per epoch
+VARIANTS = [
+    {"name": "A_all_strong", "bd_only": False, "aug": "strong"},
+    {"name": "B_bdonly_strong", "bd_only": True, "aug": "strong"},
+    {"name": "C_all_v3aug", "bd_only": False, "aug": "v3"},
+]
+for v in VARIANTS:
+    tr = [r for r in ROWS if r["split"] == "train" and (not v["bd_only"] or r["label"] == "not_rice" or r["src"] in BD_RICE)]
+    m = train(ARCH, EPOCHS, LR, tr, AUGS[v["aug"]]); report(v["name"], ARCH, m); del m; torch.cuda.empty_cache()
+summary = {v["name"]: json.load(open(f"{OUT}/{v['name']}/metrics.json"))["selection_macro_f1"] for v in VARIANTS}
+print("VARIANT SELECTION (external-validation macro-F1):", json.dumps(summary), flush=True)
 # Baseline: the deployed v1 model (6 outputs) on exactly the same evaluation sets and preprocessing
 import onnxruntime as ort
 v1 = ort.InferenceSession(f"{REPO}/frontend/public/models/rice-mnv3l-v1.onnx", providers=["CPUExecutionProvider"])
 os.makedirs(f"{OUT}/v1_baseline", exist_ok=True)
 v1_sets = defaultdict(list)
 for r in ROWS:
-    if r["split"] in ("val", "test", "heldout"): v1_sets[(r["src"], r["split"])].append(r)
+    if r["split"] in ("val", "test", "heldout", "extval"):
+        v1_sets[(r["src"] + ("_whitebg" if r.get("white_bg") else ""), r["split"])].append(r)
 for (src, sp), v in v1_sets.items():
     L = []
     for i in range(0, len(v), 64):
