@@ -39,9 +39,9 @@ SLIDE_H = 7.5
 STICKER = "assets/brand/aignite-sticker-original.png"
 PROBLEM_PHOTO = "documentation/photos/01_problem.jpg"
 PORTRAIT_PHOTO = "documentation/photos/portrait.jpg"
-SHOT_UPLOAD = "documentation/screenshots/m08b/01_home_390w.png"
-SHOT_RESULT = "documentation/screenshots/m08b/05_blast_390w.png"
-SHOT_NOT_SURE = "documentation/screenshots/m08b/10_not_sure_390w.png"
+SHOT_UPLOAD = "documentation/screenshots/release/01_home.png"
+SHOT_RESULT = "documentation/screenshots/release/02_result_blast.png"
+SHOT_NOT_SURE = "documentation/screenshots/release/03_not_sure.png"
 
 NOTES = [
     "A farmer sees spots on a leaf. They ask whoever is nearby, often the pesticide seller. "

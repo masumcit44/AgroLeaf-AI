@@ -13,7 +13,7 @@
 
 | 1. Home & Onboarding | 2. Screening Result (Blast) | 3. Calibrated "Not Sure" | 4. In-App Accuracy & Transparency |
 |:---:|:---:|:---:|:---:|
-| <img src="documentation/screenshots/m08b/01_home_390w.png" width="210" alt="AgroLeaf AI Home Screen" /> | <img src="documentation/screenshots/m08b/05_blast_390w.png" width="210" alt="Screening Result Screen for Blast" /> | <img src="documentation/screenshots/m08b/10_not_sure_390w.png" width="210" alt="Calibrated Not Sure Abstention Screen" /> | <img src="documentation/screenshots/m08b/02_accuracy_390w.png" width="210" alt="Accuracy Page Screen" /> |
+| <img src="documentation/screenshots/release/01_home.png" width="210" alt="AgroLeaf AI Home Screen" /> | <img src="documentation/screenshots/release/02_result_blast.png" width="210" alt="Screening Result Screen for Blast" /> | <img src="documentation/screenshots/release/03_not_sure.png" width="210" alt="Calibrated Not Sure Abstention Screen" /> | <img src="documentation/screenshots/release/04_accuracy.png" width="210" alt="Accuracy Page Screen" /> |
 
 ---
 
