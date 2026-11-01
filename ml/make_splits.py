@@ -2,6 +2,7 @@
 """
 Create leakage-safe 70/15/15 train/val/test splits stratified by class and grouped by group_id.
 Filters duplicates, unreadable files, and cross-class groups, recording all exclusions.
+Guards against oversized perceptual hash groups and excessive exclusion rates.
 """
 
 import argparse
@@ -24,6 +25,8 @@ def make_splits(
     dataset_name: str,
     out_dir: Path,
     exclusions_csv: Path,
+    max_group: int = 50,
+    max_exclusion_frac: float = 0.05,
     seed: int = 42,
 ) -> None:
     set_seed(seed)
@@ -54,15 +57,16 @@ def make_splits(
         for r in reader:
             rows.append(r)
 
-    print(f"Loaded {len(rows)} image records from {images_csv}")
+    total_input_images = len(rows)
+    print(f"Loaded {total_input_images} image records from {images_csv}")
 
     # Check for unknown class folders
     found_classes = set(r["class"] for r in rows)
-    unknown_classes = found_classes - set(class_map.keys())
+    unknown_classes = found_classes - set(k for k in class_map.keys() if not k.startswith("__"))
     if unknown_classes:
         sys.stderr.write(
             f"\nERROR: Unknown class folder(s) found in dataset: {sorted(unknown_classes)}\n"
-            f"Known folders in class_map: {sorted(class_map.keys())}\n"
+            f"Known folders in class_map: {sorted(k for k in class_map.keys() if not k.startswith('__'))}\n"
             f"Execution stopped. Update ml/class_map.json with verified mappings.\n"
         )
         sys.exit(1)
@@ -77,7 +81,6 @@ def make_splits(
 
     kept_from_md5: Set[str] = set()
     for md5_hash, md5_group in by_md5.items():
-        # Keep first copy
         kept_from_md5.add(md5_group[0]["path"])
         for duplicate in md5_group[1:]:
             exclusions.append(
@@ -93,6 +96,12 @@ def make_splits(
     by_group = defaultdict(list)
     for r in rows_after_dedup:
         by_group[r["group_id"]].append(r)
+
+    # Group size statistics
+    group_sizes = {gid: len(items) for gid, items in by_group.items()}
+    largest_group_size = max(group_sizes.values()) if group_sizes else 0
+    groups_gt_10 = sum(1 for sz in group_sizes.values() if sz > 10)
+    total_groups = len(by_group)
 
     cross_class_groups: Set[str] = set()
     for gid, group_items in by_group.items():
@@ -111,13 +120,33 @@ def make_splits(
         if r["group_id"] not in cross_class_groups:
             valid_rows.append(r)
 
-    print(f"Retained {len(valid_rows)} valid images ({len(exclusions)} excluded)")
-
     # Record exclusions
     with open(exclusions_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["path", "reason"])
         writer.writeheader()
         writer.writerows(exclusions)
+
+    total_exclusions = len(exclusions)
+    exclusion_frac = total_exclusions / max(total_input_images, 1)
+
+    print(f"Retained {len(valid_rows)} valid images ({total_exclusions} excluded, {exclusion_frac:.2%})")
+
+    # Guard checks against oversized groups and excessive exclusions
+    if largest_group_size > max_group:
+        sys.stderr.write(
+            f"\nERROR: Largest perceptual hash group has {largest_group_size} images, exceeding limit of {max_group}!\n"
+            f"Over-chaining in union-find detected. Re-run audit with a lower --phash-dist (try 4, then 2).\n"
+            f"Keep a note of the parameter value used.\n"
+        )
+        sys.exit(1)
+
+    if exclusion_frac > max_exclusion_frac:
+        sys.stderr.write(
+            f"\nERROR: Exclusions ({total_exclusions}/{total_input_images} = {exclusion_frac:.2%}) exceed allowed threshold of {max_exclusion_frac:.1%}!\n"
+            f"Possible runaway duplicate chaining or cross-class confusion. Re-run audit with lower --phash-dist (try 4, then 2).\n"
+            f"Keep a note of the parameter value used.\n"
+        )
+        sys.exit(1)
 
     if not valid_rows:
         raise ValueError("No valid rows remaining after filtering exclusions.")
@@ -130,13 +159,11 @@ def make_splits(
     X = np.zeros((len(valid_rows), 1))
 
     # Stratified grouped splitting: 70% train, 15% val, 15% test
-    # Check minimum class frequency
     min_class_count = min(Counter(y).values())
-
     splits = [""] * len(valid_rows)
 
     if min_class_count >= 20:
-        # Use 20 folds: 3 test (15%), 3 val (15%), 14 train (70%)
+        # 20 folds: 3 test (15%), 3 val (15%), 14 train (70%)
         sgkf = StratifiedGroupKFold(n_splits=20, shuffle=True, random_state=seed)
         fold_assignments = np.zeros(len(valid_rows), dtype=int)
         for fold_idx, (_, test_indices) in enumerate(sgkf.split(X, y, group_ids)):
@@ -198,7 +225,7 @@ def make_splits(
 
     print(f"Saved splits to {splits_csv_path}")
 
-    # Generate split_summary.md
+    # Generate split_summary.md with group stats & exclusions breakdown
     summary_path = out_dir / "split_summary.md"
     split_counts = defaultdict(lambda: Counter())
     for ck, sp in zip(class_keys, splits):
@@ -209,25 +236,51 @@ def make_splits(
     total_test = sum(1 for s in splits if s == "test")
     total_all = len(splits)
 
+    # Exclusions breakdown by reason category
+    reasons_counter = Counter()
+    for exc in exclusions:
+        main_reason = exc["reason"].split(" (")[0]
+        reasons_counter[main_reason] += 1
+
     lines = [
         "# Dataset Split Summary",
         "",
-        f"- Total retained images: {total_all}",
-        f"- Total exclusions: {len(exclusions)} (see `{exclusions_csv}`)",
+        f"- Total input images: {total_input_images}",
+        f"- Total retained images: {total_all} ({total_all / max(total_input_images, 1):.1%})",
+        f"- Total exclusions: {total_exclusions} ({exclusion_frac:.2%})",
         f"- Train images: {total_train} ({total_train / total_all:.1%})",
         f"- Val images: {total_val} ({total_val / total_all:.1%})",
         f"- Test images: {total_test} ({total_test / total_all:.1%})",
         "",
-        "## Group Leakage Verification",
-        f"- Unique groups in train: {len(train_groups)}",
-        f"- Unique groups in val: {len(val_groups)}",
-        f"- Unique groups in test: {len(test_groups)}",
-        "- **Shared groups between splits:** **0** (verified)",
+        "## Perceptual Hash Group Statistics",
+        f"- Total groups: {total_groups}",
+        f"- Largest group size: {largest_group_size} images (guard threshold: <= {max_group})",
+        f"- Groups with > 10 images: {groups_gt_10}",
         "",
-        "## Class Distribution per Split",
-        "| Class Key | Train | Val | Test | Total |",
-        "|---|---|---|---|---|",
+        "## Exclusions Breakdown",
+        f"See detailed records in `{exclusions_csv}`.",
+        "| Exclusion Reason | Count |",
+        "|---|---|",
     ]
+    for rsn, cnt in sorted(reasons_counter.items()):
+        lines.append(f"| {rsn} | {cnt} |")
+    if not reasons_counter:
+        lines.append("| (none) | 0 |")
+
+    lines.extend(
+        [
+            "",
+            "## Group Leakage Verification",
+            f"- Unique groups in train: {len(train_groups)}",
+            f"- Unique groups in val: {len(val_groups)}",
+            f"- Unique groups in test: {len(test_groups)}",
+            "- **Shared groups between splits:** **0** (verified)",
+            "",
+            "## Class Distribution per Split",
+            "| Class Key | Train | Val | Test | Total |",
+            "|---|---|---|---|---|",
+        ]
+    )
 
     for ck in CLASS_KEYS:
         tr = split_counts[ck]["train"]
@@ -249,6 +302,8 @@ def main():
     parser.add_argument("--dataset", type=str, default="rice_leaf_disease_bd_v3", help="Dataset key in class_map")
     parser.add_argument("--out-dir", type=Path, default=Path("data"), help="Directory to save splits.csv and split_summary.md")
     parser.add_argument("--exclusions", type=Path, default=None, help="Path to write exclusions.csv")
+    parser.add_argument("--max-group", type=int, default=50, help="Maximum allowed images in a single group (default: 50)")
+    parser.add_argument("--max-exclusion-frac", type=float, default=0.05, help="Maximum fraction of excluded images (default: 0.05)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     args = parser.parse_args()
 
@@ -259,6 +314,8 @@ def main():
         dataset_name=args.dataset,
         out_dir=args.out_dir,
         exclusions_csv=exclusions_path,
+        max_group=args.max_group,
+        max_exclusion_frac=args.max_exclusion_frac,
         seed=args.seed,
     )
 
