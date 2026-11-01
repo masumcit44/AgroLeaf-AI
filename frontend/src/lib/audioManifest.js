@@ -36,3 +36,19 @@ export async function getAudioManifest() {
 
   return manifestFetchPromise;
 }
+
+/**
+ * Which clip to play for a class, or null when none was generated.
+ * Pure function. Only manifest entries count: a guessed URL for a missing
+ * file is answered with index.html by the SPA fallback, which made the play
+ * button silently fail (QA E3).
+ *
+ * @param {Record<string, { file?: string, voice?: string }>|null|undefined} manifest
+ * @param {string} classKey
+ * @returns {{ url: string, isHuman: boolean } | null}
+ */
+export function resolveAudioEntry(manifest, classKey) {
+  const entry = manifest && typeof manifest === 'object' ? manifest[classKey] : null;
+  if (!entry || typeof entry.file !== 'string' || entry.file.length === 0) return null;
+  return { url: entry.file, isHuman: entry.voice === 'human' };
+}

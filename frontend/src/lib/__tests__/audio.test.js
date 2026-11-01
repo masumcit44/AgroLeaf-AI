@@ -19,3 +19,18 @@ describe('Audio Manifest Loader', () => {
     }
   });
 });
+
+describe('resolveAudioEntry (QA E3)', () => {
+  it('returns null when the manifest is missing or has no entry, so no dead play button is shown', async () => {
+    const { resolveAudioEntry } = await import('../audioManifest.js');
+    expect(resolveAudioEntry({}, 'blast')).toBeNull();
+    expect(resolveAudioEntry(null, 'blast')).toBeNull();
+    expect(resolveAudioEntry({ blast: { voice: 'ai' } }, 'blast')).toBeNull();
+  });
+
+  it('returns the generated clip and its voice type', async () => {
+    const { resolveAudioEntry } = await import('../audioManifest.js');
+    expect(resolveAudioEntry({ blast: { file: '/audio/blast-v1.mp3', voice: 'ai' } }, 'blast')).toEqual({ url: '/audio/blast-v1.mp3', isHuman: false });
+    expect(resolveAudioEntry({ healthy: { file: '/audio/healthy-v1.mp3', voice: 'human' } }, 'healthy')).toEqual({ url: '/audio/healthy-v1.mp3', isHuman: true });
+  });
+});

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useT from '../i18n/useT.js';
-import { getAudioManifest } from '../lib/audioManifest.js';
+import { getAudioManifest, resolveAudioEntry } from '../lib/audioManifest.js';
 import { setActiveAudio, stopActiveAudio } from '../lib/audioManager.js';
 
 export default function AudioExplain({
@@ -19,25 +19,21 @@ export default function AudioExplain({
   const audioRef = useRef(null);
   const warnedRef = useRef(false);
 
-  // Discover audio file from manifest or fallback
+  // Show the player only for clips listed in /audio/manifest.json (see
+  // resolveAudioEntry). Guessing /audio/<key>-v1.mp3 made a dead button (QA E3).
   useEffect(() => {
     let isMounted = true;
 
     getAudioManifest()
       .then((manifest) => {
         if (!isMounted) return;
-        const entry = manifest[classKey];
-        if (entry && entry.file) {
-          setAudioUrl(entry.file);
-          setIsHumanVoice(entry.voice === 'human');
-        } else {
-          // If no manifest entry, check for default convention /audio/<key>-v1.mp3
-          setAudioUrl(`/audio/${classKey}-v1.mp3`);
-        }
+        const entry = resolveAudioEntry(manifest, classKey);
+        setAudioUrl(entry ? entry.url : null);
+        setIsHumanVoice(Boolean(entry?.isHuman));
       })
       .catch(() => {
         if (!isMounted) return;
-        setAudioUrl(`/audio/${classKey}-v1.mp3`);
+        setAudioUrl(null);
       });
 
     return () => {
@@ -81,8 +77,8 @@ export default function AudioExplain({
     if (!audioRef.current) return;
     audioRef.current.currentTime = 0;
     stopActiveAudio();
-    activeAudioElement = audioRef.current;
-    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    setActiveAudio(audioRef.current);
+    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setHasError(true));
   };
 
   const handleTimeUpdate = () => {

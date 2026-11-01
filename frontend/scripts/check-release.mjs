@@ -225,18 +225,20 @@ if (!fs.existsSync(audioManifestPath)) {
 } else {
   try {
     const am = JSON.parse(fs.readFileSync(audioManifestPath, 'utf-8'));
-    const items = Array.isArray(am) ? am : am.files || [];
+    // ml/tools/generate_tts.py writes { <class_key>: { file: "/audio/x.mp3", ... } }
+    const items = Array.isArray(am) ? am : am.files || Object.values(am);
     const missingAudio = [];
     for (const item of items) {
-      const fn = typeof item === 'string' ? item : item.filename;
-      if (fn && !fs.existsSync(path.join(FRONTEND_ROOT, 'public/audio', fn))) {
-        missingAudio.push(fn);
+      const raw = typeof item === 'string' ? item : item.file || item.filename;
+      const fn = raw ? path.basename(raw) : null;
+      if (!fn || !fs.existsSync(path.join(FRONTEND_ROOT, 'public/audio', fn))) {
+        missingAudio.push(fn || '(no file field)');
       }
     }
     if (items.length < 7 || missingAudio.length > 0) {
       warn(
         '7. Voice Audio Manifest',
-        `Audio files incomplete (${items.length}/7 present, missing: ${missingAudio.join(', ')}). Pending Azure Speech key.`
+        `Audio files incomplete (${items.length - missingAudio.length}/7 present, missing: ${missingAudio.join(', ') || 'manifest lists fewer than 7'}). Pending Azure Speech key.`
       );
     } else {
       pass('7. Voice Audio Manifest', 'All 7 audio files present on disk');
