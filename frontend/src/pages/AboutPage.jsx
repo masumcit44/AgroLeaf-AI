@@ -7,49 +7,109 @@ export default function AboutPage() {
   const keyPoints = t('aboutKeyPoints') || [];
 
   return (
-    <PageContainer>
-      <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs space-y-6">
+    <PageContainer className="py-4">
+      <div className="bg-white border border-gray-200/90 rounded-3xl p-5 sm:p-6 shadow-xs space-y-6 text-left">
+        {/* Title & Introduction */}
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-leaf-700 mb-3 pb-2 border-b border-gray-100">
+          <h1 className="text-2xl font-extrabold text-leaf-700 mb-2 pb-2 border-b border-gray-100">
             {t('aboutTitle')}
           </h1>
-          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
             {t('aboutDescription')}
+          </p>
+        </div>
+
+        {/* What the app is and isn't */}
+        <div className="space-y-3">
+          <h2 className="text-base font-bold text-gray-900">
+            ⚖️ {t('aboutWhatIsTitle')}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+            <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-emerald-950">
+              <span className="font-bold block mb-1">✓ যা এই অ্যাপটি:</span>
+              <span className="leading-relaxed">{t('aboutWhatItIs')}</span>
+            </div>
+            <div className="p-3.5 bg-red-50/70 border border-red-200 rounded-2xl text-red-950">
+              <span className="font-bold block mb-1">✕ যা এটি নয়:</span>
+              <span className="leading-relaxed">{t('aboutWhatItIsNot')}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Privacy Note */}
+        <div className="p-4 bg-leaf-50/60 border border-leaf-700/20 rounded-2xl space-y-1">
+          <h2 className="text-sm font-bold text-leaf-800">
+            🔒 {t('aboutPrivacyTitle')}
+          </h2>
+          <p className="text-xs text-gray-700 leading-relaxed">
+            {t('aboutPrivacyDesc')}
           </p>
         </div>
 
         {/* Key Principles */}
         <div>
-          <h2 className="text-base font-bold text-gray-800 mb-2.5">
-            {t('aboutKeyPointsTitle')}
+          <h2 className="text-base font-bold text-gray-900 mb-2">
+            🌱 {t('aboutKeyPointsTitle')}
           </h2>
-          <ul className="text-sm text-gray-600 space-y-2 list-disc list-inside">
+          <ul className="text-xs sm:text-sm text-gray-700 space-y-2 list-disc list-inside leading-relaxed">
             {keyPoints.map((point, idx) => (
-              <li key={idx} className="leading-relaxed">
-                {point}
-              </li>
+              <li key={idx}>{point}</li>
             ))}
           </ul>
         </div>
 
-        {/* Competition */}
-        <div className="p-3.5 bg-leaf-50 border border-leaf-700/20 rounded-lg">
-          <h2 className="text-xs font-bold text-leaf-700 uppercase tracking-wider mb-1">
-            {t('aboutCompetitionTitle')}
+        {/* Audio AI Voice Disclaimer */}
+        <div className="p-3.5 bg-gray-50 border border-gray-200 rounded-2xl space-y-1">
+          <h2 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+            🔊 {t('aboutVoiceTitle')}
           </h2>
-          <p className="text-sm font-semibold text-ink">
-            {t('aboutCompetition')}
+          <p className="text-xs text-gray-600 leading-relaxed">
+            {t('aboutVoiceDesc')}
           </p>
         </div>
 
-        {/* Dataset & Licences */}
-        <div>
-          <h2 className="text-base font-bold text-gray-800 mb-2">
-            {t('aboutDatasetTitle')}
+        {/* Dataset Credits & Citations */}
+        <div className="border-t border-gray-100 pt-4 space-y-2">
+          <h2 className="text-sm font-bold text-gray-900">
+            📚 {t('aboutDatasetTitle')}
           </h2>
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+          <p className="text-xs text-gray-600 leading-relaxed">
             {t('aboutDatasetCredit')}
           </p>
+          <div className="text-[11px] text-gray-500 pt-1">
+            <strong>অফিসিয়াল তথ্য উৎস:</strong>{' '}
+            <a
+              href="https://www.bamis.gov.bd/diseases/1/all/76"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-leaf-700 font-semibold underline hover:text-leaf-800"
+            >
+              বাংলাদেশ কৃষি আবহাওয়া তথ্য পদ্ধতি (BAMIS, DAE) ↗
+            </a>
+          </div>
+        </div>
+
+        {/* Competition Attribution */}
+        <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center">
+          <span className="text-xs font-bold text-amber-900 block">
+            {t('builtForAignite')}
+          </span>
+        </div>
+
+        {/* Open Source & Contact */}
+        <div className="text-center pt-2">
+          <p className="text-xs text-gray-500 mb-1">
+            {t('aboutContactDesc')}
+          </p>
+          <a
+            href="https://github.com/masumcit44/AgroLeaf-AI"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-leaf-700 hover:text-leaf-800 underline"
+          >
+            <span>GitHub: masumcit44/AgroLeaf-AI</span>
+            <span>↗</span>
+          </a>
         </div>
       </div>
     </PageContainer>

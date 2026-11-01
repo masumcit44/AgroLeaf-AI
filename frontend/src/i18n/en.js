@@ -23,6 +23,19 @@ export default {
   analysingLeaf: "Checking the leaf photo…",
   modelLoadingProgress: "AI model getting ready…",
   demoModelBanner: "Demo model — not trained yet",
+  // M08 Polish & Onboarding
+  onboardingTitle: "Easy 3-step screening",
+  step1Photo: "1. Take one leaf photo",
+  step2Wait: "2. Wait few seconds",
+  step3Listen: "3. Listen to advice",
+  dismiss: "Dismiss",
+  trySamplePhoto: "Try with a sample photo",
+  trySample: "Sample photo",
+  sampleCredit: "Sample: RiceLeafDiseaseBD (CC BY 4.0)",
+  shareResult: "Share / Copy Advice",
+  shareCopied: "Copied to clipboard",
+  errOfflineFirstTime: "Internet connection required for first-time AI model setup",
+
   // M06 Bangla Audio
   audioListen: "▶ Listen",
   audioPause: "⏸ Pause",
@@ -91,6 +104,15 @@ export default {
 
   aboutTitle: "About AgroLeaf AI",
   aboutDescription: "AgroLeaf AI is a mobile-first web app designed for Bangladeshi rice farmers. It uses on-device WebAssembly machine learning (MobileNetV3) to screen for foliar rice diseases entirely in the browser, functioning reliably even with slow or intermittent connectivity.",
+  aboutWhatIsTitle: "What this app is and isn't",
+  aboutWhatItIs: "A mobile-first on-device AI screening tool that flags likely foliar conditions and cautiously abstains when uncertain.",
+  aboutWhatItIsNot: "Not a replacement for agronomist field diagnosis or lab pathology. It never invents chemical recipes.",
+  aboutPrivacyTitle: "On-Device Privacy",
+  aboutPrivacyDesc: "Photos never leave your smartphone and are never uploaded to any cloud server. Processing is 100% on-device. No user account or tracking cookies.",
+  aboutVoiceTitle: "Audio Voice Note",
+  aboutVoiceDesc: "Voice explanations use AI neural speech synthesis (Azure Neural Speech). It is not a live agronomist.",
+  aboutContactTitle: "Open Source & Contact",
+  aboutContactDesc: "Source code and technical documentation are openly available on GitHub:",
   aboutKeyPointsTitle: "Key Principles",
   aboutKeyPoints: [
     "On-device Privacy: Photos never leave the farmer's smartphone.",
