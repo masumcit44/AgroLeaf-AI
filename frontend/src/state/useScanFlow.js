@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { validateImageFile } from '../lib/validateImageFile.js';
 import { decodeImage } from '../lib/decodeImage.js';
 import { checkImageQuality } from '../lib/imageQuality.js';
+import { predictLeaf } from '../ml/predict.js';
+import { resetModel } from '../ml/loadModel.js';
 
 export const SCAN_STEPS = {
   IDLE: 'idle',
@@ -17,10 +19,16 @@ export function useScanFlow() {
   const [errorKey, setErrorKey] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // M04 Inference states
+  const [modelProgress, setModelProgress] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [inferenceError, setInferenceError] = useState(null);
+
   const selectFile = useCallback(async (file) => {
     if (!file) return;
 
     setErrorKey(null);
+    setInferenceError(null);
     setIsProcessing(true);
 
     // 1. Validation
@@ -52,10 +60,46 @@ export function useScanFlow() {
     }
   }, []);
 
+  const runInference = useCallback(async () => {
+    if (!canvas) return;
+
+    setInferenceError(null);
+    setModelProgress(0);
+    setStep(SCAN_STEPS.ANALYSING);
+
+    try {
+      // Check WASM support guard
+      if (typeof WebAssembly === 'undefined' || !WebAssembly.instantiate) {
+        throw new Error('WASM_UNSUPPORTED');
+      }
+
+      const result = await predictLeaf(canvas, (pct) => {
+        setModelProgress(pct);
+      });
+
+      setAnalysisResult(result);
+      setStep(SCAN_STEPS.RESULT);
+    } catch (err) {
+      console.error('Inference error:', err);
+      resetModel();
+      if (err.message === 'WASM_UNSUPPORTED') {
+        setInferenceError('errWasmUnsupported');
+      } else {
+        setInferenceError('errModelLoad');
+      }
+      setStep(SCAN_STEPS.PREVIEW);
+    } finally {
+      setModelProgress(null);
+    }
+  }, [canvas]);
+
   const reset = useCallback(() => {
     setCanvas(null);
     setQuality(null);
     setErrorKey(null);
+    setInferenceError(null);
+    setModelProgress(null);
+    setAnalysisResult(null);
     setIsProcessing(false);
     setStep(SCAN_STEPS.IDLE);
   }, []);
@@ -67,7 +111,11 @@ export function useScanFlow() {
     quality,
     errorKey,
     isProcessing,
+    modelProgress,
+    analysisResult,
+    inferenceError,
     selectFile,
+    runInference,
     reset,
   };
 }
