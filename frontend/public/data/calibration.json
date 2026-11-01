@@ -1,0 +1,7 @@
+{
+  "temperature": 1.0,
+  "threshold": 0.6,
+  "target_precision": 0.9,
+  "placeholder": true,
+  "warning": "Demo model \u2014 not trained yet"
+}
