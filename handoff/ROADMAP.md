@@ -154,7 +154,9 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Output:** sourced findings and at most 5 ranked experiments.
 
 #### V5 — Retraining for new-domain photos
-- **Owner:** Claude. **Status:** PROPOSED, needs the user's approval.
+- **Owner:** Claude. **Status:** IN_PROGRESS. Kaggle `agroleaf-train-v5`, launched ~02:42 BST; protocol fixed first (`model/experiments/run5_v5/PROTOCOL.md`, `d464f78`).
+- **Fresh independent test found** by a research subagent: DIU "Rice Leaf Disease and Pest Dataset" (Mendeley 10.17632/vwv3nry3wr.1; Hugging Face `Project-AgML/rice_disease_classification_bangladesh`; CC BY 4.0). It has healthy, blast and tungro only; no brown spot, sheath blight or leaf smut.
+- **Other candidates noted** (not used): DIU g7tcwvshff (same lab, may overlap), `under167` BanglaRiceLeaf (licence unknown), IRDD West Bengal (availability UNVERIFIED).
 - **The blocker is evaluation, not training.** Every independent Bangladeshi set we have is already used:
   - raihan was the selection set;
   - Sylhet and Gujarat were read once as final tests.
@@ -162,7 +164,9 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
   A trustworthy v5 decision needs a **fresh, independent, labelled set of Bangladeshi field photos**. R1 must find one, or one must be collected. Without it, any v5 "improvement" cannot be verified, and the locked rule says it does not ship.
 
 #### G1 — Non-rice gate in front of v1
-- **Owner:** Claude. **Status:** PROPOSED, needs the user's approval.
+- **Owner:** Claude. **Status:** DONE `6d76992`, live 2 Nov 02:35 BST (approved by the user).
+- **Pre-registered gates passed:** real rice wrongly rejected 0.6% raihan / 0% Gazipur / 0% Savar (limit 2%); non-rice rejected 100% on every set (v1 alone 82–98%).
+- **Live check:** app screenshot, podcast poster and sticker → "not a rice leaf"; 29/29 rice photos unaffected; voice and privacy unchanged.
 - **What:** v4-B's `not_rice` output used only as a gate. v4-B rejects 100% of non-rice test sets. It would fix the screenshot and poster failures.
 - **Evaluation:** false rejection of real rice measured on raihan and Gazipur only.
 
