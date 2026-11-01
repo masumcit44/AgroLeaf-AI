@@ -11,7 +11,11 @@
     "postbuild": "node scripts/check-dist-sizes.mjs",
     "test": "vitest run",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "smoke": "node scripts/smoke.mjs",
+    "check:release": "node scripts/check-release.mjs",
+    "audit:lighthouse": "node scripts/run-lighthouse.mjs",
+    "audit:perf": "node scripts/run-performance-audit.mjs"
   },
   "dependencies": {
     "onnxruntime-web": "1.31.1",
@@ -24,6 +28,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.89.0",
+    "puppeteer-core": "^25.16.0",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"

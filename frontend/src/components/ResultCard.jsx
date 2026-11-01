@@ -31,14 +31,14 @@ export default function ResultCard({
 
   return (
     <div
-      className={`w-full max-w-sm rounded-3xl p-5 border text-left shadow-xs transition-colors ${
+      className={`w-full max-w-sm sm:max-w-md mx-auto rounded-3xl p-4 sm:p-5 border text-left shadow-xs transition-colors min-w-0 break-words ${
         isHealthy
           ? 'bg-gradient-to-b from-emerald-50/70 to-white border-emerald-300/80 text-emerald-950'
           : 'bg-white border-gray-200/90 text-gray-900'
       } ${className}`}
     >
       {/* Top Header: Status Chip + Confidence Badge */}
-      <div className="flex items-center justify-between gap-2 mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 min-w-0">
         <span
           className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${
             isHealthy
@@ -61,12 +61,12 @@ export default function ResultCard({
       </div>
 
       {/* Big Title & Subtitle */}
-      <div className="mb-4">
-        <h2 className="text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight text-gray-900">
+      <div className="mb-4 min-w-0">
+        <h2 className="text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight text-gray-900 break-words">
           {title}
         </h2>
         {subtitle && (
-          <p className="text-xs sm:text-sm text-gray-500 italic mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 italic mt-0.5 break-words">
             {subtitle}
           </p>
         )}

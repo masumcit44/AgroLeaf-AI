@@ -15,8 +15,10 @@ export default function HomePage() {
   const scanFlow = useScanFlow();
   const [diseaseKnowledge, setDiseaseKnowledge] = useState(null);
   const [devForcedResult, setDevForcedResult] = useState(() => {
-    if (typeof window !== 'undefined' && import.meta.env.DEV) {
-      const params = new URLSearchParams(window.location.search);
+    if (typeof window !== 'undefined') {
+      const isLocalOrDev = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalOrDev) {
+        const params = new URLSearchParams(window.location.search);
       const forceKey = params.get('force');
       if (forceKey) {
         const isNotSure = forceKey === 'not_sure';
@@ -44,8 +46,9 @@ export default function HomePage() {
         };
       }
     }
-    return null;
-  });
+  }
+  return null;
+});
 
   // Pre-fetch disease knowledge whenever language changes
   useEffect(() => {

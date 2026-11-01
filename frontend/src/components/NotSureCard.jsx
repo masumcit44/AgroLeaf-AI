@@ -10,31 +10,40 @@ export default function NotSureCard({
   const { lang, t } = useT();
   const notSureData = diseaseInfo?.not_sure || {};
 
-  const title = lang === 'en'
-    ? (notSureData.name_en || t('notSureTitle'))
-    : (notSureData.name_bn || t('notSureTitle'));
+  const nameBn = notSureData.name_bn || t('notSureTitle');
+  const nameEn = notSureData.name_en || 'Not sure';
 
-  const subtitle = lang === 'en'
+  const title = lang === 'en' ? nameEn : nameBn;
+  const secondaryTitle = lang === 'en' ? nameBn : nameEn;
+
+  const meaning = lang === 'en'
     ? (notSureData.meaning_en || 'The model is not confident enough. Saying "not sure" is safer than a wrong guess.')
     : (notSureData.meaning_bn || 'ছবিটি দেখে আমি নিশ্চিত হতে পারছি না। ভুল পরামর্শ দেওয়ার চেয়ে না বলাই ভালো।');
 
   return (
     <div
-      className={`w-full max-w-sm rounded-3xl p-5 border border-amber-300/80 bg-gradient-to-b from-amber-50/60 to-white text-left shadow-xs ${className}`}
+      className={`w-full max-w-sm sm:max-w-md mx-auto rounded-3xl p-4 sm:p-5 border border-amber-300/80 bg-gradient-to-b from-amber-50/60 to-white text-left shadow-xs min-w-0 break-words ${className}`}
     >
       {/* Top Header Status Chip */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 min-w-0">
         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-amber-100 text-amber-900 border border-amber-300">
           🤔 {t('notSureTitle')}
         </span>
       </div>
 
-      {/* Main Title & Subtitle */}
-      <h2 className="text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight text-gray-900 mb-2">
-        {title}
-      </h2>
-      <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
-        {subtitle}
+      {/* Main Title & Secondary Title */}
+      <div className="mb-2 min-w-0">
+        <h2 className="text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight text-gray-900 break-words">
+          {title}
+        </h2>
+        {secondaryTitle && (
+          <p className="text-xs sm:text-sm text-gray-500 italic mt-0.5 break-words">
+            {secondaryTitle}
+          </p>
+        )}
+      </div>
+      <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4 break-words">
+        {meaning}
       </p>
 
       {/* Bangla Audio Explanation */}

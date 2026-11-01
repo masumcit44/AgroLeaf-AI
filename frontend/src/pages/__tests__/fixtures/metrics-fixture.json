@@ -1,0 +1,52 @@
+{
+  "FIXTURE_NOT_REAL": true,
+  "model": {
+    "arch": "mnv3_large",
+    "onnx_mb": 11.2,
+    "trained_on": "RiceLeafDiseaseBD v3, Mendeley Data, DOI: 10.17632/86s4jzj2m4.3",
+    "date": "2026-11-01"
+  },
+  "calibration": {
+    "temperature": 1.25,
+    "threshold": 0.65,
+    "target_precision": 0.85
+  },
+  "internal_test": {
+    "n": 720,
+    "accuracy": 0.888,
+    "macro_f1": 0.777,
+    "coverage": 0.666,
+    "selective_accuracy": 0.999,
+    "ece_after": 0.111,
+    "per_class": {
+      "healthy": { "precision": 0.911, "recall": 0.922, "f1": 0.916, "support": 120 },
+      "blast": { "precision": 0.833, "recall": 0.844, "f1": 0.838, "support": 120 },
+      "brown_spot": { "precision": 0.755, "recall": 0.766, "f1": 0.760, "support": 120 },
+      "leaf_smut": { "precision": null, "recall": null, "f1": null, "support": 120 },
+      "tungro": { "precision": 0.611, "recall": 0.622, "f1": 0.616, "support": 120 },
+      "sheath_blight": { "precision": 0.511, "recall": 0.522, "f1": 0.516, "support": 120 }
+    }
+  },
+  "external": [
+    {
+      "name": "District Field Set Alpha",
+      "doi": "10.5281/zenodo.placeholder",
+      "classes_tested": ["blast", "brown_spot", "healthy"],
+      "n": 180,
+      "accuracy_mapped": 0.711,
+      "macro_f1_mapped": 0.722,
+      "coverage": 0.533,
+      "selective_accuracy": 0.844,
+      "unseen_rejection_rate": 0.955,
+      "per_class": {
+        "blast": { "precision": 0.711, "recall": 0.722, "f1": 0.716, "support": 60 },
+        "brown_spot": { "precision": 0.611, "recall": 0.622, "f1": 0.616, "support": 60 },
+        "healthy": { "precision": 0.811, "recall": 0.822, "f1": 0.816, "support": 60 }
+      }
+    }
+  ],
+  "limitations": [
+    "Tested primarily on smartphone cameras under natural daylight.",
+    "Early-stage lesion identification may have lower confidence than mature symptoms."
+  ]
+}

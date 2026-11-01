@@ -32,18 +32,20 @@ export function softmax(logits, temperature = 1.0) {
 }
 
 /**
- * Apply calibrated threshold abstention rule.
+ * Apply calibrated threshold abstention rule with weak-class suppression.
  * Pure function.
  *
  * @param {Record<string, number>} probs - map of class_key -> probability
- * @param {number} threshold - calibrated decision threshold
+ * @param {number} [threshold=0.60] - calibrated decision threshold
+ * @param {string[]} [suppress=[]] - optional array of weak class keys to suppress to not_sure
  * @returns {{
  *   status: 'confident'|'not_sure',
  *   top: { key: string, prob: number } | null,
- *   top2: Array<{ key: string, prob: number }>
+ *   top2: Array<{ key: string, prob: number }>,
+ *   suppressed?: boolean
  * }}
  */
-export function decide(probs, threshold = 0.60) {
+export function decide(probs, threshold = 0.60, suppress = []) {
   const entries = Object.entries(probs || {});
   if (entries.length === 0) {
     return {
@@ -76,6 +78,19 @@ export function decide(probs, threshold = 0.60) {
       status: 'not_sure',
       top: top1,
       top2,
+    };
+  }
+
+  // Weak-class suppression (M07 step 7 / X3):
+  // If top-1 is in the suppression list, force abstention to 'not_sure',
+  // while preserving the class in top2 so it remains visible as "possible".
+  const isSuppressed = Array.isArray(suppress) && suppress.includes(top1.key);
+  if (isSuppressed) {
+    return {
+      status: 'not_sure',
+      top: top1,
+      top2,
+      suppressed: true,
     };
   }
 

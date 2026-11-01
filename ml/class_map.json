@@ -2,9 +2,9 @@
   "rice_leaf_disease_bd_v3": {
     "Healthy": "healthy",
     "Blast": "blast",
-    "Brown Spot": "brown_spot",
-    "Leaf Smut": "leaf_smut",
+    "Brown spot": "brown_spot",
+    "Leaf smut": "leaf_smut",
     "Rice Tungro": "tungro",
-    "Sheath Blight": "sheath_blight"
+    "Sheath blight": "sheath_blight"
   }
 }
