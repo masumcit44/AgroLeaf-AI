@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/copy-ort.mjs",
+    "predev": "node scripts/copy-ort.mjs && node scripts/sync-content.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/copy-ort.mjs",
+    "prebuild": "node scripts/copy-ort.mjs && node scripts/sync-content.mjs",
     "build": "vite build",
     "postbuild": "node scripts/check-dist-sizes.mjs",
     "test": "vitest run",

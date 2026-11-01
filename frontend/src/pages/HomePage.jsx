@@ -1,15 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useT from '../i18n/useT.js';
 import PageContainer from '../components/PageContainer.jsx';
 import PhotoPicker from '../components/PhotoPicker.jsx';
 import PreviewScreen from '../components/PreviewScreen.jsx';
-import BigButton from '../components/BigButton.jsx';
+import ResultScreen from '../components/ResultScreen.jsx';
 import { useScanFlow, SCAN_STEPS } from '../state/useScanFlow.js';
 import { loadModel } from '../ml/loadModel.js';
+import { getDiseaseKnowledge } from '../lib/diseaseKnowledge.js';
 
 export default function HomePage() {
-  const { t } = useT();
+  const { lang, t } = useT();
   const scanFlow = useScanFlow();
+  const [diseaseKnowledge, setDiseaseKnowledge] = useState(null);
+  const [devForcedResult, setDevForcedResult] = useState(() => {
+    if (typeof window !== 'undefined' && import.meta.env.DEV) {
+      const params = new URLSearchParams(window.location.search);
+      const forceKey = params.get('force');
+      if (forceKey) {
+        const isNotSure = forceKey === 'not_sure';
+        return {
+          probs: { [forceKey]: 0.95 },
+          ms: 142,
+          calibration: { placeholder: true },
+          decision: isNotSure
+            ? {
+                status: 'not_sure',
+                top: { key: 'blast', prob: 0.48 },
+                top2: [
+                  { key: 'blast', prob: 0.48 },
+                  { key: 'brown_spot', prob: 0.36 },
+                ],
+              }
+            : {
+                status: 'confident',
+                top: { key: forceKey, prob: 0.92 },
+                top2: [
+                  { key: forceKey, prob: 0.92 },
+                  { key: 'brown_spot', prob: 0.05 },
+                ],
+              },
+        };
+      }
+    }
+    return null;
+  });
+
+  // Pre-fetch disease knowledge whenever language changes
+  useEffect(() => {
+    let active = true;
+    getDiseaseKnowledge(lang)
+      .then((data) => {
+        if (active) setDiseaseKnowledge(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load disease knowledge:', err);
+      });
+    return () => {
+      active = false;
+    };
+  }, [lang]);
 
   // Pre-load model after first paint in background idle callback
   useEffect(() => {
@@ -37,6 +86,23 @@ export default function HomePage() {
     };
   }, []);
 
+  // Dev-only forced result view
+  if (import.meta.env.DEV && devForcedResult && diseaseKnowledge) {
+    return (
+      <ResultScreen
+        canvas={scanFlow.canvas}
+        analysisResult={devForcedResult}
+        diseaseKnowledge={diseaseKnowledge}
+        onRetake={() => {
+          setDevForcedResult(null);
+          // clear query string without reload
+          window.history.replaceState({}, '', window.location.pathname);
+          scanFlow.reset();
+        }}
+      />
+    );
+  }
+
   // 1. Preview / Analysing state
   if (
     (scanFlow.step === SCAN_STEPS.PREVIEW || scanFlow.step === SCAN_STEPS.ANALYSING) &&
@@ -56,85 +122,15 @@ export default function HomePage() {
     );
   }
 
-  // 2. Result state (M04 interim debug view, upgraded to cards in M05)
+  // 2. Result state
   if (scanFlow.step === SCAN_STEPS.RESULT && scanFlow.analysisResult) {
-    const { probs, ms, calibration, decision } = scanFlow.analysisResult;
-    const isPlaceholder = calibration?.placeholder === true;
-
     return (
-      <PageContainer className="py-4">
-        {/* Placeholder Warning Banner */}
-        {isPlaceholder && (
-          <div className="w-full bg-amber-500/15 border-2 border-amber-500/40 rounded-xl p-3 mb-4 text-center">
-            <span className="text-amber-900 font-bold text-sm block">
-              ⚠️ {t('demoModelBanner')}
-            </span>
-          </div>
-        )}
-
-        <h1 className="text-xl font-bold text-gray-800 mb-2 text-center">
-          {t('resultTitle')}
-        </h1>
-
-        {/* Decision Badge */}
-        <div className={`w-full p-3 rounded-xl mb-4 text-center font-bold text-sm ${
-          decision.status === 'confident'
-            ? 'bg-leaf-100 text-leaf-800 border border-leaf-700/30'
-            : 'bg-amber-100 text-amber-800 border border-amber-300'
-        }`}>
-          <span>
-            {decision.status === 'confident'
-              ? `${t('decisionConfident')}: ${decision.top?.key}`
-              : t('decisionNotSure')}
-          </span>
-        </div>
-
-        {/* Interim Debug Probability Breakdown */}
-        <div className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
-          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            Class Probabilities
-          </h2>
-          <div className="space-y-2">
-            {Object.entries(probs)
-              .sort((a, b) => b[1] - a[1])
-              .map(([clsKey, prob]) => {
-                const pct = (prob * 100).toFixed(1);
-                return (
-                  <div key={clsKey} className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-gray-700 capitalize">
-                      {clsKey.replace('_', ' ')}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div
-                          className="bg-leaf-700 h-2 rounded-full"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="w-12 text-right font-mono font-semibold text-gray-900">
-                        {pct}%
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-          <div className="mt-3 pt-2 border-t border-gray-200 text-[11px] text-gray-500 text-right">
-            {t('inferenceTime').replace('{ms}', ms)}
-          </div>
-        </div>
-
-        {/* Reset / Test Another Button */}
-        <div className="w-full mt-auto pt-2">
-          <BigButton
-            variant="primary"
-            onClick={scanFlow.reset}
-            ariaLabel={t('btnTestAnother')}
-          >
-            {t('btnTestAnother')}
-          </BigButton>
-        </div>
-      </PageContainer>
+      <ResultScreen
+        canvas={scanFlow.canvas}
+        analysisResult={scanFlow.analysisResult}
+        diseaseKnowledge={diseaseKnowledge}
+        onRetake={scanFlow.reset}
+      />
     );
   }
 
