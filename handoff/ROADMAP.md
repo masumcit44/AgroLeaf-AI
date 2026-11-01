@@ -1,47 +1,187 @@
-# AgroLeaf AI — remaining-work roadmap (single source of truth)
+# AgroLeaf AI — master roadmap (the one authoritative plan and status)
 
-**Owner:** Claude (lead). Only the lead edits this file; agents report in their own files.
-**Deadline:** Devpost, Wed 5 Nov 2026, 11:59 PM BST. Internal target: 6 PM that day.
+**Owner:** Claude (lead). Only the lead edits this file. Workers report on their own branch and in their own progress files. Older files in `handoff/` (`PROGRESS.md`, `01_MODULE_PLAN.md`, `X_BACKLOG.md`, `Y_BACKLOG.md`, `M00`–`M09`) are **historical**; where they differ, this file wins.
+
+**Deadline:** Devpost, Wed 5 Nov 2026, 11:59 PM BST. Internal target: 6 PM that day. **Last verified:** 2 Nov 2026, 00:00 BST.
+
+## 0. Product goal (priority order)
+1. **Core:** a farmer uploads a rice-leaf photo, and the app answers one of: a supported disease, Healthy, "this is not a rice leaf", or "not sure", with each answer justified by measured evidence.
+2. Safe advice: no doses; refer to 16123 or the Upazila agriculture officer; Bangla first.
+3. Privacy (the photo never leaves the phone), it works on low-end phones, and it's free.
+4. Everything else (voice, polish, extra pages).
+
+## 1. Diagnosis: what was wrong with the plan
+- **Task list, not product increments.** Work was tracked as tasks, not as small user-visible improvements each proven end to end.
+- **The model work fixed the wrong thing first.** It optimised in-distribution numbers before having an outside-district validation set. v3 scored 0.877 internally but stayed near v1 on Sylhet.
+- **No minimum-coverage rule** until 1 Nov. A model that refuses almost everything could look "accurate".
+- **No explicit backend/database decision** (made in §3 below).
+- **Workers' reports were taken too literally.** Antigravity's dataset "verification" turned out to be fabricated; it has since retracted it (`240b176`). From now on nothing is accepted without checking the files or test output.
+- **Old status files** were never retired, so several "plans" disagreed.
+
+## 2. Disease detection: evidence and recommendations
+Each point is labelled: **[R]** research finding, **[E]** our measured evidence, **[A]** assumption.
+
+**What we know**
+- **[R]** Cross-dataset results on Bangladeshi rice datasets fall sharply: macro-F1 0.72 within a dataset vs 0.44 across datasets. Strong augmentation was the only significant gain, about +0.07 F1; a frozen DINOv2 probe and pooled training did not close the gap (arXiv 2609.31709).
+- **[R]** Open-set rejection of unknown inputs works with a trained "outlier" class and fails with softmax confidence alone (Jiang et al. 2022, Frontiers fpls.2022.989086; OpenOOD v1.5, arXiv 2306.09301).
+- **[E]** Measured on our data (`model/EXPERIMENT_LOG.md`):
+  - **Non-rice rejection: solved.** The trained `not_rice` class rejects 100% of held-out non-rice test sets and 103/105 local graphics, including the poster that fooled v1. Energy-based rejection rejected only 1–20%.
+  - **Generalization: not solved.** On raihan (Bangladeshi field photos from another district), v4 variants reach 30–53% raw accuracy.
+  - **Adding India/Vietnam data hurt.** Bangladesh-only training (v4-B) generalizes best.
+  - **ConvNeXt-Tiny (106 MiB)** was only slightly better on Sylhet and cannot be served in the browser.
+  - **Leaf smut:** precision 0.67 internally, 81% right even at ≥ 90% confidence, and no outside data. It stays "not sure".
+  - **Preprocessing** in the browser matches PyTorch exactly below the 1,024 px cap (decode-parity test 25/25).
+
+**Recommendations**
+- **[Rec] The biggest lever is more Bangladeshi field photos, not a bigger model.** Collect consented field photos, label them with an agronomist, split by scene so burst shots can't leak, and retrain on Bangladeshi data with strong augmentation. This is post-competition work (§5, P3).
+- **[Rec] Keep the 8-class design** (6 + `other_rice` + `not_rice`) and the app's abstention rules, evaluate with the **app's real rule**, and require at least **30% coverage** before comparing models.
+- **[Rec] Not before the deadline:** no new training runs, ensembles or larger backbones. The evidence does not support them, and retraining risks the release.
+- **[Rec] A future experiment worth one run:** train on lesion and leaf crops from the 74,836 YOLO boxes in RiceLeafDiseaseBD [R: dataset page], tested on raihan.
+
+## 3. Architecture decision: backend and database
+**Decision for the competition release: no backend, no database.** The app stays static on Cloudflare Pages with in-browser ONNX inference.
+
+**Why** (free-tier facts checked on official pages, 1 Nov 2026):
+- **No card-free host can run our model server-side.** Cloudflare Workers allow 10 ms CPU and 128 MB memory per request. Hugging Face Docker/Gradio Spaces now need PRO. Render free sleeps after 15 minutes, with about a minute to wake.
+- **Firebase Storage needs Blaze (a card)** since 3 Feb 2026. **R2 likely needs a card** [U]. **Supabase** free projects pause after 7 days of inactivity.
+- **Nothing in the current product needs to be stored.** No accounts, no history, no feedback.
+- Static means $0 cost, no keys to leak, and photos never leave the phone. This was verified on the live site: 0 POST/PUT requests.
+
+**What would trigger adding one** (all must be true):
+1. A written consent flow and privacy notice.
+2. A concrete retraining plan that needs field photos or labels.
+3. Someone owns deletion requests, key rotation and quota monitoring.
+4. Optionally, a partner such as an extension office or NGO to review submissions.
+
+Separately, if measured phones are too slow for the 16 MB model, or a bigger model clearly wins on raihan, a paid inference host would be needed.
+
+**Future design (P1/P2), when triggered:**
+- **Feedback and labels, no photos:** Pages Functions/Worker + D1 (EU jurisdiction) + Turnstile. D1 is only reachable through the Worker; no secret ever reaches the browser.
+- **Consented photos:**
+  - Supabase Storage with row-level security: anonymous users may insert only, with no public read. Strip EXIF/GPS in the browser first.
+  - If a card becomes available, use R2 instead (10 GB free, free egress).
+- **Never:** service-role or admin keys in frontend code.
+
+## 4. How every increment works (spiral)
+Goal → research or decision → implement only that → test → review the evidence → integrate → update this file.
+
+Each increment has an owner, its own branch, acceptance criteria, required tests, the evidence needed for DONE, and a rollback. **Rollback for anything on `main`:** revert the commit; Cloudflare redeploys automatically in about a minute.
+
 **Statuses:** TODO · ASSIGNED · IN_PROGRESS · BLOCKED · IMPLEMENTED · TESTED · REVIEWED · INTEGRATED · DONE.
 
-**State verified 1 Nov 2026, 23:50 BST:**
-- `main` = `b9cb438` (model v1) is live at https://agroleaf-ai.pages.dev; Cloudflare auto-deploys on push to `main`.
-- Model work is on branch `feat/model-v3`.
-- The only Kaggle job running is `agroleaf-eval-unified` (CPU).
+## 5. Increments
 
-## Rules for every task
-- **Branches:** each agent works on its own branch, in its own folder; never push to `main`. The lead reviews the diff and the tests, then integrates.
-- **No file overlap:** two agents never edit the same files at the same time.
-- **Done means:** code plus tests plus verification. A report alone does not count.
-- **Honest reporting:** report only what you ran and saw. "Not checked" is acceptable; an invented result is not.
+### Before the deadline (2–5 Nov)
 
-## Tasks
+#### I1 — Model release gate (v1 vs v4-B)
+- **Owner:** Claude. **Branch:** `feat/model-v3`. **Status:** IN_PROGRESS (Kaggle `agroleaf-eval-unified` running).
+- **User value:** the best available model, proven on photos it never saw.
+- **Scope:** run `model/experiments/eval_unified/DECISION_PROTOCOL.md` (committed before results, `907a630`) with `ml/tools/coverage_compare.py`.
+- **Non-goals:** no new training; no tuning on Sylhet or Gujarat.
+- **Acceptance:** checksums and image list verified; all four protocol conditions computed; GO or NO-GO recorded with evidence.
+- **Tests:** evaluator unit tests (`ml/tests/test_eval_app.py`, `test_app_decision.py`).
+- **Risk:** the job fails again. **Rollback:** not needed; nothing is deployed by this step.
 
-| ID | Objective | Agent | Depends on | Files | Acceptance | Status |
-|---|---|---|---|---|---|---|
-| R1 | v1 vs v4-B decision on raihan (`DECISION_PROTOCOL.md`) | Claude | eval job | `model/experiments/eval_unified/`, `ml/tools/coverage_compare.py` | all four protocol conditions computed from the job output; checksums and image list verified | IN_PROGRESS (Kaggle job running) |
-| R2 | Score Sylhet and Gujarat once, after R1 is locked | Claude | R1 | `model/EXPERIMENT_LOG.md` | one run; results logged; nothing tuned on them | BLOCKED (R1) |
-| R3 | If GO: integrate the new model and calibration, browser = Python check, build, deploy | Claude | R1 = GO | `frontend/public/models`, `frontend/public/data` | decode-parity 25/25, unit tests, live upload test | BLOCKED (R1) |
-| R4 | Bangla voice clips with edge-tts (no Azure, nothing live) | Claude | – | scratch only | 14 clips (2 voices × 7); valid MP3, 10–21 s, not silent | DONE |
-| R4a | Speech-recognition check of the clips' intelligibility, both voices | Antigravity | R4 | `documentation/qa/voice_asr_check.md` only | per clip: transcript, matched/missed key words; method stated | ASSIGNED (now extra evidence only; the voice is chosen) (`handoff/TASK_VOICE_ASR_ANTIGRAVITY.md`) |
-| R4b | Native-speaker listening; choose the voice or reject both | **User** | R4 | – | named voice, or the mispronounced words listed | DONE: user chose bn-BD-NabanitaNeural |
-| R4c | Ship the chosen clips, manifest and generator; verify playback live | Claude (reassigned: OpenCode not free until 00:05) | R4b | `frontend/public/audio/`, `ml/tools/generate_tts_edge.py` | build passes; every clip plays after a click on the live site | DONE `2779990`: 6/6 reachable cards play live (deployed 23:45:44 BST) |
-| R5 | Offline second analysis fails (QA check K2) | OpenCode | old track-4 loop gone | see `handoff/OPENCODE_TRACK_7.md` | K2 passes; tests, lint, build pass | ASSIGNED (start after 00:05, when the old loop has exited) |
-| R6 | QA script false alarms (B4 checks) | OpenCode | – | `documentation/qa/lead_scripts/qa_lead.mjs` | B4 checks use localStorage / `<html lang>` | ASSIGNED (in track 7) |
-| R7 | Submission package audit: every claim checked against its source | Antigravity | – | `documentation/qa/submission_audit_antigravity.md` only | table of claims with MATCH / MISMATCH / NO SOURCE | ASSIGNED (`handoff/TASK_SUBMISSION_AUDIT_ANTIGRAVITY.md`) |
-| R8 | Fix the documents with final numbers (accuracy page, README, Devpost, demo script, deck) | OpenCode | R1, R2, R7 | `documentation/submission/*`, `README.md`, `metrics-v1.json` (only if R3) | every R7 mismatch resolved; no `[[...]]` left except personal fields | BLOCKED |
-| R9 | Real Android phone test: camera, gallery, share, voice | **User** | R4c | – | checklist in `documentation/qa/TEST_PLAN_v1.md` (C2, E7, I2) | TODO |
-| R10 | Deck personal fields and a source for the "rural internet gap" figure | **User** | – | – | values given to the lead | TODO |
-| R11 | Disease text review: `disease_information_bn.json` is marked "DRAFT — must be reviewed by an agronomist" | **User** (agronomist, or decide to keep the disclaimer) | – | – | review done, or a decision recorded | TODO |
-| R12 | Demo video (≤ 3 min, English) | **User** | R3/R4c | – | uploaded link | TODO |
-| R13 | Final release check: QA script on the live site, privacy, secrets, GO/NO-GO | Claude | R3/R4c/R5/R8 | – | all checklist items PASS or documented | TODO |
-| R14 | Devpost submission | **User** | R13 | – | submitted before the deadline | TODO |
+#### I2 — Final independent test
+- **Owner:** Claude. **Depends on:** I1. **Status:** BLOCKED (I1).
+- **Scope:** score Sylhet and Gujarat once, for the chosen model and v1; analyse the Sylhet failure (brown spot vs tungro confusion, image and background statistics); log the results.
+- **Acceptance:** one run, logged in `model/EXPERIMENT_LOG.md`, nothing changed afterwards.
 
-## Done so far (verified)
-- **Live site:** the QA script passes on https://agroleaf-ai.pages.dev; privacy verified (0 POST/PUT requests; the photo stays on the phone); no secrets in the bundle (`b9cb438`).
-- **Tooling and data:**
-  - evaluation tooling with decision parity checked against `decide.js`;
-  - browser preprocessing exact to Pillow below the 1024 px cap;
-  - file-level dataset verification.
+#### I3a — Integrate the new model (only if I1 = GO)
+- **Owner:** Claude reviews; OpenCode prepares on `feat/model-swap`. **Status:** BLOCKED (I1).
+- **Scope:**
+  - 8-class model, calibration and class index;
+  - regenerate the decode-parity fixtures for the new model;
+  - update the release-check guards;
+  - live test with the poster, samples, "not sure" and "other problem".
+- **Acceptance:**
+  - `npm run test:decode` 25/25;
+  - unit tests, lint, build and release guards pass;
+  - live QA script passes;
+  - privacy unchanged.
+- **Rollback:** revert the commit (v1 returns).
 
-  All on `feat/model-v3`; see `model/EXPERIMENT_LOG.md`.
+#### I3b — Document v1's limits (only if I1 = NO-GO)
+- **Owner:** Claude. **Status:** BLOCKED (I1).
+- **Scope:** the accuracy page and docs state the measured outside-district results and limits.
+
+#### I4 — Offline second analysis and QA-script false alarms
+- **Owner:** OpenCode. **Branch:** `fix/offline-reanalysis`. **Status:** ASSIGNED (`handoff/OPENCODE_TRACK_7.md` in the OpenCode folder).
+- **Acceptance:** the K2 check passes offline; B4 checks use localStorage / `<html lang>`; vitest, lint and build pass.
+- **Review:** the lead re-runs the tests and K2 before merging.
+
+#### I5 — Submission claim audit (read-only)
+- **Owner:** Antigravity. **Branch:** `qa/submission-audit`. **Status:** ASSIGNED.
+- **Deliverable:** `documentation/qa/submission_audit_antigravity.md`, a table of every claim marked MATCH / MISMATCH / NO SOURCE, with exact quotes.
+- **Review:** the lead spot-checks 10 claims against the files before using it.
+
+#### I6 — Voice intelligibility evidence
+- **Owner:** Antigravity. **Branch:** `qa/voice-asr`. **Status:** ASSIGNED (after I5).
+- **Note:** the voice is already live (`2779990`) and approved by the user's listening. This is extra evidence only.
+
+#### I7 — Final numbers everywhere
+- **Owner:** OpenCode writes; Claude reviews. **Branch:** `docs/final-numbers`. **Depends on:** I1, I2, I5. **Status:** BLOCKED.
+- **Scope:** accuracy page (`metrics-v1.json` only if I3a), README, Devpost story, demo script, deck text.
+- **Acceptance:** every I5 mismatch fixed; no `[[...]]` except personal fields; banned-claims check passes.
+
+#### I8 — Release check on the live site
+- **Owner:** Claude. **Depends on:** I3, I4, I7. **Status:** TODO.
+- **Scope:** QA script on the live URL, privacy capture, secret scan, Lighthouse.
+- **Acceptance:** every item PASS or documented; GO/NO-GO for submission.
+
+#### U1–U6 — the user's tasks
+| ID | Task | Status |
+|---|---|---|
+| U1 | Real Android phone test (camera, gallery, voice, share) | TODO |
+| U2 | Deck personal fields + a source for the "rural internet gap" figure | TODO |
+| U3 | Decide on the disease text: `disease_information_bn.json` says "DRAFT — must be reviewed by an agronomist"; either get a review or keep the "preliminary screening" disclaimer | TODO |
+| U4 | Demo video (≤ 3 min) | TODO (after I8) |
+| U5 | Devpost submission | TODO |
+| U6 | Start the workers (paste prompts) and close the old OpenCode loop if it is still running | TODO |
+
+### After the competition (not started before 5 Nov)
+| ID | Increment | Trigger / dependency |
+|---|---|---|
+| P1 | In-app "was this right?" feedback, stored without photos (Worker + D1 + Turnstile) | consent text approved |
+| P2 | Consented photo submission (Supabase Storage + RLS, or R2 with a card); EXIF/GPS stripped in the browser; deletion flow | the §3 triggers |
+| P3 | Bangladeshi field data collection, agronomist labelling, scene-grouped splits, retraining with strong augmentation, Bangladesh-only vs pooled ablation | P2 + agronomist |
+| P4 | Leaf-smut data (none exists outside Gazipur) | P3 |
+| P5 | Model versioning: `model_version` in the app and feedback rows; staged rollout through a Pages preview | P1 |
+| P6 | Server inference, only if phones are measured too slow or a larger model wins on raihan | paid host |
+
+## 6. Parallel execution right now
+| Lane | Now | Next |
+|---|---|---|
+| Claude | I1 gate (Kaggle running) → I2 | review I4/I5; I3a or I3b; I8 |
+| OpenCode | I4 (`fix/offline-reanalysis`) | I3a prep (if GO) or I7 |
+| Antigravity | I5 (submission audit) → I6 | re-verify I7 claims after OpenCode's edits |
+| User | U3 decision, U2 fields, U1 phone test | U4 video, U5 submit |
+
+**No two lanes touch the same files:**
+- I4: `frontend/src` offline handling and `qa_lead.mjs`
+- I5/I6: new QA documents only
+- I1/I2: `model/`, `ml/tools/`
+
+**Kaggle:** only the lead launches jobs, at most one at a time.
+
+## 7. Decisions needing the user's approval
+1. **No backend/database for the competition release** (§3).
+2. **No new model training before the deadline.** Ship v1 or v4-B according to I1.
+3. **U3:** the agronomist review vs the disclaimer.
+4. **After the competition:** whether to pursue P1–P3 (consented data collection is the real path to better accuracy).
+
+## 8. Key risks
+- **I1 says NO-GO.** v1 then ships with its documented limits; outside-district accuracy stays weak, and the app answers "not sure" often. Mitigation: honest accuracy page; P3 plan in the Devpost "what's next".
+- **Worker output is unreliable** (it happened before). Mitigation: no merge without lead review and re-run tests.
+- **The disease text is unreviewed** (U3).
+- **Free tiers change.** Re-check before P1/P2.
+
+## Done and verified (evidence)
+- **Live:** https://agroleaf-ai.pages.dev, auto-deploying from `main`.
+  - QA script passes on the live site; privacy verified (0 POST/PUT; the photo stays on the phone); no secrets in the bundle (`b9cb438`).
+  - Bangla voice (Nabanita, edge-tts) plays on all 6 reachable result cards (`2779990`).
+- **Model tooling** (`feat/model-v3`):
+  - app-decision evaluator, checked against `decide.js` on 3,000 cases;
+  - Pillow-exact browser resize with the decode-parity test;
+  - file-level dataset verification (`documentation/research/dataset_verification_2026-11-01.md`);
+  - decision protocol committed before results.
