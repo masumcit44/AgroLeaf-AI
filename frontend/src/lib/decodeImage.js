@@ -70,6 +70,12 @@ export async function decodeImage(file) {
       throw new Error('Canvas 2D context not available');
     }
 
+    // Transparent pixels become white, not black (PIL's convert("RGB") keeps
+    // the colour under the alpha; white is the closer match for cut-out leaves)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, targetWidth, targetHeight);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(sourceDrawable, 0, 0, targetWidth, targetHeight);
 
     // Close ImageBitmap if supported

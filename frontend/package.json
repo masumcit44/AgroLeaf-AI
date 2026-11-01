@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:decode": "node scripts/verify-decode-parity.mjs",
     "predev": "node scripts/copy-ort.mjs && node scripts/sync-content.mjs",
     "dev": "vite",
     "prebuild": "node scripts/copy-ort.mjs && node scripts/sync-content.mjs",
