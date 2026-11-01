@@ -162,6 +162,11 @@ export default function AccuracyPage({
                     <tr key={classKey} className="hover:bg-gray-50/70">
                       <td className="px-3 py-2 font-medium text-gray-900">
                         {getClassName(classKey)}
+                        {classKey === 'leaf_smut' && (
+                          <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">
+                            {lang === 'bn' ? 'স্থগিত (Suppressed)' : 'Suppressed'}
+                          </span>
+                        )}
                       </td>
                       <td className="px-3 py-2 text-center text-gray-600">
                         {formatCount(item.support)}
@@ -297,6 +302,11 @@ export default function AccuracyPage({
               {lang === 'bn'
                 ? 'লিফ স্মাট রোগের জন্য বাইরের কোনো পরীক্ষা ডেটা নেই।'
                 : 'There is no external test data for Leaf Smut.'}
+            </li>
+            <li className="font-semibold text-amber-900">
+              {lang === 'bn'
+                ? 'কৃষকের সুরক্ষার্থে লিফ স্মাট রোগের ফলাফল সরাসরি না দেখিয়ে সতর্কতামূলকভাবে \'নিশ্চিত নয়\' তালিকায় বিকল্প হিসেবে দেখানো হয় (Weak-Class Suppression)।'
+                : 'To safeguard farmers, Leaf Smut predictions are conservatively suppressed into "Not Sure" as an advisory candidate (Weak-Class Suppression).'}
             </li>
             {metrics?.limitations &&
               metrics.limitations.map((item, idx) => (

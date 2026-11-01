@@ -1,7 +1,12 @@
 {
-  "temperature": 1.0,
-  "threshold": 0.6,
+  "temperature": 0.909,
+  "threshold": 0.48,
   "target_precision": 0.9,
-  "placeholder": true,
-  "warning": "Demo model \u2014 not trained yet"
+  "val_coverage": 0.9523,
+  "val_selective_accuracy": 0.9021,
+  "ece_before": 0.0778,
+  "ece_after": 0.0501,
+  "suppress": [
+    "leaf_smut"
+  ]
 }
