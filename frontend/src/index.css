@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-leaf-700: #1f6b3a;
+  --color-leaf-50: #eef7f0;
+  --color-amber-600: #b45309;
+  --color-danger-700: #9f1d1d;
+  --color-paper: #fbfaf6;
+  --color-ink: #1c1c1c;
+
+  --font-sans: "Noto Sans Bengali", "Hind Siliguri", system-ui, sans-serif;
+}
+
+:root {
+  font-size: 18px;
+  line-height: 1.65;
+  font-family: var(--font-sans);
+}
+
+/* Accessible focus ring defaults */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-leaf-700);
+  outline-offset: 2px;
+}
