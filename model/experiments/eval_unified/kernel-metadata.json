@@ -1,0 +1,32 @@
+{
+  "id": "mdmasumakondha/agroleaf-eval-unified",
+  "title": "agroleaf-eval-unified",
+  "code_file": "kaggle_eval_unified.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "shahiismyname/riceleafdiseasebd-dataset",
+    "sohagdewan/riceleafdisease-bd5",
+    "sikanderk/riceleafbd-mendeley",
+    "imbikramsaha/paddy-doctor",
+    "nirmalsankalana/rice-leaf-disease-image",
+    "minhhuy2810/rice-diseases-image-dataset",
+    "prasunroy/natural-images",
+    "emmarex/plantdisease",
+    "neha1703/movie-genre-from-its-poster",
+    "williamscott701/memotion-dataset-7k",
+    "raihan150146/rice-leaf-diseases-dataset",
+    "nirmalsankalana/dhan-shomadhan",
+    "vbookshelf/rice-leaf-diseases"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [
+    "mdmasumakondha/agroleaf-train-v3",
+    "mdmasumakondha/agroleaf-train-v3-big",
+    "mdmasumakondha/agroleaf-train-v4"
+  ]
+}

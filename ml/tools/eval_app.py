@@ -106,6 +106,9 @@ def evaluate_set(logits, y, classes, cal, leaf_fraction=None):
         if m.any():
             app[f"{special}_no_disease_named"] = float(np.mean(~named[m] | (named_key[m] == "")))
             app[f"{special}_called_healthy"] = float(np.mean(named_key[m] == "healthy"))
+    if "other_rice_no_disease_named" in app:
+        # a rice disease the app does not cover, shown to the farmer as one of the 6 classes
+        app["unsupported_disease_escape_rate"] = 1 - app["other_rice_no_disease_named"]
     out["app"] = app
     return out
 
