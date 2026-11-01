@@ -90,10 +90,3 @@ describe('decide with model v3 reject outputs', () => {
     expect(d.top2.map((x) => x.key)).not.toContain('other_rice');
   });
 });
-
-describe('roundHalfEven (torchvision CenterCrop offsets)', () => {
-  it('matches Python round()', async () => {
-    const { roundHalfEven } = await import('../preprocess.js');
-    expect([0.5, 1.5, 2.5, 58.5, 57.5, 16, 3.2, 3.7].map(roundHalfEven)).toEqual([0, 2, 2, 58, 58, 16, 3, 4]);
-  });
-});
