@@ -1,0 +1,145 @@
+{
+  "model": {
+    "arch": "mnv3_large",
+    "onnx_mb": 16.05,
+    "trained_on": "RiceLeafDiseaseBD v3 (DOI 10.17632/86s4jzj2m4.3)",
+    "date": "2026-11-01"
+  },
+  "calibration": {
+    "temperature": 0.909,
+    "threshold": 0.48,
+    "target_precision": 0.9
+  },
+  "internal_test": {
+    "n": 1499,
+    "accuracy": 0.8686,
+    "macro_f1": 0.8427,
+    "coverage": 0.9466,
+    "selective_accuracy": 0.8872,
+    "ece_after": 0.0453,
+    "per_class": {
+      "healthy": {
+        "precision": 0.9313,
+        "recall": 0.976,
+        "f1": 0.9531,
+        "support": 250
+      },
+      "blast": {
+        "precision": 0.7525,
+        "recall": 0.7842,
+        "f1": 0.768,
+        "support": 190
+      },
+      "brown_spot": {
+        "precision": 0.8889,
+        "recall": 0.7932,
+        "f1": 0.8383,
+        "support": 353
+      },
+      "leaf_smut": {
+        "precision": 0.5798,
+        "recall": 0.7113,
+        "f1": 0.6389,
+        "support": 97
+      },
+      "tungro": {
+        "precision": 0.8843,
+        "recall": 0.9042,
+        "f1": 0.8942,
+        "support": 355
+      },
+      "sheath_blight": {
+        "precision": 0.9876,
+        "recall": 0.9409,
+        "f1": 0.9637,
+        "support": 254
+      }
+    }
+  },
+  "external": [
+    {
+      "name": "RiceLeafBD Sylhet-Dhaka (Kaggle copy sikanderk/riceleafbd-mendeley; unseen district)",
+      "doi": "10.17632/kx9rx8p2mz.1",
+      "classes_tested": [
+        "brown_spot",
+        "healthy",
+        "tungro"
+      ],
+      "n": 1560,
+      "accuracy_mapped": 0.5202,
+      "macro_f1_mapped": 0.5333,
+      "coverage": 0.7891,
+      "selective_accuracy": 0.5601,
+      "unseen_rejection_rate": 0.2773,
+      "per_class": {
+        "healthy": {
+          "precision": 0.7612,
+          "recall": 0.873,
+          "f1": 0.8133,
+          "support": 252
+        },
+        "brown_spot": {
+          "precision": 0.2182,
+          "recall": 0.0674,
+          "f1": 0.103,
+          "support": 356
+        },
+        "tungro": {
+          "precision": 0.7131,
+          "recall": 0.6566,
+          "f1": 0.6837,
+          "support": 530
+        }
+      }
+    },
+    {
+      "name": "RiceLeafDisease-BD5 Savar (Kaggle copy sohagdewan/riceleafdisease-bd5, 3,150 imgs; provenance not verified vs Mendeley v2)",
+      "doi": "10.17632/sjkptpgv79.2",
+      "classes_tested": [
+        "blast",
+        "healthy",
+        "sheath_blight",
+        "tungro"
+      ],
+      "n": 3150,
+      "accuracy_mapped": 0.3358,
+      "macro_f1_mapped": 0.1774,
+      "coverage": 0.8571,
+      "selective_accuracy": 0.3761,
+      "unseen_rejection_rate": 0.2101,
+      "per_class": {
+        "healthy": {
+          "precision": 0.3561,
+          "recall": 1.0,
+          "f1": 0.5252,
+          "support": 834
+        },
+        "blast": {
+          "precision": 0.0875,
+          "recall": 0.0319,
+          "f1": 0.0468,
+          "support": 720
+        },
+        "tungro": {
+          "precision": 0.5152,
+          "recall": 0.0344,
+          "f1": 0.0645,
+          "support": 494
+        },
+        "sheath_blight": {
+          "precision": 0.8,
+          "recall": 0.0383,
+          "f1": 0.0732,
+          "support": 626
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Leaf Smut has no external test data.",
+    "Training images come from one district (Gazipur) and one season.",
+    "On photos from other districts the accuracy drops sharply: Sylhet-Dhaka 52% (mapped classes, 1,560 images) and Savar 34% (3,150 images, cut leaves on white background). Brown spot is rarely recognised outside Gazipur.",
+    "External test sets are community Kaggle copies of the published datasets; their provenance was not verified file-by-file against Mendeley.",
+    "This is a research prototype: use the result as a first hint and confirm with an agriculture officer or 16123."
+  ]
+}

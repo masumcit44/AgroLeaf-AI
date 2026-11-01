@@ -1,0 +1,100 @@
+{
+  "model": {
+    "arch": "mnv3_large",
+    "onnx_mb": 16.05,
+    "trained_on": "RiceLeafDiseaseBD v3 (DOI 10.17632/86s4jzj2m4.3)",
+    "date": "2026-11-01"
+  },
+  "calibration": {
+    "temperature": 0.05,
+    "threshold": 0.4,
+    "target_precision": 0.9
+  },
+  "internal_test": {
+    "n": 1849,
+    "accuracy": 0.9183,
+    "macro_f1": 0.8909,
+    "coverage": 1.0,
+    "selective_accuracy": 0.9183,
+    "ece_after": 0.0777,
+    "per_class": {
+      "healthy": {
+        "precision": 0.9418,
+        "recall": 0.9622,
+        "f1": 0.9519,
+        "support": 370
+      },
+      "blast": {
+        "precision": 0.9542,
+        "recall": 0.8834,
+        "f1": 0.9174,
+        "support": 283
+      },
+      "brown_spot": {
+        "precision": 0.8197,
+        "recall": 0.9174,
+        "f1": 0.8658,
+        "support": 327
+      },
+      "leaf_smut": {
+        "precision": 0.8261,
+        "recall": 0.6264,
+        "f1": 0.7125,
+        "support": 91
+      },
+      "tungro": {
+        "precision": 0.9207,
+        "recall": 0.9427,
+        "f1": 0.9316,
+        "support": 419
+      },
+      "sheath_blight": {
+        "precision": 0.9855,
+        "recall": 0.9471,
+        "f1": 0.9659,
+        "support": 359
+      }
+    }
+  },
+  "external": [
+    {
+      "name": "RiceLeafBD Sylhet-Dhaka (Kaggle copy sikanderk/riceleafbd-mendeley; unseen district)",
+      "doi": "10.17632/kx9rx8p2mz.1",
+      "classes_tested": [
+        "brown_spot",
+        "healthy",
+        "tungro"
+      ],
+      "n": 1560,
+      "accuracy_mapped": 0.5404,
+      "macro_f1_mapped": 0.5439,
+      "coverage": 1.0,
+      "selective_accuracy": 0.5404,
+      "unseen_rejection_rate": 0.0,
+      "per_class": {
+        "healthy": {
+          "precision": 0.8235,
+          "recall": 0.8889,
+          "f1": 0.855,
+          "support": 252
+        },
+        "brown_spot": {
+          "precision": 0.1858,
+          "recall": 0.059,
+          "f1": 0.0896,
+          "support": 356
+        },
+        "tungro": {
+          "precision": 0.6764,
+          "recall": 0.6981,
+          "f1": 0.6871,
+          "support": 530
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Leaf Smut has no external test data.",
+    "Training images come from one district (Gazipur) and one season."
+  ]
+}
