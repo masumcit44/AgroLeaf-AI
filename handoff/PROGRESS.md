@@ -1,7 +1,7 @@
 # PROGRESS — updated by Antigravity after every module
 
-## Autonomous run report 01 Nov 2026
-- **Modules completed in this run:** `m02`, `m03`, `m04`, `m05`, `m06`, `m08-partial`
+## Autonomous run report 01 Nov 2026 (Updated 09:30 BST)
+- **Modules completed in this run:** `m02`, `m03`, `m04`, `m05`, `m06`, `m08-partial`, `m08b`, `track/opencode-merge`, `x1`, `x2`, `x3`, `x4`
 - **What was built:**
   - **M02:** React 19 + Tailwind v4 + Vite mobile frontend scaffold, official competition sticker in sticky navbar (44-52px), persisted Bangla/English i18n switcher, Cloudflare Pages immutable caching headers, and asset size limit enforcement script.
   - **M03:** Leaf image upload pipeline with dual camera/gallery file picker, pure validation rules (max 10MB, JPG/PNG/WebP), client-side EXIF orientation correction and max 1024px canvas downscaling, pure luminance and 3x3 Laplacian blur quality heuristics, and non-blocking advisory warnings on preview screen.
@@ -9,15 +9,25 @@
   - **M05:** Farmer-friendly result and "not sure" screens. Synchronized build-time validation against `disease_information_bn.json` / `_en.json`, qualitative confidence wording ("উচ্চ আস্থা" / "মাঝারি আস্থা", no percentages), collapsible verbatim BAMIS/DAE official advice (hidden if unverified placeholder brackets exist), direct click-to-call `tel:16123` helpline button, and automated Chrome headless screenshot capture of all 7 states in `documentation/screenshots/m05/`.
   - **M06:** Zero-dependency offline Bangla TTS batch generator (`ml/tools/generate_tts.py`) for Azure Speech F0 (`bn-BD-NabanitaNeural`) with safety character quota audit (<20k chars) and `--dry-run`, plus tap-to-play `AudioExplain.jsx` component with single-active playback, `preload="none"`, and silent fallback degradation when MP3 files are pending.
   - **M08 (Partial):** Dismissible 3-step farmer onboarding strip persisted in `localStorage`, friendly Bangla `ErrorBoundary` without raw stack traces, offline network check before cold model download, 4 sample leaf images with CC BY 4.0 attribution, native Web Share API with clipboard copy fallback, tuned agricultural lighting/blur thresholds (`DARK_MAX=40`, `BLUR_MIN=50`), comprehensive About transparency page (privacy, BAMIS links, dataset DOIs, AI voice note), 1200x630 social OG image and meta tags.
+  - **M08b:** Solved mobile horizontal overflow at 360px & 390px, displayed English disease names from content JSON, marked quality heuristics as provisional, softened absolute copy claims, and removed placeholder noise files.
+  - **Track/OpenCode Integration:** Merged tracks 2 and 3 from `origin/track/opencode` (QA checklist template, hallway test script, bilingual glossary, release bundle tooling, sample picker, and `metrics.schema.json`).
+  - **Lead Review Fixes:** Implemented pure copy validation with negated disclaimer support (`copyCheck.js`) preserving lead-reviewed disease content verbatim; synchronized real RiceLeafDiseaseBD folder names across `ml/class_map.json`, `data/DATA_CARD.md`, `data/dataset_inventory.csv`, and toy datasets.
+  - **X1 (Automated Smoke Test):** Built automated Puppeteer smoke test `frontend/scripts/smoke.mjs` (`npm run smoke`) verifying sticker dimensions (≥40px, ≤52px), 0px horizontal overflow (`scrollWidth <= innerWidth`), 0 console errors, clean copy without forbidden phrases, and binary WASM headers across 360px, 390px, and 1280px viewports on 10 routes. Generated `documentation/qa/smoke_report.md`.
+  - **X2 (Accuracy Page Renderer):** Implemented full `AccuracyPage.jsx` adhering to `model/metrics.schema.json`. Safely renders "—" for nulls, hides unmeasured metrics, handles missing metrics file with "Evaluation in progress", hides broken images, and adds postbuild guard in `check-dist-sizes.mjs` against `FIXTURE_NOT_REAL` leaking into production.
+  - **X3 (Weak-Class Suppression & Parity Verification):** Implemented `calibration.suppress` in `decide.js` and `predict.js` (forces "not sure" on low-performing classes while keeping them in top-2). Added dev-only route `#/dev/parity` (`DevParityPage.jsx`, `parityVerification.js`) verifying Check A (runtime tensor diff < 1e-3) and Check B (end-to-end image top-1 matching) using test fixture.
+  - **X4 (Automated Release Guards):** Created `frontend/scripts/check-release.mjs` (`npm run check:release`) auditing 8 required release conditions (cleanly fails exit 1 today listing the 5 items that await tonight's Kaggle model release bundle). Documented release checklist in `README.md`.
 - **How tested:**
-  - Vitest: 26 unit and validation tests passing (`100% pass`).
-  - Oxlint: 0 warnings and 0 errors across 54 files.
-  - Vite build: production client bundle succeeds, and `check-dist-sizes.mjs` verifies every asset is strictly below Cloudflare Pages 25 MiB limit (WASM is 14.16 MiB).
-  - Headless Chrome: verified end-to-end rendering and captured screenshots for all 7 screening states.
+  - Vitest: 44 unit and component tests passing (100% pass across 11 test suites).
+  - Oxlint: 0 warnings and 0 errors across 66 files.
+  - Vite build: Client production build succeeds; all assets verified under Cloudflare Pages 25 MiB ceiling.
+  - Puppeteer Smoke Test: 100% pass across 360px, 390px, and 1280px viewports on all 10 application routes.
+  - Python ML Test Suite: All ML tests pass (`test_metrics_schema.py`, `test_release_bundle.py`, `test_pick_samples.py`, `test_prepare_dataset.py`, etc.).
 - **What YOU must do next:**
-  1. **Kaggle GPU Training (Unblocks M07):** Follow `ml/kaggle/KAGGLE_RUNBOOK.md` to train MobileNetV3 on the real RiceLeafDiseaseBD v3 dataset on Kaggle T4 GPU, run calibration, export the production ONNX model (`rice-model-v1.onnx`), and place the output files into `frontend/public/models/` and `frontend/public/data/`.
-  2. **Azure Speech Key (Optional for M06 voice files):** If you wish to synthesize the offline audio files, create a free Azure Speech F0 resource, put credentials in `.env`, and run `python ml/tools/generate_tts.py`. (Audio player already functions and degrades gracefully without crashing).
-  3. **Cloudflare Pages Connect (For deployment & remote Lighthouse):** Connect the GitHub repository `masumcit44/AgroLeaf-AI` to Cloudflare Pages with root directory `frontend`, build command `npm run build`, output directory `dist`, and environment variable `NODE_VERSION=22`.
+  1. **Kaggle GPU Training (Unblocks M07):** When training finishes on Kaggle, place outputs at `D:\Desktop\AIgnite 2026\kaggle_runs\run1\run1_for_app.zip`, plus `data\` (`splits.csv`, `split_summary.md`, `audit_output\`).
+  2. **Run Release Bundle Tool:** Run `python ml/tools/make_release_bundle.py --run-zip "D:\Desktop\AIgnite 2026\kaggle_runs\run1\run1_for_app.zip"` to copy the trained model and metrics into `frontend/public/`.
+  3. **Pick Sample Leaf Photos:** Run `python ml/tools/pick_samples.py --data-root <path_to_dataset>` to generate `frontend/public/samples/`.
+  4. **Run Release Guards:** Run `cd frontend; npm run check:release` to verify all 8 release conditions pass with exit code 0.
+  5. **Cloudflare Pages Connect:** Connect GitHub repository `masumcit44/AgroLeaf-AI` to Cloudflare Pages.
 - **Next module to run when ready:** `M07` (once Kaggle training outputs are copied).
 - **How to preview the app right now:**
   ```bash
