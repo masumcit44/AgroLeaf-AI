@@ -1,0 +1,42 @@
+import React from 'react';
+import { I18nProvider } from './i18n/I18nProvider.jsx';
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+import HomePage from './pages/HomePage.jsx';
+import AccuracyPage from './pages/AccuracyPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
+import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
+
+function AppContent() {
+  const { route, navigate } = useHashRoute();
+
+  const renderPage = () => {
+    switch (route) {
+      case ROUTES.ACCURACY:
+        return <AccuracyPage />;
+      case ROUTES.ABOUT:
+        return <AboutPage />;
+      case ROUTES.HOME:
+      default:
+        return <HomePage />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-paper text-ink selection:bg-leaf-50 selection:text-leaf-700">
+      <Navbar currentRoute={route} onNavigate={navigate} />
+      <div className="flex-1 flex flex-col">
+        {renderPage()}
+      </div>
+      <Footer onNavigate={navigate} />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
+  );
+}
