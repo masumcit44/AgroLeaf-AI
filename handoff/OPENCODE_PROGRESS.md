@@ -13,7 +13,7 @@ _Not finished yet._
 |---|---|---|
 | O1 — one-command data preparation | ✅ done | `ml/prepare_dataset.py`, `ml/tests/test_prepare_dataset.py` |
 | O2 — external test-set preparation | ✅ done | `ml/prepare_external.py`, `ml/tests/test_prepare_external.py`, `ml/EXTERNAL_DATA.md` |
-| O3 — Kaggle notebook | ⬜ not started | — |
+| O3 — Kaggle notebook | ✅ done | `ml/kaggle/agroleaf_train_kaggle.ipynb` |
 | O4 — model card and data card | ⬜ not started | — |
 | O5 — submission drafts | ⬜ not started | — |
 
@@ -84,7 +84,28 @@ nested class-root detection and the same resize/skip behaviour.
 
 ## O3 — Kaggle notebook
 
-_Not started._
+**Status:** done — 2026-11-01 ~07:55 BST
+
+**File added**
+- `ml/kaggle/agroleaf_train_kaggle.ipynb` — valid nbformat 4 notebook with 11
+  cells matching `KAGGLE_RUNBOOK.md`: title/instructions (dataset, GPU T4,
+  Internet), clone + filtered `pip install`, config (`DATA_ROOT`, `SPLITS_CSV`,
+  `RUN_DIR`, `ARCH`, `EPOCHS`, `EXTERNAL`), loud GPU check, train → calibrate →
+  evaluate (adds one `--external` per `EXTERNAL` entry) → export_onnx →
+  parity_test, inline `metrics-v1.json` + PNG display, and the zip without
+  `best.pt` plus download/copy instructions.
+
+**How tested**
+- `nbformat.validate` passed when the file was generated; `json.load` confirms
+  11 cells; every code cell was parsed with `ast.parse` (syntax OK).
+- The notebook was **not executed** (no Kaggle GPU/dataset here).
+
+**Notes / problems**
+- The runbook's `!python ... "$DATA_ROOT"` uses shell syntax for a Python
+  variable; the notebook uses `subprocess.run([sys.executable, ...])` so the
+  config values actually reach the scripts.
+- Default `EXTERNAL = []`; add specs from `ml/EXTERNAL_DATA.md` when those
+  private datasets are attached.
 
 ## O4 — model card and data card
 
