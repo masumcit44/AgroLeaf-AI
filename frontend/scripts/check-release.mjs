@@ -194,9 +194,11 @@ if (!fs.existsSync(samplesManifestPath)) {
     } else {
       const missingFiles = [];
       for (const item of items) {
-        const filePath = path.join(FRONTEND_ROOT, 'public/samples', item.filename);
+        // Manifest contract (X_BACKLOG / pick_samples.py): `src` is a public URL like /samples/x.jpg
+        const rel = item.src ? item.src.replace(/^\/+/, '') : `samples/${item.filename}`;
+        const filePath = path.join(FRONTEND_ROOT, 'public', rel);
         if (!fs.existsSync(filePath)) {
-          missingFiles.push(item.filename);
+          missingFiles.push(rel);
         }
       }
       if (missingFiles.length > 0) {

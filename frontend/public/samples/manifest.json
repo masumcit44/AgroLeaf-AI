@@ -1,0 +1,37 @@
+[
+  {
+    "id": "healthy_1",
+    "labelBn": "সুস্থ পাতা",
+    "labelEn": "Healthy leaf",
+    "src": "/samples/healthy_1.jpg",
+    "credit": "RiceLeafDiseaseBD v3, CC BY 4.0, DOI 10.17632/86s4jzj2m4.3"
+  },
+  {
+    "id": "blast_1",
+    "labelBn": "ব্লাস্ট রোগ",
+    "labelEn": "Rice blast",
+    "src": "/samples/blast_1.jpg",
+    "credit": "RiceLeafDiseaseBD v3, CC BY 4.0, DOI 10.17632/86s4jzj2m4.3"
+  },
+  {
+    "id": "brown_spot_1",
+    "labelBn": "বাদামী দাগ রোগ",
+    "labelEn": "Brown spot",
+    "src": "/samples/brown_spot_1.jpg",
+    "credit": "RiceLeafDiseaseBD v3, CC BY 4.0, DOI 10.17632/86s4jzj2m4.3"
+  },
+  {
+    "id": "tungro_1",
+    "labelBn": "টুংরো রোগ",
+    "labelEn": "Rice tungro",
+    "src": "/samples/tungro_1.jpg",
+    "credit": "RiceLeafDiseaseBD v3, CC BY 4.0, DOI 10.17632/86s4jzj2m4.3"
+  },
+  {
+    "id": "sheath_blight_1",
+    "labelBn": "খোল পোড়া রোগ",
+    "labelEn": "Sheath blight",
+    "src": "/samples/sheath_blight_1.jpg",
+    "credit": "RiceLeafDiseaseBD v3, CC BY 4.0, DOI 10.17632/86s4jzj2m4.3"
+  }
+]
