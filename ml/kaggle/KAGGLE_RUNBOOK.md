@@ -24,7 +24,14 @@ python ml/make_splits.py --images data/audit_output/images.csv --class-map ml/cl
 ```
 This produces `data/splits.csv` and `data/split_summary.md`.
 
-### Step 1.4: Zip the Resized Dataset
+### Step 1.4: Pre-Training Quality Verification
+Before uploading or training, open `data/split_summary.md` and verify:
+1. **Exclusions rate:** Total exclusions must be **< 5%** of all images.
+2. **Perceptual cluster size:** Largest group size must be **<= 50** images.
+3. **Class balance:** Every single class must have **>= 50** training images. (If any class has fewer, stop and report to the lead).
+4. **Group leakage:** Confirm **0** shared groups across train, val, and test splits.
+
+### Step 1.5: Zip the Resized Dataset
 Compress `D:\Desktop\AIgnite 2026\datasets_resized\RiceLeafDiseaseBD_v3_320` into a zip archive:
 - Name: `riceleafdiseasebd_v3_320.zip`
 
@@ -80,7 +87,7 @@ assert os.path.exists(SPLITS_CSV), f"Path not found: {SPLITS_CSV}"
 print("Dataset inputs verified successfully.")
 ```
 
-### Cell 3: Train MobileNetV3-Large
+### Cell 3: Train MobileNetV3-Large (4 CPU workers for Kaggle's 4 vCPUs)
 ```bash
 !python ml/train.py \
   --data-root "$DATA_ROOT" \
@@ -90,7 +97,7 @@ print("Dataset inputs verified successfully.")
   --epochs 20 \
   --batch 32 \
   --device cuda \
-  --num-workers 2
+  --num-workers 4
 ```
 
 ### Cell 4: Temperature Calibration & Threshold Tuning
@@ -112,7 +119,7 @@ print("Dataset inputs verified successfully.")
 
 *(Note: Add `--external "RiceLeafDisease-BD5 (Savar)=/kaggle/input/external_bd5:ml/external_maps/riceleafdisease_bd5.json"` if external dataset is attached).*
 
-### Cell 6: ONNX Export & Size Enforcement
+### Cell 6: ONNX Export & Single-File Verification
 ```bash
 !python ml/export_onnx.py --run /kaggle/working/run1
 ```
