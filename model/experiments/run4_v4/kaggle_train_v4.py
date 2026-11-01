@@ -103,6 +103,18 @@ def add_all_roots(src, token, exclude=(), split_mode="extval"):
     if not roots: print("MISSING SOURCE", src, flush=True)
 add_all_roots("raihan_bd", "rice-leaf-diseases-dataset", exclude=("augment",))  # split set to extval below
 add_folder_source("dhan_shomadhan_bd", find_root("dhan-shomadhan"), split_mode="extval")
+# The Kaggle copy names its sheath blight folder "Rice___bacterial_blight", but every file there is
+# sb_wb_*.jpg; the filename codes match Dhan-Shomadhan's published classes (Mendeley 10.17632/znsxdctwtt.1).
+# All files carry _wb_: this copy is the white-background subset (769 of 1,106).
+DHAN_CODE = {"sb": "sheath_blight", "rb": "blast", "bs": "brown_spot", "rt": "tungro", "ls": "other_rice"}
+relabel = Counter()
+for r in ROWS:
+    if r["src"] == "dhan_shomadhan_bd":
+        code = os.path.basename(r["path"]).split("_")[0].lower()
+        if code not in DHAN_CODE: sys.exit(f"unexpected Dhan-Shomadhan file name: {r['path']}")
+        if DHAN_CODE[code] != r["label"]: relabel[(r["label"], DHAN_CODE[code])] += 1
+        r["label"] = DHAN_CODE[code]
+print("Dhan-Shomadhan relabelled from filename codes (folder label -> true label):", dict(relabel), flush=True)
 # Gujarat (UCI, 120 photos incl. 40 leaf smut): the only leaf-smut photos from outside Gazipur.
 # Too few to change training, so they are kept as an independent external TEST set (never trained on).
 add_folder_source("gujarat_in", find_root("vbookshelf") or find_root("rice-leaf-diseases/rice_leaf_diseases"), split_mode="heldout")
@@ -162,9 +174,16 @@ if turned:
     sheet.save(f"{OUT}/exif_check_raihan.jpg", quality=85)
 # Dhan-Shomadhan white-paper shots (56% of its blast vs 13-34% elsewhere): reported as their own set,
 # kept out of the external-validation selection set so they cannot steer choices
-for r in ROWS: r["white_bg"] = r["src"] == "dhan_shomadhan_bd" and r["white"] > 0.5
+for r in ROWS: r["white_bg"] = r["src"] == "dhan_shomadhan_bd" and "_wb_" in os.path.basename(r["path"]).lower()
 print("Dhan-Shomadhan white-background shots (own report set, not used for selection):",
       dict(Counter(r["label"] for r in ROWS if r["white_bg"])), flush=True)
+# identical images (same pHash, same source) with different labels: the label is unknown, drop all copies
+lab_by_hash = defaultdict(set)
+for r in ROWS: lab_by_hash[(r["src"], r["phash"])].add(r["label"])
+conflict = [r for r in ROWS if len(lab_by_hash[(r["src"], r["phash"])]) > 1]
+print("identical images with conflicting labels, all copies dropped:", len(conflict),
+      [os.path.basename(r["path"]) for r in conflict[:6]], flush=True)
+ROWS = [r for r in ROWS if len(lab_by_hash[(r["src"], r["phash"])]) == 1]
 # exact-hash duplicates: drop later copies inside the same source; group by phash for the split
 seen = set(); dedup = []
 for r in ROWS:
