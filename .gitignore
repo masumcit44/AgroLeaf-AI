@@ -25,6 +25,7 @@ __pycache__/
 node_modules/
 frontend/dist/
 frontend/public/ort/
+frontend/public/data/disease_information_*.json
 .vite/
 
 # OS / editor
