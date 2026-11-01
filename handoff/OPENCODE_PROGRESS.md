@@ -12,7 +12,7 @@ _Not finished yet._
 | Task | Status | Files |
 |---|---|---|
 | O1 — one-command data preparation | ✅ done | `ml/prepare_dataset.py`, `ml/tests/test_prepare_dataset.py` |
-| O2 — external test-set preparation | ⬜ not started | — |
+| O2 — external test-set preparation | ✅ done | `ml/prepare_external.py`, `ml/tests/test_prepare_external.py`, `ml/EXTERNAL_DATA.md` |
 | O3 — Kaggle notebook | ⬜ not started | — |
 | O4 — model card and data card | ⬜ not started | — |
 | O5 — submission drafts | ⬜ not started | — |
@@ -50,7 +50,37 @@ Not run on the real dataset (not downloaded yet). No new packages.
 
 ## O2 — `ml/prepare_external.py`
 
-_Not started._
+**Status:** done — 2026-11-01 ~07:50 BST
+
+**Files added**
+- `ml/prepare_external.py` — prepares external test sets in either layout:
+  `--layout folders` (nested class-folder search, shared with O1) or
+  `--layout csv --csv <file> --image-col <name> --label-col <name>`.
+  Copies (never moves) images into `<out>/<label>/`, resizes them to 320 px by
+  importing `resize_image` from `ml/resize_for_upload.py`, skips and warns about
+  labels absent from the `--map` JSON, and writes `<out>/PROVENANCE.md` with
+  source, DOI, date and counts.
+- `ml/tests/test_prepare_external.py` — toy CSV test (required) plus a nested
+  folders test.
+- `ml/EXTERNAL_DATA.md` — download links/DOIs from `data/dataset_inventory.csv`,
+  prepare commands for RiceLeafDisease-BD5 and RiceLeafBD, the RiceyLeafDisease
+  caveat (originals only, no map yet), and the Kaggle `--external` syntax.
+
+**How tested**
+```bash
+python ml/tests/test_prepare_external.py
+```
+Creates a toy CSV dataset with 4 mapped labels and one unmapped label; asserts
+320×320 output folders, the unmapped label is skipped with a warning, source
+files are unchanged, and `PROVENANCE.md` has the DOI. The folders test asserts
+nested class-root detection and the same resize/skip behaviour.
+
+**Notes / problems**
+- Real CSV column names for RiceLeafBD are not known yet; `EXTERNAL_DATA.md`
+  tells the user to open the CSV and pass the actual headers. No names invented.
+- `evaluate.py` uses `rsplit(":", 1)`, so Windows drive-letter paths in
+  `--external` are safe; documented.
+- O1 and O2 tests write only under the git-ignored `ml/toy_data/`.
 
 ## O3 — Kaggle notebook
 
