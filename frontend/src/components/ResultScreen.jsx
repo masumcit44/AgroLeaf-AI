@@ -4,6 +4,7 @@ import PageContainer from './PageContainer.jsx';
 import ResultCard from './ResultCard.jsx';
 import NotSureCard from './NotSureCard.jsx';
 import CallHelpButton from './CallHelpButton.jsx';
+import ShareButton from './ShareButton.jsx';
 import DisclaimerNote from './DisclaimerNote.jsx';
 import BigButton from './BigButton.jsx';
 import { stopActiveAudio } from '../lib/audioManager.js';
@@ -85,6 +86,13 @@ export default function ResultScreen({
 
       {/* 16123 Helpline Button */}
       <CallHelpButton />
+
+      {/* Share / Copy Result Button */}
+      <ShareButton
+        classKey={decision.top?.key}
+        diseaseData={classesData[decision.top?.key]}
+        isConfident={isConfident}
+      />
 
       {/* Retake Photo Button */}
       <div className="w-full max-w-sm">
