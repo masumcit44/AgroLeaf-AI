@@ -126,7 +126,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 #### I7 — Final numbers everywhere
 - **Owner:** Antigravity (OpenCode unavailable since 2 Nov). Split into two parts:
   - **I7b** (Devpost story + demo script): DONE `286a025`. Lead check: only the 2 allowed files changed; every key number rounds correctly from `metrics-v1.json`; live URL filled in by the lead.
-  - **I7a** (deck statistic removal, README fixes, agronomist check): ASSIGNED (`TASK_I7A_DECK_README_ANTIGRAVITY.md`).
+  - **I7a** (deck statistic removal, README fixes, agronomist check): DONE `3e8e226`. Lead check: only 3 files changed; the statistic is gone; deck builds; no claim of agronomist review. The lead also fixed the stale "Azure" voice wording on the About page, README and checklist (`78165a4`, live 01:36:42 BST).
 - **Scope:** accuracy page (`metrics-v1.json` only if I3a), README, Devpost story, demo script, deck text.
 - **Also in scope:**
   - remove the unsourced "rural internet gap 43.6% vs 75.7%" statistic from `deck_outline.md` / `deck_build.py`, with no replacement number (U2);
@@ -151,7 +151,9 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 | U3 | Decide on the disease text | DECIDED 2 Nov: **no agronomist review confirmed.** The text stays marked preliminary, the disclaimer stays, and nothing may claim agronomist verification (checked in I7) |
 | U4 | Demo video (≤ 3 min) | TODO (after I8) |
 | U5 | Devpost submission | TODO |
-| U6 | Start the workers (paste prompts) and close the old OpenCode loop if it is still running | TODO |
+| U6 | Start the workers (paste prompts) | DONE (OpenCode unavailable; Antigravity active) |
+| U7 | **Voice terms:** edge-tts uses Microsoft Edge's read-aloud voices, and Microsoft has not published reuse terms. Accept for this non-commercial entry, or record the 7 clips yourself (checklist item 8) | TODO |
+| U8 | **Earlier research collaborators' agreement** before submitting a solo entry (checklist item 7a; open since 1 Nov) | TODO |
 
 ### After the competition (not started before 5 Nov)
 | ID | Increment | Trigger / dependency |
