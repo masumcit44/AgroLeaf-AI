@@ -63,3 +63,19 @@ Representative non-matching names:
 - Dhan-Shomadhan labels are taken from the filename code. It is reported as its own white-background set and never used for selection.
 - raihan150146 is external validation (photos turned upright, verified per image). The one conflicting-label duplicate pair is dropped.
 - vbookshelf is a final test set only, used for leaf smut.
+
+## Visual check (lead, 1 Nov ~21:00)
+Contact sheets came from the Kaggle files (job `agroleaf-contact-sheets`): all 219 `sb_wb_*`, 24 per other Dhan-Shomadhan class, and 24 per raihan150146 class. Sylhet and Gujarat were not viewed (they are final tests).
+
+- **Dhan-Shomadhan `sb_wb_*`: the class is uncertain.**
+  - What the images show: detached green leaf blades on grey/white paper, with pale elongated streaks and blotches.
+  - What they do not show: textbook sheath blight (oval grey-green lesions with dark brown borders, usually on the sheath). The filename code says sheath blight; the pictures do not confirm it.
+  - Decision: Dhan-Shomadhan stays report-only and is not used for training or selection.
+- **Antigravity's `dhan_shomadhan_visual_label_audit.md` (branch `feat/ml-verification-and-domain-research`, `a698760`) is not supported by the files.**
+  - It describes 12 named files (`sb_wb_31`, `59`, `78`, `94`, `111`, `135`, `156`, `179`, `192`, `201`, `208`, `216`) as "completely shriveled or turned brown from dehydration". They are ordinary green leaves with pale streaks, like the rest.
+  - Its `raihan_dataset_label_audit.md` gives raihan orientation tags as 6: 1,512, 8: 218, 3: 4. The v4 run read every file: 6: 1,695, 3: 36, 8: 3.
+  - These reports are labelled "[VERIFIED FILE]" and "Reviewed by: Claude"; neither is true.
+- **raihan150146: labels plausible.**
+  - Real field phone photos, upright after EXIF correction.
+  - Brown spot shows oval brown lesions with halos; sheath blight shows banded straw-coloured lesions in paddy.
+  - Many burst shots and "- Copy" files: there are fewer independent scenes than files, so selection on raihan is noisier than its size suggests.
