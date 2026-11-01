@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import warnings
 import zipfile
 from pathlib import Path
 
@@ -41,22 +42,33 @@ CONFIG_TEXT = "export const MODEL_URL = '/models/rice-placeholder.onnx';\n"
 
 
 def write_tiny_onnx(path):
-    import onnx
-    from onnx import TensorProto, helper
+    """Export a tiny model with the same torch.onnx.export settings as the placeholder."""
+    import torch
+    import torch.nn as nn
 
-    x = helper.make_tensor_value_info("input", TensorProto.FLOAT, [1, 3, 224, 224])
-    y = helper.make_tensor_value_info("logits", TensorProto.FLOAT, [1, 6])
-    weights = helper.make_tensor("W", TensorProto.FLOAT, [6, 3], [0.01] * 18)
-    nodes = [
-        helper.make_node("ReduceMean", ["input"], ["pooled"], axes=[2, 3], keepdims=1),
-        helper.make_node("Flatten", ["pooled"], ["features"]),
-        helper.make_node("Gemm", ["features", "W"], ["logits"], alpha=1.0, transB=1),
-    ]
-    graph = helper.make_graph(nodes, "tiny_run", [x], [y], [weights])
-    model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", 17)])
-    model.ir_version = 8
-    onnx.checker.check_model(model)
-    onnx.save(model, str(path))
+    class Tiny(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.fc = nn.Linear(3, 6)
+
+        def forward(self, x):
+            return self.fc(x.mean(dim=(2, 3)))
+
+    torch.manual_seed(42)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        torch.onnx.export(
+            Tiny().eval(),
+            torch.randn(1, 3, 224, 224, dtype=torch.float32),
+            str(path),
+            export_params=True,
+            opset_version=17,
+            do_constant_folding=True,
+            input_names=["input"],
+            output_names=["logits"],
+            dynamic_axes=None,
+            dynamo=False,
+        )
     with open(path, "rb") as handle:
         assert handle.read(1) == b"\x08", "test ONNX must start with 0x08"
 
