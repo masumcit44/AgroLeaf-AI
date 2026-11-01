@@ -196,6 +196,10 @@ async function main() {
       'এটি কৃষিবিদ বা ল্যাব টেস্টের বিকল্প নয়। অ্যাপটি নিজে কোনো রাসায়নিক ডোজ বা চিকিৎসা উদ্ভাবন করে না।',
       'This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical.',
       'এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।',
+      'এটি প্রাথমিক ধারণা দেয়, চূড়ান্ত রোগ নির্ণয় নয়।',
+      'এটি প্রাথমিক ধারণা দেয়, চূড়ান্ত রোগ নির্ণয় নয়',
+      'This gives a preliminary screening idea, not a final diagnosis.',
+      'This gives a preliminary idea, not a final diagnosis.',
     ].filter(Boolean);
 
     // Viewports to test
