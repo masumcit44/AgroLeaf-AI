@@ -126,7 +126,7 @@ def prepare_from_csv(csv_path, out_root, mapping, image_col, label_col, image_ba
             while final.exists():
                 final = out_root / label / f"{src.stem}_{n}.jpg"
                 n += 1
-            resize_image(src, final.with_suffix(""), size=size)
+            resize_image(src, final, size=size)
             counts[label] += 1
 
     if missing:
