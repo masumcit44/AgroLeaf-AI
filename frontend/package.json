@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "smoke": "node scripts/smoke.mjs",
     "check:release": "node scripts/check-release.mjs",
-    "audit:lighthouse": "node scripts/run-lighthouse.mjs"
+    "audit:lighthouse": "node scripts/run-lighthouse.mjs",
+    "audit:perf": "node scripts/run-performance-audit.mjs"
   },
   "dependencies": {
     "onnxruntime-web": "1.31.1",
