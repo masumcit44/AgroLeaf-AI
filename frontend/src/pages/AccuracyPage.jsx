@@ -197,7 +197,7 @@ export default function AccuracyPage({
             {metrics.external.map((ext, idx) => (
               <div key={idx} className="border border-gray-200 rounded-xl p-4 bg-gray-50/50 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <span className="font-bold text-gray-900 text-sm">{ext.name}</span>
+                  <span className="font-bold text-gray-900 text-sm min-w-0 [overflow-wrap:anywhere]">{ext.name}</span>
                   {ext.doi ? (
                     <span className="text-[11px] text-gray-500 font-mono">DOI: {ext.doi}</span>
                   ) : null}
@@ -225,7 +225,7 @@ export default function AccuracyPage({
                   </div>
                 </div>
                 {ext.method && (
-                  <div className="text-xs text-gray-500 bg-white border border-gray-200 rounded-lg p-2.5 leading-relaxed">
+                  <div className="text-xs text-gray-500 bg-white border border-gray-200 rounded-lg p-2.5 leading-relaxed min-w-0 [overflow-wrap:anywhere]">
                     <span className="font-semibold text-gray-700 mr-1">
                       {`${t('evalMethodLabel')}: `}
                     </span>
