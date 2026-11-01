@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
 Export PyTorch MobileNetV3 checkpoint to ONNX format.
-Enforces: opset 17, input 'input' [1,3,224,224], output 'logits' [1,6],
-validation via onnx.checker, and hard failure if file >= 24 MiB.
+Prefers stable TorchScript exporter (dynamo=False), strictly forbids external data
+(ensuring a single self-contained file), validates with onnx.checker, prints opset
+and operators, and enforces < 24 MiB size limit for Cloudflare Pages.
 """
 
 import argparse
+import glob
 import json
 import os
 import sys
@@ -38,7 +40,8 @@ def export_onnx(run_dir: Path, output_file: Path) -> None:
     print(f"Exporting {arch} checkpoint to ONNX: {output_file}")
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    # Export to ONNX
+    # 1. Prefer stable TorchScript-based exporter (dynamo=False) to ensure single-file export
+    exported = False
     try:
         torch.onnx.export(
             model,
@@ -50,28 +53,62 @@ def export_onnx(run_dir: Path, output_file: Path) -> None:
             input_names=["input"],
             output_names=["logits"],
             dynamic_axes=None,  # Fixed shape [1,3,224,224] per contract
-        )
-    except Exception as e:
-        print(f"Standard export failed ({e}); falling back to dynamo=False...")
-        torch.onnx.export(
-            model,
-            dummy_input,
-            str(output_file),
-            export_params=True,
-            opset_version=17,
-            do_constant_folding=True,
-            input_names=["input"],
-            output_names=["logits"],
-            dynamic_axes=None,
             dynamo=False,
         )
+        exported = True
+        print("Successfully exported via TorchScript exporter (dynamo=False).")
+    except Exception as e:
+        print(f"TorchScript exporter failed ({e}); falling back to dynamo exporter with external_data=False...")
 
-    # Validate ONNX model with onnx.checker
+    if not exported:
+        try:
+            torch.onnx.export(
+                model,
+                dummy_input,
+                str(output_file),
+                export_params=True,
+                opset_version=17,
+                do_constant_folding=True,
+                input_names=["input"],
+                output_names=["logits"],
+                dynamic_axes=None,
+                external_data=False,
+            )
+            print("Successfully exported via dynamo exporter.")
+        except Exception as e:
+            sys.stderr.write(f"\nERROR: Both ONNX export routes failed: {e}\n")
+            sys.exit(1)
+
+    # 2. Check for external data files
+    data_files = list(output_file.parent.glob("*.data"))
+    if data_files:
+        sys.stderr.write(
+            f"\nERROR: External data file(s) detected: {[p.name for p in data_files]}!\n"
+            f"The browser requires a single self-contained ONNX file.\n"
+        )
+        sys.exit(1)
+
+    # 3. Validate ONNX model with onnx.checker
     onnx_model = onnx.load(str(output_file))
     onnx.checker.check_model(onnx_model)
     print("ONNX model structure verified via onnx.checker.check_model().")
 
-    # Check file size
+    # 4. Check initializers for external data location
+    for init in onnx_model.graph.initializer:
+        if init.data_location == onnx.TensorProto.EXTERNAL:
+            sys.stderr.write(
+                f"\nERROR: Initializer '{init.name}' is stored as EXTERNAL data!\n"
+                f"Model must be completely self-contained in a single file.\n"
+            )
+            sys.exit(1)
+
+    # 5. Print opset version and used operator types
+    opset_ver = onnx_model.opset_import[0].version if onnx_model.opset_import else "unknown"
+    op_types = sorted(list({node.op_type for node in onnx_model.graph.node}))
+    print(f"ONNX Opset version: {opset_ver}")
+    print(f"ONNX Operators used ({len(op_types)}): {', '.join(op_types)}")
+
+    # 6. Check file size
     file_bytes = os.path.getsize(output_file)
     file_mb = file_bytes / (1024 * 1024)
     print(f"Exported ONNX file size: {file_mb:.2f} MiB ({file_bytes:,} bytes)")
@@ -83,7 +120,7 @@ def export_onnx(run_dir: Path, output_file: Path) -> None:
         )
         sys.exit(1)
 
-    print("File size check passed: < 24 MiB.")
+    print("File size check passed: < 24 MiB (single self-contained file).")
 
     # Update metrics-v1.json if it exists
     metrics_path = run_dir / "metrics-v1.json"
