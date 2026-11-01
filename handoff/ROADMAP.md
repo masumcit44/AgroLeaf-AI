@@ -106,7 +106,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Scope:** the accuracy page and docs state the measured outside-district results and limits. Exact values come from `results/accuracy_page_entries.json` (`83f0c27`).
 
 #### I4 — Offline second analysis and QA-script false alarms
-- **Owner:** OpenCode. **Branch:** `fix/offline-reanalysis`. **Status:** IN_PROGRESS (branch created, uncommitted work, 2 Nov 00:27).
+- **Owner:** Claude (OpenCode unavailable). **Status:** INVESTIGATED, no inference bug. Offline, gallery photos are still analysed correctly (checked on the live site). K2 was misleading: it taps a sample, and samples need the network. Real small UI issue: offline, the sample row disappears (the manifest is re-fetched on every home visit). Low priority; fix later if time allows. QA-script B4 false alarms: still TODO (low).
 - **Acceptance:** the K2 check passes offline; B4 checks use localStorage / `<html lang>`; vitest, lint and build pass.
 - **Review:** the lead re-runs the tests and K2 before merging.
 
@@ -124,7 +124,9 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Note:** the voice is already live (`2779990`) and approved by the user's listening. This is extra evidence only.
 
 #### I7 — Final numbers everywhere
-- **Owner:** OpenCode writes; Claude reviews. **Branch:** `docs/final-numbers`. **Depends on:** I1, I2, I5. **Status:** BLOCKED.
+- **Owner:** Antigravity (OpenCode unavailable since 2 Nov). Split into two parts:
+  - **I7b** (Devpost story + demo script): DONE `286a025`. Lead check: only the 2 allowed files changed; every key number rounds correctly from `metrics-v1.json`; live URL filled in by the lead.
+  - **I7a** (deck statistic removal, README fixes, agronomist check): ASSIGNED (`TASK_I7A_DECK_README_ANTIGRAVITY.md`).
 - **Scope:** accuracy page (`metrics-v1.json` only if I3a), README, Devpost story, demo script, deck text.
 - **Also in scope:**
   - remove the unsourced "rural internet gap 43.6% vs 75.7%" statistic from `deck_outline.md` / `deck_build.py`, with no replacement number (U2);

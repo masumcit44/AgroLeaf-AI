@@ -89,7 +89,7 @@ React · Vite · Tailwind CSS · JavaScript · ONNX Runtime Web (WASM) · PyTorc
 
 **Links**
 
-- Live app: `[[live URL]]`
+- Live app: https://agroleaf-ai.pages.dev
 - GitHub: https://github.com/masumcit44/AgroLeaf-AI
 - Demo video: `[[YouTube URL, English]]`
 - Model card: `model/MODEL_CARD.md` · Data card: `data/DATA_CARD.md`
