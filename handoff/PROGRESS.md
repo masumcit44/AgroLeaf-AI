@@ -4,7 +4,7 @@
 
 | # | Module | Status | Date/time (BST) | Branch / PR / tag | Tested how |
 |---|---|---|---|---|---|
-| M00 | Repo bootstrap | ⬜ | | | |
+| M00 | Repo bootstrap | ✅ | 01 Nov 2026 07:05 BST | main / tag m00 | Git init, .gitignore, clean status, push & tag |
 | M01 | ML pipeline scripts | ⬜ | | | |
 | M02 | Frontend scaffold + deploy | ⬜ | | | |
 | M03 | Image input + quality | ⬜ | | | |
