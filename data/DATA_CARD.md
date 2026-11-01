@@ -36,14 +36,17 @@ All datasets are rice leaf images from Bangladesh. None is used to train on the 
 |---|---|---|
 | Healthy | `healthy` | সুস্থ পাতা |
 | Blast | `blast` | ব্লাস্ট |
-| Brown Spot | `brown_spot` | বাদামী দাগ |
-| Leaf Smut | `leaf_smut` | পাতার স্মাট / পাতায় কালো দাগ (term to be confirmed) |
+| Brown spot | `brown_spot` | বাদামী দাগ |
+| Leaf smut | `leaf_smut` | পাতার স্মাট / পাতায় কালো দাগ (term to be confirmed) |
 | Rice Tungro | `tungro` | টুংরো |
-| Sheath Blight | `sheath_blight` | খোল পোড়া |
+| Sheath blight | `sheath_blight` | খোল পোড়া |
 
 The class index is fixed by the folder order discovered at preparation time and written to `class_index.json`. The app, `ml/common.py` and the disease JSON must use that same order.
 
 **Known issues**
+- Training used the Kaggle mirror `shahiismyname/riceleafdiseasebd-dataset` (`Original images` folder, 9,769 images, matching the Mendeley v3 count; class folder labels only).
+- Its YOLO box files are an older annotation version (about 70k boxes vs 21,460 in v3); boxes are not used by this classifier.
+- Never train on the `Annotated images (visual with labels)` folder: it has boxes drawn on the photos.
 - **One district, one season, two phones.** Domain shift is expected; this is why external testing is mandatory.
 - Class imbalance is unknown until the audit. Class weights are decided after the audit, not before.
 - Field photos are often burst shots, so near-duplicates are likely. They must be grouped and never split across train and test.
