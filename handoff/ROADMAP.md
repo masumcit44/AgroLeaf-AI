@@ -126,7 +126,15 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 #### I7 — Final numbers everywhere
 - **Owner:** OpenCode writes; Claude reviews. **Branch:** `docs/final-numbers`. **Depends on:** I1, I2, I5. **Status:** BLOCKED.
 - **Scope:** accuracy page (`metrics-v1.json` only if I3a), README, Devpost story, demo script, deck text.
-- **Acceptance:** every I5 mismatch fixed; no `[[...]]` except personal fields; banned-claims check passes.
+- **Also in scope:**
+  - remove the unsourced "rural internet gap 43.6% vs 75.7%" statistic from `deck_outline.md` / `deck_build.py`, with no replacement number (U2);
+  - fix `README.md:59` ("evaluation in progress") and `README.md:174` ("release check expected to fail") (I5 findings).
+- **Acceptance:**
+  - every I5 mismatch fixed;
+  - no `[[...]]` except personal fields;
+  - banned-claims check passes;
+  - `git grep -n -i "agronomist"` shows no claim that the content was reviewed or verified by an agronomist;
+  - the preliminary-screening disclaimer is still present in the app and the docs.
 
 #### I8 — Release check on the live site
 - **Owner:** Claude. **Depends on:** I3, I4, I7. **Status:** TODO.
@@ -137,8 +145,8 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 | ID | Task | Status |
 |---|---|---|
 | U1 | Real Android phone test (camera, gallery, voice, share) | TODO |
-| U2 | Deck personal fields + a source for the "rural internet gap" figure | TODO |
-| U3 | Decide on the disease text: `disease_information_bn.json` says "DRAFT — must be reviewed by an agronomist"; either get a review or keep the "preliminary screening" disclaimer | TODO |
+| U2 | Deck personal fields + a source for the "rural internet gap" figure | DECIDED 2 Nov: no reliable source, so **remove the 43.6% vs 75.7% statistic** with no replacement number (done in I7); personal fields still TODO |
+| U3 | Decide on the disease text | DECIDED 2 Nov: **no agronomist review confirmed.** The text stays marked preliminary, the disclaimer stays, and nothing may claim agronomist verification (checked in I7) |
 | U4 | Demo video (≤ 3 min) | TODO (after I8) |
 | U5 | Devpost submission | TODO |
 | U6 | Start the workers (paste prompts) and close the old OpenCode loop if it is still running | TODO |
@@ -171,7 +179,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 ## 7. Decisions needing the user's approval
 1. **No backend/database for the competition release** (§3). **APPROVED by the user, 2 Nov 2026.**
 2. **No new model training before the deadline.** Ship v1 or v4-B according to I1.
-3. **U3:** the agronomist review vs the disclaimer.
+3. ~~U3~~ decided: keep it preliminary, with the disclaimer.
 4. **After the competition:** whether to pursue P1–P3 (consented data collection is the real path to better accuracy).
 
 ## 8. Key risks
