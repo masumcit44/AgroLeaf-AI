@@ -105,6 +105,7 @@ export default {
   accuracyTitle: "Model Accuracy & Transparency",
   evalInProgress: "Evaluation in progress",
   evalInProgressDesc: "Measured test results from Kaggle GPU training and external-district evaluation will appear here once runs are completed. No unverified or placeholder metrics are displayed.",
+  evalMethodLabel: "Method",
 
   aboutTitle: "About AgroLeaf AI",
   aboutDescription: "AgroLeaf AI is a mobile-first web app designed for Bangladeshi rice farmers. It uses on-device WebAssembly machine learning (MobileNetV3) to screen for foliar rice diseases entirely in the browser. After the first load, it keeps working on a slow or broken connection.",

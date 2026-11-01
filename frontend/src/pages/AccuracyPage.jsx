@@ -198,7 +198,9 @@ export default function AccuracyPage({
               <div key={idx} className="border border-gray-200 rounded-xl p-4 bg-gray-50/50 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <span className="font-bold text-gray-900 text-sm">{ext.name}</span>
-                  <span className="text-[11px] text-gray-500 font-mono">DOI: {ext.doi}</span>
+                  {ext.doi ? (
+                    <span className="text-[11px] text-gray-500 font-mono">DOI: {ext.doi}</span>
+                  ) : null}
                 </div>
                 <div className="text-xs text-gray-600">
                   <span className="font-semibold">{lang === 'bn' ? 'পরীক্ষিত রোগসমূহ: ' : 'Classes tested: '}</span>
@@ -222,6 +224,14 @@ export default function AccuracyPage({
                     <span className="font-bold text-sm text-leaf-700">{formatMetric(ext.unseen_rejection_rate)}</span>
                   </div>
                 </div>
+                {ext.method && (
+                  <div className="text-xs text-gray-500 bg-white border border-gray-200 rounded-lg p-2.5 leading-relaxed">
+                    <span className="font-semibold text-gray-700 mr-1">
+                      {`${t('evalMethodLabel')}: `}
+                    </span>
+                    {ext.method}
+                  </div>
+                )}
               </div>
             ))}
           </div>

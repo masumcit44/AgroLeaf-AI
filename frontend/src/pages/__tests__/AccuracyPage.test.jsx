@@ -1,4 +1,5 @@
 import React from 'react';
+import fs from 'node:fs';
 import { describe, it, expect, vi } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import AccuracyPage from '../AccuracyPage.jsx';
@@ -92,5 +93,27 @@ describe('AccuracyPage Renderer (X2)', () => {
 
   it('ensures fixture file contains FIXTURE_NOT_REAL and is never in public/', () => {
     expect(fixtureData.FIXTURE_NOT_REAL).toBe(true);
+  });
+
+  it('renders all 4 external validation entries (Sylhet, Savar, raihan, Gujarat) and method text without crashing', () => {
+    const raw = fs.readFileSync(new URL('../../../public/data/metrics-v1.json', import.meta.url), 'utf-8');
+    const realMetrics = JSON.parse(raw);
+    expect(realMetrics.external).toHaveLength(4);
+
+    const htmlEn = renderMarkup(<AccuracyPage initialMetrics={realMetrics} />, 'en');
+    expect(htmlEn).toContain('RiceLeafBD Sylhet-Dhaka');
+    expect(htmlEn).toContain('RiceLeafDisease-BD5 Savar');
+    expect(htmlEn).toContain('Sirajganj/Pabna phone photos');
+    expect(htmlEn).toContain('UCI Rice Leaf Diseases, Gujarat India');
+    expect(htmlEn).toContain('Method:');
+    expect(htmlEn).toContain('2 Nov 2026 re-evaluation');
+
+    const htmlBn = renderMarkup(<AccuracyPage initialMetrics={realMetrics} />, 'bn');
+    expect(htmlBn).toContain('RiceLeafBD Sylhet-Dhaka');
+    expect(htmlBn).toContain('RiceLeafDisease-BD5 Savar');
+    expect(htmlBn).toContain('Sirajganj/Pabna phone photos');
+    expect(htmlBn).toContain('UCI Rice Leaf Diseases, Gujarat India');
+    expect(htmlBn).toContain('পদ্ধতি:');
+    expect(htmlBn).toContain('2 Nov 2026 re-evaluation');
   });
 });

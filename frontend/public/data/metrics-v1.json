@@ -65,32 +65,33 @@
         "healthy",
         "tungro"
       ],
-      "n": 1560,
-      "accuracy_mapped": 0.5202,
-      "macro_f1_mapped": 0.5333,
-      "coverage": 0.7891,
-      "selective_accuracy": 0.5601,
-      "unseen_rejection_rate": 0.2773,
+      "n": 1423,
+      "accuracy_mapped": 0.5435,
+      "macro_f1_mapped": 0.5483,
+      "coverage": 0.6221,
+      "selective_accuracy": 0.5368,
+      "unseen_rejection_rate": 0.3242,
       "per_class": {
         "healthy": {
-          "precision": 0.7612,
-          "recall": 0.873,
-          "f1": 0.8133,
+          "precision": 0.77,
+          "recall": 0.877,
+          "f1": 0.82,
           "support": 252
         },
         "brown_spot": {
-          "precision": 0.2182,
-          "recall": 0.0674,
-          "f1": 0.103,
-          "support": 356
+          "precision": 0.2857,
+          "recall": 0.0749,
+          "f1": 0.1187,
+          "support": 347
         },
         "tungro": {
-          "precision": 0.7131,
-          "recall": 0.6566,
-          "f1": 0.6837,
-          "support": 530
+          "precision": 0.7096,
+          "recall": 0.7024,
+          "f1": 0.706,
+          "support": 494
         }
-      }
+      },
+      "method": "2 Nov 2026 re-evaluation: photos made upright (EXIF), near-duplicates removed, scored with the app's full decision rule (healthy >= 0.90, leaf smut not sure, colour gate). See model/experiments/eval_unified/DECISION_RESULT.md."
     },
     {
       "name": "RiceLeafDisease-BD5 Savar (Kaggle copy sohagdewan/riceleafdisease-bd5, 3,150 imgs; provenance not verified vs Mendeley v2)",
@@ -133,6 +134,78 @@
           "support": 626
         }
       }
+    },
+    {
+      "name": "Rice leaf diseases, Sirajganj/Pabna phone photos (Kaggle raihan150146/rice-leaf-diseases-dataset; unseen district)",
+      "doi": null,
+      "classes_tested": [
+        "blast",
+        "brown_spot",
+        "healthy",
+        "sheath_blight"
+      ],
+      "n": 1794,
+      "accuracy_mapped": 0.3078,
+      "macro_f1_mapped": 0.4143,
+      "coverage": 0.6851,
+      "selective_accuracy": 0.0985,
+      "unseen_rejection_rate": 0.198,
+      "per_class": {
+        "healthy": {
+          "precision": 0.8962,
+          "recall": 0.9111,
+          "f1": 0.9036,
+          "support": 180
+        },
+        "blast": {
+          "precision": 0.2077,
+          "recall": 0.1007,
+          "f1": 0.1357,
+          "support": 268
+        },
+        "brown_spot": {
+          "precision": 0.7879,
+          "recall": 0.1036,
+          "f1": 0.1831,
+          "support": 251
+        },
+        "sheath_blight": {
+          "precision": 0.7798,
+          "recall": 0.3014,
+          "f1": 0.4348,
+          "support": 282
+        }
+      },
+      "method": "2 Nov 2026 re-evaluation: photos made upright (EXIF), near-duplicates removed, scored with the app's full decision rule (healthy >= 0.90, leaf smut not sure, colour gate). See model/experiments/eval_unified/DECISION_RESULT.md."
+    },
+    {
+      "name": "UCI Rice Leaf Diseases, Gujarat India (Kaggle vbookshelf/rice-leaf-diseases; only outside leaf-smut photos)",
+      "doi": null,
+      "classes_tested": [
+        "brown_spot",
+        "leaf_smut"
+      ],
+      "n": 120,
+      "accuracy_mapped": 0.0625,
+      "macro_f1_mapped": 0.0985,
+      "coverage": 0.5,
+      "selective_accuracy": 0.05,
+      "unseen_rejection_rate": 0.425,
+      "per_class": {
+        "brown_spot": {
+          "precision": 0.1667,
+          "recall": 0.05,
+          "f1": 0.0769,
+          "support": 40
+        },
+        "leaf_smut": {
+          "precision": 0.3,
+          "recall": 0.075,
+          "f1": 0.12,
+          "support": 40
+        }
+      },
+      "method": "2 Nov 2026 re-evaluation: photos made upright (EXIF), near-duplicates removed, scored with the app's full decision rule (healthy >= 0.90, leaf smut not sure, colour gate). See model/experiments/eval_unified/DECISION_RESULT.md."
     }
   ],
   "limitations": [
@@ -141,7 +214,11 @@
     "On photos from other districts the accuracy drops sharply: Sylhet-Dhaka 52% (mapped classes, 1,560 images) and Savar 34% (3,150 images, cut leaves on white background). Brown spot is rarely recognised outside Gazipur.",
     "External test sets are community Kaggle copies of the published datasets; their provenance was not verified file-by-file against Mendeley.",
     "This is a research prototype: use the result as a first hint and confirm with an agriculture officer or 16123.",
-    "Safety gate: about 4% of everyday photos and 14% of other-crop leaves still get an answer; about 2% of real rice photos from other districts are wrongly called \"not a leaf\". On Savar photos the app now answers only 37% of the time and \"Healthy\" is right 64% of the time, so it must be field-tested before wider use."
+    "Safety gate: about 4% of everyday photos and 14% of other-crop leaves still get an answer; about 2% of real rice photos from other districts are wrongly called \"not a leaf\". On Savar photos the app now answers only 37% of the time and \"Healthy\" is right 64% of the time, so it must be field-tested before wider use.",
+    "On photos from districts the model never saw, its answers are often wrong: 53.7% of its answers were right on Sylhet photos, 9.8% on raihan (Sirajganj/Pabna) photos and 5% on Gujarat (India) photos.",
+    "Brown spot is almost never recognised outside the training district (Sylhet recall 7%).",
+    "Rice problems the app does not cover (for example bacterial leaf blight, hispa, leaf scald) are often shown as one of the covered diseases (Sylhet 67.6%, raihan 80.2%).",
+    "The disease information is preliminary and has not been reviewed by an agronomist."
   ],
   "safety_gate": {
     "summary_en": "Two extra checks run before an answer is shown: a leaf-colour check rejects photos that are not leaves, and \"Healthy\" is only said at high confidence (>= 90%), because wrongly telling a farmer to do nothing is the costliest error. Thresholds were chosen on the validation split and on half of the other sets; the numbers below come from data not used for tuning. Coverage here counts leaf smut as \"not sure\".",
