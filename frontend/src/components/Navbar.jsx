@@ -8,7 +8,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xs border-b border-gray-200/80 shadow-xs w-full">
-      <div className="max-w-xl mx-auto px-3 py-2 flex items-center justify-between gap-2 min-w-0">
+      <div className="max-w-xl mx-auto px-2 sm:px-3 py-2 flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
         {/* Left: AIgnite Sticker (height strictly >= 40px and <= 52px, never shrinks below 40px) */}
         <a
           href={ROUTES.HOME}
@@ -16,7 +16,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
             e.preventDefault();
             onNavigate(ROUTES.HOME);
           }}
-          className="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-0 rounded-lg p-0.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
+          className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 rounded-lg p-0.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
           aria-label={t('navHome')}
         >
           <img
@@ -27,10 +27,10 @@ export default function Navbar({ currentRoute, onNavigate }) {
             height="44"
           />
           <div className="flex flex-col leading-tight min-w-0 overflow-hidden">
-            <span className="font-bold text-leaf-700 text-sm sm:text-base tracking-tight truncate">
+            <span className="font-bold text-leaf-700 text-xs min-[370px]:text-sm sm:text-base tracking-tight truncate">
               {t('appName')}
             </span>
-            <span className="text-[10px] sm:text-xs text-gray-500 font-medium -mt-0.5 truncate hidden min-[380px]:block">
+            <span className="text-[10px] sm:text-xs text-gray-500 font-medium -mt-0.5 truncate hidden sm:block">
               {t('appSubtitle')}
             </span>
           </div>
