@@ -25,6 +25,7 @@ export default function Navbar({ currentRoute, onNavigate }) {
             className="h-10 sm:h-11 md:h-12 w-auto object-contain shrink-0"
             width="124"
             height="44"
+            fetchpriority="high"
           />
           <div className="flex flex-col leading-tight min-w-0 overflow-hidden">
             <span className="font-bold text-leaf-700 text-xs min-[370px]:text-sm sm:text-base tracking-tight truncate">

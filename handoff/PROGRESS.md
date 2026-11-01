@@ -1,8 +1,9 @@
 # PROGRESS — updated by Antigravity after every module
 
-## Autonomous run report 01 Nov 2026 (Updated 09:50 BST)
-- **Modules completed in this run:** `m02`, `m03`, `m04`, `m05`, `m06`, `m08-partial`, `m08b`, `track/opencode-merge`, `x1`, `x2`, `x3`, `x4`, `y1`, `y2`, `y3`, `m07`
+## Autonomous run report 01 Nov 2026 (Updated 09:56 BST)
+- **Modules completed in this run:** `m02`, `m03`, `m04`, `m05`, `m06`, `m08-partial`, `m08b`, `track/opencode-merge`, `x1`, `x2`, `x3`, `x4`, `y1`, `y2`, `y3`, `m07`, `y4`
 - **What was built:**
+  - **Y4 (Performance Budget):** Implemented Route Code-Splitting via `React.lazy()` and `<Suspense>` across `AccuracyPage`, `AboutPage`, and `DevParityPage`. Reduced initial Home JS payload to 109.5 kB gzip (39.3 kB first-load transfer). High-priority header sticker (`fetchpriority="high"`), preconnected font origins. Created automated performance runner `frontend/scripts/run-performance-audit.mjs` (`npm run audit:perf`) measuring Slow 4G + 4x CPU throttle (FCP 0.9-1.8s, TTI ~1.0s). Recorded complete evidence in `documentation/qa/performance_v1.md`.
   - **M07 (Real Model & Measured Results):** Integrated real trained MobileNetV3-Large model (`rice-mnv3l-v1.onnx`, 16.05 MiB, opset 17) trained on 9,601 Kaggle images. Copied metrics, confusion matrix, calibration curve, exclusions, and splits. Deleted placeholder model. Applied weak-class suppression on `leaf_smut` (`calibration.suppress = ["leaf_smut"]`) due to 71.1% recall and no external data. Verified browser parity on `#/dev/parity?dev=1`: Check A passed (max difference $1.96 \times 10^{-6} \ll 10^{-3}$), Check B passed (top-1 match 5/5). Evaluated 10 non-rice synthetic inputs honestly.
   - **Y3:** Automated Lighthouse audit script (`npm run audit:lighthouse`), WCAG 2.5.3 accessibility fixes, robots.txt, 100% a11y score across Home, Accuracy, and About routes.
   - **Y2:** Complete judge-ready README refresh with demo preview, 4 mobile screenshots (390px), problem context, mermaid flow, responsible AI safeguards, and release checklist.
@@ -11,17 +12,18 @@
   - **M02–M06, M08b:** Frontend scaffold, image quality heuristics, on-device CPU WASM inference, farmer result screens, offline Bangla TTS tooling, and mobile overflow fixes.
 - **How tested:**
   - Vitest: 44 unit and component tests passing (100% pass across 11 test suites).
-  - Oxlint: 0 warnings and 0 errors across 68 files.
-  - Vite build: Client production build succeeds; all assets verified under Cloudflare Pages 25 MiB ceiling (`rice-mnv3l-v1.onnx` is 16.05 MiB).
+  - Oxlint: 0 warnings and 0 errors across 69 files.
+  - Vite build: Client production build succeeds; all assets verified under Cloudflare Pages 25 MiB ceiling.
   - Puppeteer Smoke Test: 100% pass across 360px, 390px, and 1280px viewports on all 10 application routes.
   - Headless Browser Parity (`verify-parity-browser.mjs`): Check A runtime diff $1.96 \times 10^{-6} < 10^{-3}$, Check B top-1 matches 5/5.
+  - Performance Audit (`run-performance-audit.mjs`): Initial bundle 109.5 kB gz, first load 39.3 kB, FCP 0.9-1.8s under Slow 4G + 4x CPU throttle.
   - Release Guards (`check-release.mjs`): 6/8 passed (1 warning for voice audio pending user Azure key; 1 fail for real sample strip manifest which lead instructed to keep hidden until balanced samples arrive).
   - Non-Rice Abstention Test (`test_non_rice.py`): 10 non-rice synthetic/proxy inputs evaluated and documented honestly.
 - **What YOU must do next:**
   1. **Azure Speech Key (Optional for Voice):** If you want audio narration files generated, create free Azure F0 Speech resource and run `python ml/tools/generate_tts.py`.
   2. **Balanced Real Samples:** The lead noted that balanced real sample photos from all classes will be provided for the sample strip.
   3. **Cloudflare Pages Connect:** Connect GitHub repository `masumcit44/AgroLeaf-AI` to Cloudflare Pages.
-- **Next module to run:** `Y4` (Performance budget).
+- **Next module to run:** `M08` (final polish items once user/lead supplies balanced real samples or external Savar results).
 - **How to preview the app right now:**
   ```bash
   cd frontend
@@ -49,7 +51,7 @@
 | Y1 | M07 rehearsal (toy run on throwaway branch) | ✅ | 01 Nov 2026 09:30 BST | rehearsal/m07-toy (deleted locally, never pushed) | make_release_bundle dry & real run passed, 11 files copied, vitest 44/44 pass, build pass, smoke pass, check:release (6 pass, 1 warn, 1 fail expected), findings in handoff/M07_REHEARSAL_NOTES.md |
 | Y2 | Professional README refresh | ✅ | 01 Nov 2026 09:35 BST | feat/y2-readme-refresh / tag y2 | product page for judges: hero, live demo placeholder, 4 screenshots (390px), problem context, mermaid flow, responsible AI, tech stack, release checklist, zero invented numbers |
 | Y3 | Lighthouse & a11y audit + fixes | ✅ | 01 Nov 2026 09:40 BST | feat/y3-lighthouse-a11y / tag y3 | automated runner (npm run audit:lighthouse), mobile 412px, 100% a11y on Home, Accuracy & About; WCAG 2.5.3 label fixes; robots.txt; report in documentation/qa/lighthouse_v1.md |
-| Y4 | Performance budget | ⬜ | | | |
+| Y4 | Performance budget | ✅ | 01 Nov 2026 09:56 BST | feat/y4-performance-budget / tag y4 | automated runner (npm run audit:perf), React.lazy route code-splitting, main JS 109.5 kB gz, first-load 39.3 kB, Slow 4G + 4x CPU throttle FCP 0.9-1.8s, TTI ~1.0s, report in documentation/qa/performance_v1.md |
 | M07 | Real model + accuracy page | ✅ | 01 Nov 2026 09:50 BST | feat/m07-real-model / tag m07 | make_release_bundle 11 files copied, rice-mnv3l-v1.onnx (16.05 MiB < 25 MiB), vitest (44/44 pass), oxlint (0 err), build pass, smoke pass, dev parity in headless Chrome: Check A (diff 1.96e-6 < 1e-3), Check B (top-1 match 5/5), leaf_smut suppressed into not-sure, non-rice test (10 inputs evaluated honestly) |
 | M08 | Polish | 🟨 partial (needs M07) | 01 Nov 2026 08:09 BST | feat/m08-polish / tag m08-partial | items 1-4, 6-12 done: onboarding, error boundary, offline check, samples, share, threshold tuning, about transparency, vitest (26/26 pass), oxlint (0 err), build pass |
 | M09 | QA + release | ⬜ | | | |
