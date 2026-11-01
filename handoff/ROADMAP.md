@@ -39,7 +39,7 @@ Each point is labelled: **[R]** research finding, **[E]** our measured evidence,
 - **[Rec] A future experiment worth one run:** train on lesion and leaf crops from the 74,836 YOLO boxes in RiceLeafDiseaseBD [R: dataset page], tested on raihan.
 
 ## 3. Architecture decision: backend and database
-**Decision for the competition release: no backend, no database.** The app stays static on Cloudflare Pages with in-browser ONNX inference.
+**Decision for the competition release: no backend, no database** (approved by the user, 2 Nov 2026). The app stays static on Cloudflare Pages with in-browser ONNX inference.
 
 **Why** (free-tier facts checked on official pages, 1 Nov 2026):
 - **No card-free host can run our model server-side.** Cloudflare Workers allow 10 ms CPU and 128 MB memory per request. Hugging Face Docker/Gradio Spaces now need PRO. Render free sleeps after 15 minutes, with about a minute to wake.
@@ -165,7 +165,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 **Kaggle:** only the lead launches jobs, at most one at a time.
 
 ## 7. Decisions needing the user's approval
-1. **No backend/database for the competition release** (§3).
+1. **No backend/database for the competition release** (§3). **APPROVED by the user, 2 Nov 2026.**
 2. **No new model training before the deadline.** Ship v1 or v4-B according to I1.
 3. **U3:** the agronomist review vs the disclaimer.
 4. **After the competition:** whether to pursue P1–P3 (consented data collection is the real path to better accuracy).
