@@ -3,6 +3,37 @@
 Branch: `track/opencode` · Agent: opencode (second implementation agent)
 Final summary is added at the top after O5 (or a stop condition).
 
+## Track 2 summary
+
+**Status:** O6 and O7 complete, 2026-11-01 ~08:15 BST. Pushed on
+`track/opencode`. No existing file was changed except this progress file; no
+branch was switched and `main` was not touched.
+
+- **O6 — QA templates:** `documentation/qa/qa_checklist_v1.md` is a blank
+  template with a two-device header (device, Android, browser, network, date),
+  all 11 M09 on-device checks for each of the two devices, the 8 release
+  blockers, and the 7 sticker rules. `documentation/qa/hallway_test_v1.md` has a
+  bilingual consent line, the 5 tasks written to read aloud in simple Bangla
+  with English beside them, a per-participant result table (T1–T5, wrong taps,
+  time to first result, confirmed-result belief, audio understanding, quote),
+  the four pass criteria, and a "Fixes made after the test" table.
+- **O7 — Glossary:** `documentation/glossary_bn_en.md` lists all 7 class/disease
+  names, every JSON key in the BN/EN knowledge files, the 9 fixed UI terms, and
+  **10 inconsistencies for the lead to review**. Bangla was copied exactly from
+  the JSON, not corrected.
+
+**Checks run:** every Bangla disease name, the disclaimer and the helpline were
+asserted present in the glossary by a Python check against
+`disease_information_bn.json`; all glossary tables have 5 columns; the QA row
+sets were checked against M09 §1, `01_MODULE_PLAN.md` and
+`competition_compliance.md`. No result cells were filled and no number was
+invented.
+
+**Open items for the lead:** decide the 10 glossary inconsistencies (retake
+wording, not-sure title, BN/EN field parity, Leaf Smut name, the two placeholder
+BAMIS quotes, etc.). The QA and hallway files still need the user's real
+on-device and 5-person test results.
+
 ## Final summary
 
 **Completed:** O1–O5, 2026-11-01 (started 07:46 BST, finished about 08:20 BST —
@@ -62,6 +93,75 @@ Final tree is clean apart from the supplied `handoff/OPENCODE_TRACK.md`.
 | O3 — Kaggle notebook | ✅ done | `ml/kaggle/agroleaf_train_kaggle.ipynb` |
 | O4 — model card and data card | ✅ done | `model/MODEL_CARD.md`, `data/DATA_CARD.md` |
 | O5 — submission drafts | ✅ done | `documentation/submission/{devpost_story,demo_script_en,deck_outline,submission_checklist}.md` |
+| O6 — QA templates | ✅ done | `documentation/qa/qa_checklist_v1.md`, `documentation/qa/hallway_test_v1.md` |
+| O7 — Bangla/English glossary | ✅ done | `documentation/glossary_bn_en.md` |
+
+## O6 — QA templates (release module M09)
+
+**Status:** done — 2026-11-01 ~08:10 BST
+
+**Files added**
+- `documentation/qa/qa_checklist_v1.md` — blank QA template with a test-session
+  header for two devices (device name, Android version, browser + version,
+  network type, date). Section A has the 11 M09 §1 checks for Device 1 and the
+  same 11 for Device 2; section B has release blockers 1–8 from
+  `handoff/01_MODULE_PLAN.md`; section C has the 7 sticker rules from
+  `documentation/competition_compliance.md`. Columns are ID · Check · Device ·
+  Result (✅/❌) · Notes. A sign-off block records the ❌ counts.
+- `documentation/qa/hallway_test_v1.md` — consent in Bangla and English (no
+  personal data; first names or initials only), the 5 tasks read aloud in simple
+  Bangla with English beside them, a results table for P1–P5 (completed without
+  help on T1–T5, wrong taps, time to first result, thought it was a confirmed
+  result, audio understood, short quote), the four pass criteria from
+  `handoff/OPENCODE_TRACK_2.md`, and a "Fixes made after the test" table.
+
+**How tested**
+- Checked the row text against M09 §1 (11 bullets), the 8 blockers and the 7
+  sticker bullets; no row omitted.
+- Checked that no result cell, pass/fail mark or participant row was pre-filled.
+- Markdown tables checked for a consistent 5-column shape.
+
+**Notes / problems**
+- The QA checklist duplicates the device checks for the second device because
+  M09 requires both a low-end Android phone and a second device. If the lead
+  prefers one row per check with two result columns, the D-12…D-22 block can be
+  folded into D-01…D-11.
+- The hallway tasks point to the not-sure screen without naming it in the
+  spoken instruction; the facilitator hands over a blurry/non-rice photo first.
+- `research_files/Agro_AI_Deep_Research_Result.md` §13 is not in this repo, so
+  the task wording was written from `handoff/M09_release.md` §2 and the brief.
+
+## O7 — Bangla/English glossary
+
+**Status:** done — 2026-11-01 ~08:15 BST
+
+**File added**
+- `documentation/glossary_bn_en.md` — five-column table (Key · Bangla ·
+  English · Where used · Notes) covering:
+  - §1: all 7 class/disease names;
+  - §2: every `_meta` key and every per-class field in both JSONs, including the
+    `official_guidance` sub-keys;
+  - §3: the 9 fixed UI terms from `documentation/frontend_spec.md` and the
+    `handoff/M0*.md` files;
+  - §4: 10 inconsistencies for the lead to review.
+
+**How tested**
+- Python check loaded `disease_information_bn.json` and asserted that every
+  `name_bn`, `_meta.disclaimer_bn` and `_meta.helpline` appears verbatim in the
+  glossary, and that all 9 fixed UI terms are present.
+- All tables are 5 columns; no Bangla spelling was re-typed from memory.
+- No fix was applied to the JSON; the inconsistencies are listed, not changed.
+
+**Notes / problems**
+- Real inconsistencies found (not fixed): three retake wordings, the not-sure
+  class name vs card title, the "রোগ" suffix difference with
+  `data/disease_classes.md`, the unconfirmed Leaf Smut Bangla name, the
+  `frontend_spec.md` "বেশ নিশ্চিত" wording vs M05's high/moderate confidence,
+  BN/EN field parity, the bracketed BAMIS placeholders in `tungro` and
+  `sheath_blight`, the shared BAMIS URL, the two written forms of the helpline,
+  and the different BN/EN `_meta.status` text.
+- `model/class_index.json` (referenced by `_meta.keys_must_match`) is not in the
+  repo yet because the model has not been trained; recorded in the glossary.
 
 ## O1 — `ml/prepare_dataset.py`
 
