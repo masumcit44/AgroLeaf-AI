@@ -38,6 +38,21 @@ export function normalizeToNCHW(rgba, width, height, cfg) {
 }
 
 /**
+ * Python's round(): halves go to the nearest even integer (58.5 -> 58).
+ * torchvision CenterCrop uses it for the crop offset.
+ *
+ * @param {number} x
+ * @returns {number}
+ */
+export function roundHalfEven(x) {
+  const f = Math.floor(x);
+  const diff = x - f;
+  if (diff > 0.5) return f + 1;
+  if (diff < 0.5) return f;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+/**
  * Resize shorter side to cfg.resize_shorter (256) and center-crop to cfg.crop (224x224).
  *
  * @param {HTMLCanvasElement|OffscreenCanvas} sourceCanvas
@@ -52,13 +67,14 @@ export function resizeAndCrop(sourceCanvas, cfg) {
   const srcH = sourceCanvas.height;
 
   // 1. Calculate resized dimensions so shorter side equals resizeShorter
+  //    (torchvision Resize truncates the long side)
   let resizedW, resizedH;
   if (srcW < srcH) {
     resizedW = resizeShorter;
-    resizedH = Math.round(srcH * (resizeShorter / srcW));
+    resizedH = Math.floor((srcH * resizeShorter) / srcW);
   } else {
     resizedH = resizeShorter;
-    resizedW = Math.round(srcW * (resizeShorter / srcH));
+    resizedW = Math.floor((srcW * resizeShorter) / srcH);
   }
 
   // Intermediate canvas for shorter-side resize
@@ -77,9 +93,9 @@ export function resizeAndCrop(sourceCanvas, cfg) {
   resizeCtx.imageSmoothingQuality = 'high';
   resizeCtx.drawImage(sourceCanvas, 0, 0, resizedW, resizedH);
 
-  // 2. Center crop cropSize x cropSize
-  const cropX = Math.floor((resizedW - cropSize) / 2);
-  const cropY = Math.floor((resizedH - cropSize) / 2);
+  // 2. Center crop cropSize x cropSize (offsets rounded like torchvision CenterCrop)
+  const cropX = roundHalfEven((resizedW - cropSize) / 2);
+  const cropY = roundHalfEven((resizedH - cropSize) / 2);
 
   let cropCanvas;
   if (typeof OffscreenCanvas !== 'undefined') {
