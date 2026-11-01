@@ -8,15 +8,22 @@ metrics (coverage, selective accuracy, unseen class rejection rate).
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from PIL import Image
-from sklearn.metrics import classification_report, confusion_matrix, f1_score
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+)
 from torch.utils.data import DataLoader
 
 from calibrate import compute_ece
@@ -29,6 +36,22 @@ from common import (
     set_seed,
 )
 from train import build_model
+
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
+
+
+def parse_external_spec(spec: str) -> Tuple[str, Path, Path]:
+    r"""
+    Parse external spec formatted as 'name=root:mapfile'.
+    Uses rsplit(':', 1) for Windows drive-letter safety (e.g. D:\path).
+    """
+    if "=" not in spec:
+        raise ValueError(f"Invalid external spec (missing '='): {spec}")
+    name_part, path_part = spec.split("=", 1)
+    if ":" not in path_part:
+        raise ValueError(f"Invalid external spec path part (missing ':'): {path_part}")
+    ext_root_str, map_file_str = path_part.rsplit(":", 1)
+    return name_part.strip(), Path(ext_root_str.strip()), Path(map_file_str.strip())
 
 
 def plot_confusion_matrix(cm: np.ndarray, class_names: List[str], out_path: Path) -> None:
@@ -59,7 +82,13 @@ def plot_confusion_matrix(cm: np.ndarray, class_names: List[str], out_path: Path
     plt.close()
 
 
-def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: Optional[List[str]] = None, seed: int = 42) -> None:
+def evaluate(
+    run_dir: Path,
+    data_root: Path,
+    splits_csv: Path,
+    external_specs: Optional[List[str]] = None,
+    seed: int = 42,
+) -> None:
     set_seed(seed)
     device = torch.device("cpu")
 
@@ -80,12 +109,14 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
     temp = 1.0
     threshold = 0.60
     target_prec = 0.90
+    calib_warning = None
     if calib_path.exists():
         with open(calib_path, "r", encoding="utf-8") as f:
             calib_data = json.load(f)
             temp = float(calib_data.get("temperature", 1.0))
             threshold = float(calib_data.get("threshold", 0.60))
             target_prec = float(calib_data.get("target_precision", 0.90))
+            calib_warning = calib_data.get("warning")
 
     # Evaluate internal test
     test_dataset = RiceLeafDataset(
@@ -123,7 +154,10 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
     cov = float(np.mean(accepted)) if len(accepted) > 0 else 0.0
     sel_acc = float(np.mean(preds[accepted] == labels_t[accepted])) if np.sum(accepted) > 0 else 0.0
 
-    print(f"Internal Test: Accuracy={raw_acc:.4f}, Macro-F1={macro_f1:.4f}, Coverage={cov:.2%}, Selective Acc={sel_acc:.2%}, ECE={ece:.4f}")
+    print(
+        f"Internal Test: Accuracy={raw_acc:.4f}, Macro-F1={macro_f1:.4f}, "
+        f"Coverage={cov:.2%}, Selective Acc={sel_acc:.2%}, ECE={ece:.4f}"
+    )
 
     # Per-class metrics
     report = classification_report(
@@ -156,17 +190,37 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
     if external_specs:
         transform = get_eval_transforms()
         for spec in external_specs:
-            # spec format: "Name=root:mapfile"
-            name_part, path_part = spec.split("=", 1)
-            ext_root_str, map_file_str = path_part.split(":", 1)
-            ext_root = Path(ext_root_str)
-            map_file = Path(map_file_str)
+            name_part, ext_root, map_file = parse_external_spec(spec)
+
+            if not ext_root.exists():
+                sys.stderr.write(f"\nERROR: External dataset root not found: {ext_root}\n")
+                sys.exit(1)
+            if not map_file.exists():
+                sys.stderr.write(f"\nERROR: External class map not found: {map_file}\n")
+                sys.exit(1)
 
             with open(map_file, "r", encoding="utf-8") as f:
                 class_mapping = json.load(f)
 
-            # Discover images
-            ext_images = sorted([p for p in ext_root.rglob("*") if p.is_file() and p.suffix.lower() in {".jpg", ".jpeg", ".png"}])
+            doi_val = class_mapping.get("__doi__", "")
+
+            # Discover all valid image files
+            ext_images = sorted(
+                [p for p in ext_root.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+            )
+
+            # Strict check: Never ignore folders silently
+            found_folders = sorted(list({p.relative_to(ext_root).parts[0] for p in ext_images}))
+            unmapped_folders = [
+                f for f in found_folders if f not in class_mapping and not f.startswith("__")
+            ]
+            if unmapped_folders:
+                sys.stderr.write(
+                    f"\nERROR: External dataset '{ext_root}' contains unmapped class folder(s): {unmapped_folders}\n"
+                    f"Known keys in {map_file}: {sorted(k for k in class_mapping.keys() if not k.startswith('__'))}\n"
+                    f"Please update the mapping file or fix the folder structure.\n"
+                )
+                sys.exit(1)
 
             mapped_labels = []
             mapped_preds = []
@@ -197,32 +251,99 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
                         mapped_preds.append((p_cls, p_max))
 
             mapped_n = len(mapped_labels)
+            total_eval_images = mapped_n + unseen_total
+            if total_eval_images == 0:
+                sys.stderr.write(
+                    f"\nERROR: External dataset '{ext_root}' contains 0 matching images mapped to classes or __unseen__!\n"
+                )
+                sys.exit(1)
+
+            ext_per_class = {}
             if mapped_n > 0:
                 p_classes = np.array([p[0] for p in mapped_preds])
                 p_confs = np.array([p[1] for p in mapped_preds])
                 t_labels = np.array(mapped_labels)
+                unique_labels = sorted(list(set(mapped_labels)))
+
+                ext_raw_acc = float(np.mean(p_classes == t_labels))
+                # Macro-F1 computed ONLY over the classes this set actually contains
+                ext_f1 = float(
+                    f1_score(t_labels, p_classes, labels=unique_labels, average="macro", zero_division=0)
+                )
+
                 acc_mask = p_confs >= threshold
                 ext_cov = float(np.mean(acc_mask))
-                ext_sel_acc = float(np.mean(p_classes[acc_mask] == t_labels[acc_mask])) if np.sum(acc_mask) > 0 else 0.0
-                ext_f1 = float(f1_score(t_labels, p_classes, average="macro", zero_division=0))
-            else:
-                ext_cov = 0.0
-                ext_sel_acc = 0.0
-                ext_f1 = 0.0
+                ext_sel_acc = (
+                    float(np.mean(p_classes[acc_mask] == t_labels[acc_mask]))
+                    if np.sum(acc_mask) > 0
+                    else 0.0
+                )
 
-            unseen_rate = float(unseen_rejected / unseen_total) if unseen_total > 0 else 0.0
+                # Per-class metrics for mapped classes
+                for lbl in unique_labels:
+                    ck = IDX_TO_CLASS[lbl]
+                    prec = float(
+                        precision_score(
+                            t_labels == lbl,
+                            p_classes == lbl,
+                            zero_division=0,
+                        )
+                    )
+                    rec = float(
+                        recall_score(
+                            t_labels == lbl,
+                            p_classes == lbl,
+                            zero_division=0,
+                        )
+                    )
+                    f1_val = float(
+                        f1_score(
+                            t_labels == lbl,
+                            p_classes == lbl,
+                            zero_division=0,
+                        )
+                    )
+                    supp = int(np.sum(t_labels == lbl))
+                    ext_per_class[ck] = {
+                        "precision": round(prec, 4),
+                        "recall": round(rec, 4),
+                        "f1": round(f1_val, 4),
+                        "support": supp,
+                    }
+
+                accuracy_mapped = round(ext_raw_acc, 4)
+                macro_f1_mapped = round(ext_f1, 4)
+                coverage_val = round(ext_cov, 4)
+                selective_acc_val = round(ext_sel_acc, 4)
+            else:
+                # No fake zeros: report null (None) when 0 mapped images present
+                accuracy_mapped = None
+                macro_f1_mapped = None
+                coverage_val = None
+                selective_acc_val = None
+
+            # Unseen rejection rate: report null (None) when 0 unseen images present
+            if unseen_total > 0:
+                unseen_rate = round(float(unseen_rejected / unseen_total), 4)
+            else:
+                unseen_rate = None
+
+            classes_tested = sorted(
+                list({v for k, v in class_mapping.items() if not k.startswith("__") and v != "__unseen__"})
+            )
 
             external_results.append(
                 {
                     "name": name_part,
-                    "doi": "",
-                    "classes_tested": [k for k, v in class_mapping.items() if v != "__unseen__"],
-                    "n": mapped_n + unseen_total,
-                    "macro_f1_mapped": round(ext_f1, 4),
-                    "coverage": round(ext_cov, 4),
-                    "selective_accuracy": round(ext_sel_acc, 4),
-                    "unseen_rejection_rate": round(unseen_rate, 4),
-                    "per_class": {},
+                    "doi": doi_val,
+                    "classes_tested": classes_tested,
+                    "n": total_eval_images,
+                    "accuracy_mapped": accuracy_mapped,
+                    "macro_f1_mapped": macro_f1_mapped,
+                    "coverage": coverage_val,
+                    "selective_accuracy": selective_acc_val,
+                    "unseen_rejection_rate": unseen_rate,
+                    "per_class": ext_per_class,
                 }
             )
 
@@ -230,7 +351,20 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
     onnx_file = run_dir / "model.onnx"
     onnx_mb = round(os.path.getsize(onnx_file) / (1024 * 1024), 2) if onnx_file.exists() else 0.0
 
-    # Build final metrics-v1.json matching contract exactly
+    calibration_info: Dict = {
+        "temperature": round(temp, 4),
+        "threshold": round(threshold, 4),
+        "target_precision": float(target_prec),
+    }
+    limitations_list = [
+        "Leaf Smut has no external test data.",
+        "Training images come from one district (Gazipur) and one season.",
+    ]
+    if calib_warning:
+        calibration_info["warning"] = calib_warning
+        if calib_warning not in limitations_list:
+            limitations_list.append(calib_warning)
+
     metrics_doc = {
         "model": {
             "arch": arch,
@@ -238,11 +372,7 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
             "trained_on": "RiceLeafDiseaseBD v3 (DOI 10.17632/86s4jzj2m4.3)",
             "date": datetime.now().strftime("%Y-%m-%d"),
         },
-        "calibration": {
-            "temperature": round(temp, 4),
-            "threshold": round(threshold, 4),
-            "target_precision": float(target_prec),
-        },
+        "calibration": calibration_info,
         "internal_test": {
             "n": len(labels_t),
             "accuracy": round(raw_acc, 4),
@@ -253,10 +383,7 @@ def evaluate(run_dir: Path, data_root: Path, splits_csv: Path, external_specs: O
             "per_class": per_class_metrics,
         },
         "external": external_results,
-        "limitations": [
-            "Leaf Smut has no external test data.",
-            "Training images come from one district (Gazipur) and one season.",
-        ],
+        "limitations": limitations_list,
     }
 
     metrics_path = run_dir / "metrics-v1.json"

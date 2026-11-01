@@ -19,4 +19,10 @@
    - No AI-written doses; 16123 hand-off; privacy.
    - Next: more crops, officer review, field testing.
 
+**Title area of slide 1:** put the official AIgnite sticker in a corner (not required, but it signals compliance).
+
+**Judging note (official rules page):** besides the 4 scored criteria, the rules list **"Presentation and Pitch"**: clarity of communication, product demonstration, and the ability to explain the solution. Keep slides visual and few-worded. The live demo flow (sample photo → result + voice → "not sure" → accuracy page) is the pitch.
+
+**Final Round (Top 20, 27 Nov):** prepare a 3–5 minute live pitch and demo from the same deck. Expect questions on accuracy, the not-sure threshold, privacy and agricultural safety.
+
 **Demo video (English, about 2 min):** sample leaf → result + Bangla audio → blurry or non-rice photo → "not sure" → accuracy page.

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
 Train MobileNetV3 (Large or Small) with two-stage transfer learning,
-class weighting, label smoothing, and validation macro-F1 early stopping.
+class weighting, label smoothing, validation macro-F1 early stopping,
+and per-epoch runtime tracking.
 """
 
 import argparse
 import csv
 import json
+import time
 from collections import Counter
 from pathlib import Path
 from typing import Tuple
@@ -83,7 +85,7 @@ def train(args):
     else:
         device = torch.device(args.device)
 
-    print(f"Training using device: {device}, architecture: {args.arch}")
+    print(f"Training using device: {device}, architecture: {args.arch}, num_workers: {args.num_workers}")
 
     # Datasets and Loaders
     train_dataset = RiceLeafDataset(
@@ -121,7 +123,6 @@ def train(args):
     label_counts = Counter(train_labels)
     num_classes = len(CLASS_KEYS)
 
-    # Handle potentially missing classes in very small datasets safely
     for c in range(num_classes):
         label_counts.setdefault(c, 1)
 
@@ -160,7 +161,6 @@ def train(args):
     patience_counter = 0
 
     best_pt_path = out_dir / "best.pt"
-
     current_epoch = 1
 
     # Stage 1: Freeze features, train classifier
@@ -171,6 +171,7 @@ def train(args):
         optimizer_s1 = torch.optim.AdamW(model.classifier.parameters(), lr=1e-3, weight_decay=1e-4)
 
         for ep in range(stage1_epochs):
+            t0 = time.time()
             model.train()
             train_loss = 0.0
             for images, labels, _ in train_loader:
@@ -184,9 +185,11 @@ def train(args):
 
             train_loss /= max(len(train_dataset), 1)
             val_loss, val_acc, val_f1 = evaluate_split(model, val_loader, criterion, device)
+            epoch_sec = round(time.time() - t0, 2)
+
             print(
                 f"Epoch {current_epoch:02d} [Stage 1] | Train Loss: {train_loss:.4f} | "
-                f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f} | Val Macro-F1: {val_f1:.4f}"
+                f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f} | Val Macro-F1: {val_f1:.4f} | Time: {epoch_sec}s"
             )
             history.append(
                 {
@@ -197,6 +200,7 @@ def train(args):
                     "val_acc": round(val_acc, 4),
                     "val_macro_f1": round(val_f1, 4),
                     "lr": 1e-3,
+                    "epoch_seconds": epoch_sec,
                 }
             )
 
@@ -217,6 +221,7 @@ def train(args):
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer_s2, T_max=stage2_epochs, eta_min=1e-6)
 
         for ep in range(stage2_epochs):
+            t0 = time.time()
             model.train()
             train_loss = 0.0
             for images, labels, _ in train_loader:
@@ -232,10 +237,11 @@ def train(args):
             val_loss, val_acc, val_f1 = evaluate_split(model, val_loader, criterion, device)
             current_lr = scheduler.get_last_lr()[0]
             scheduler.step()
+            epoch_sec = round(time.time() - t0, 2)
 
             print(
                 f"Epoch {current_epoch:02d} [Stage 2] | Train Loss: {train_loss:.4f} | "
-                f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f} | Val Macro-F1: {val_f1:.4f} | LR: {current_lr:.2e}"
+                f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f} | Val Macro-F1: {val_f1:.4f} | LR: {current_lr:.2e} | Time: {epoch_sec}s"
             )
             history.append(
                 {
@@ -246,6 +252,7 @@ def train(args):
                     "val_acc": round(val_acc, 4),
                     "val_macro_f1": round(val_f1, 4),
                     "lr": current_lr,
+                    "epoch_seconds": epoch_sec,
                 }
             )
 
@@ -264,7 +271,6 @@ def train(args):
 
     print(f"\nTraining completed. Best validation macro-F1: {best_macro_f1:.4f} at epoch {best_epoch}")
 
-    # Ensure best checkpoint exists (if no epoch beat initial -1)
     if not best_pt_path.exists():
         torch.save({"model_state_dict": model.state_dict(), "arch": args.arch}, best_pt_path)
 
@@ -272,7 +278,17 @@ def train(args):
     history_csv = out_dir / "history.csv"
     with open(history_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
-            f, fieldnames=["epoch", "stage", "train_loss", "val_loss", "val_acc", "val_macro_f1", "lr"]
+            f,
+            fieldnames=[
+                "epoch",
+                "stage",
+                "train_loss",
+                "val_loss",
+                "val_acc",
+                "val_macro_f1",
+                "lr",
+                "epoch_seconds",
+            ],
         )
         writer.writeheader()
         writer.writerows(history)
@@ -300,7 +316,7 @@ def main():
     parser.add_argument("--epochs", type=int, default=20, help="Total epochs")
     parser.add_argument("--batch", type=int, default=32, help="Batch size")
     parser.add_argument("--device", type=str, default="auto", help="auto, cpu, or cuda")
-    parser.add_argument("--num-workers", type=int, default=0, help="DataLoader num_workers")
+    parser.add_argument("--num-workers", type=int, default=4, help="DataLoader num_workers (default: 4 for Kaggle/modern CPUs)")
     parser.add_argument("--no-pretrained", action="store_true", help="Initialize without pretrained ImageNet weights")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     args = parser.parse_args()

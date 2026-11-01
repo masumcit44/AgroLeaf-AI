@@ -50,7 +50,7 @@ If two documents disagree, **`research/final_decisions.md` wins**. Then report t
    - No upload, no analytics SDK, no error-tracking SDK that captures images.
    - No third-party scripts except Google Fonts (CSS only).
 4. **Never claim** "first", "only", "diagnosis", "100% accurate", "works everywhere in Bangladesh", "free call", or any partnership with BRRI/DAE/AIS. Use "screening / প্রাথমিক ধারণা" (preliminary idea), not "diagnosis".
-5. **The official AIgnite sticker must be visible in the navbar on every page.** File: `frontend/public/brand/aignite-sticker.png` (the user provides it).
+5. **The official AIgnite sticker must be visible in the navbar on every page and in every state.** It must never be footer-only, hidden in a menu, or covered by a banner or modal. File: `frontend/public/brand/aignite-sticker.png` (the user provides the original). Full rules: `documentation/competition_compliance.md`.
 6. **Do not touch:**
    - `D:\Desktop\ai_battle\` (read-only archive)
    - `research_files/` and `reports/` (private; git-ignored)

@@ -48,8 +48,15 @@
 3. Tag `v1.0.0`. Create a GitHub Release (`gh release create v1.0.0 --notes-file …` if gh is logged in; otherwise list the steps for the user) with highlights + limitations.
 4. Update PROGRESS.md: everything ✅, final URLs.
 
+## 4b. Protect the judged app (rules: the link must stay accessible to judges)
+- Create branch `release` from the `v1.0.0` tag and push it.
+- **User:** in Cloudflare Pages → Settings → Builds → set the **Production branch** to `release`. On Vercel, set the production branch to `release` as well.
+- From now on, `main` can change freely. Only deliberate, tested fixes get merged into `release`.
+- Keep both deployments live **at least until the Final Round (27 Nov 2026)**.
+- Write this in README "Deploy" and in PROGRESS.md.
+
 ## 5. Submission pack (for the user) → `documentation/submission/`
-- `devpost_checklist.md`:
+- `devpost_checklist.md`: build it from `documentation/competition_compliance.md` (all 15 rows), plus:
   - live app URL (Cloudflare)
   - deck ≤ 5 slides
   - optional English video (YouTube, ~2 min)
