@@ -13,6 +13,32 @@ export default {
   homeTakePhotoBtn: "📷 ছবি তুলুন / আপলোড করুন",
   homeComingSoon: "শীঘ্রই চালু হবে (মডিউল ৩)",
 
+  // Photo Picker & Preview
+  btnCamera: "ক্যামেরা",
+  btnGallery: "গ্যালারি",
+  btnCheck: "🔍 পরীক্ষা করুন",
+  btnRetake: "↺ আবার ছবি দিন",
+  modelBeingAdded: "মডেল যোগ হচ্ছে (মডিউল ৪)",
+  analysingText: "বিশ্লেষণ করা হচ্ছে...",
+  previewTitle: "পাতার ছবি পর্যালোচনা",
+  previewImageAria: "আপলোড করা পাতার ছবি",
+  hintNeverBlocks: "পরামর্শ: এটি শুধুমাত্র একটি সতর্কতা, চাইলে আপনি পরীক্ষা চালিয়ে যেতে পারেন।",
+
+  // Pictogram Tips
+  tipOneLeaf: "একটি পাতা",
+  tipDaylight: "দিনের আলো",
+  tipCloseUp: "কাছ থেকে",
+
+  // Quality Hints
+  hintTooDark: "ছবিটি কিছুটা অন্ধকার দেখাচ্ছে। স্পষ্ট ফলাফলের জন্য পর্যাপ্ত আলোতে তুলুন।",
+  hintTooBright: "ছবিতে তীব্র আলোর ঝলকানি দেখা যাচ্ছে। সরাসরি রোদ এড়িয়ে ছবি তুলুন।",
+  hintBlurry: "ছবিটি কিছুটা ঝাপসা মনে হচ্ছে। হাত স্থির রেখে পাতার ওপর ফোকাস করুন।",
+
+  // Error Messages
+  errUnsupportedType: "শুধু ছবি (JPG/PNG/WebP) দিন",
+  errTooLarge: "ছবি ১০ এমবির বেশি",
+  errDecodeFailed: "ছবিটি খোলা যাচ্ছে না, আরেকটি দিন",
+
   footerDisclaimer: "এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।",
   footerPrivacy: "ছবি আপনার ফোনেই থাকে, কোথাও পাঠানো হয় না",
   footerAboutLink: "পরিচিতি ও উপাত্তের লাইসেন্স",

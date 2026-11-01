@@ -13,6 +13,32 @@ export default {
   homeTakePhotoBtn: "📷 Take / Upload Photo",
   homeComingSoon: "Coming soon (Module 3)",
 
+  // Photo Picker & Preview
+  btnCamera: "Camera",
+  btnGallery: "Gallery",
+  btnCheck: "🔍 Check Leaf",
+  btnRetake: "↺ Retake Photo",
+  modelBeingAdded: "Model being added (Module 4)",
+  analysingText: "Analyzing leaf...",
+  previewTitle: "Review Leaf Photo",
+  previewImageAria: "Captured rice leaf photo",
+  hintNeverBlocks: "Note: This is an advisory hint only; you may still proceed with screening.",
+
+  // Pictogram Tips
+  tipOneLeaf: "One leaf",
+  tipDaylight: "Daylight",
+  tipCloseUp: "Close-up",
+
+  // Quality Hints
+  hintTooDark: "Photo looks somewhat dark. For clearest results, shoot in ample light.",
+  hintTooBright: "Direct glare detected. Avoid harsh sunlight reflections.",
+  hintBlurry: "Photo appears slightly blurry. Hold steady and focus directly on the leaf.",
+
+  // Error Messages
+  errUnsupportedType: "Only image files (JPG, PNG, WebP) are supported",
+  errTooLarge: "Image file exceeds the 10 MB limit",
+  errDecodeFailed: "This image cannot be opened; please try another photo",
+
   footerDisclaimer: "This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical.",
   footerPrivacy: "The photo stays on your phone and is not sent anywhere",
   footerAboutLink: "About & Licences",
