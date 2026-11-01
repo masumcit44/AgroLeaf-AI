@@ -67,7 +67,7 @@
 | J2 | PASS | | every image has alt text; every control has a name |
 | J3 | PASS with note | minor (tooling) | mobile Lighthouse accessibility: Home 96, Accuracy 100, About 100. **`scripts/run-lighthouse.mjs` uses `#accuracy`/`#about`; the app routes are `#/accuracy`/`#/about`**, so those two runs may have audited the home page. Home: Performance 74, Best Practices 81. |
 | K1 | PASS | | model request blocked → "মডেল লোড হতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করুন।" with "আবার চেষ্টা করুন" |
-| K2 | INFO | | going offline after the first load breaks the sample buttons (they fetch `/samples/*.jpg`), and a reload shows the browser's offline page. There's no offline support (no service worker); expected for v1. |
+| K2 | INFO + minor | minor | Offline after the first result: **a gallery photo still analyses correctly** (tungro, verified). A sample button tapped offline **does nothing and shows no message** (it fetches `/samples/*.jpg`). A reload shows the browser's offline page; there's no service worker, which is expected for v1. |
 | K3 | PASS | | reload on the result screen → clean home screen, no errors |
 | L1 | PASS | | no dose, brand or "free call" text found on screen (see E2 and E6) |
 | L2 | PASS | | disclaimer "চূড়ান্ত রোগ নির্ণয় নয়" on home, result and not-sure screens |
@@ -88,6 +88,7 @@
    - Remove the dev-only debug title (`SW:…_IW:…`) in `App.jsx`. A demo recorded from `npm run dev` would show it.
    - The production title doesn't follow the selected language.
 5. **B4 (cosmetic):** the lazy-page loading text is shown in both languages at once.
+6. **K2 (minor):** a sample button tapped while offline fails silently. It should show the network error message.
 
 ## Not covered by me
 - C2, E7, I2 (camera, share sheet, real phone): the human tester.
