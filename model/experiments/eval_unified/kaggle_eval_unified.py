@@ -18,9 +18,10 @@ subprocess.run(["git", "clone", "--depth", "1", "--branch", "feat/model-v3",
                 "https://github.com/masumcit44/AgroLeaf-AI.git", SRC], check=True)
 v4_code = open(f"{SRC}/model/experiments/run4_v4/kaggle_train_v4.py", encoding="utf-8").read()
 head = v4_code.split("# 6. data")[0]
-ns = {"__name__": "v4_data"}
-exec(compile(head, "kaggle_train_v4.py[data]", "exec"), ns)  # builds ns["ROWS"] with cached images
-ROWS, CI, CLASSES = ns["ROWS"], ns["CI"], ns["CLASSES"]
+# Run in this module's globals: v4's code uses multiprocessing.Pool with a function it defines,
+# which must be picklable as __main__.prep
+exec(compile(head, "kaggle_train_v4.py[data]", "exec"), globals())  # builds ROWS with cached images
+ns = globals()
 
 import numpy as np, onnxruntime as ort
 import torchvision.transforms as TV
