@@ -9,7 +9,7 @@ Writes, per model and per evaluation set, the raw logits (no decisions are made 
 Decisions and metrics are computed offline with ml/tools/eval_app.py and the app's
 decision rule (ml/app_decision.py). Also records model size and CPU latency.
 """
-import csv, json, os, subprocess, sys, time
+import csv, glob, json, os, subprocess, sys, time
 from collections import Counter
 
 W = "/kaggle/working"; IN = "/kaggle/input"
@@ -27,35 +27,57 @@ import numpy as np, onnxruntime as ort
 import torchvision.transforms as TV
 from PIL import Image
 
+# 0. candidate models: private dataset agroleaf-candidates (files copied from the training runs; SHA-256
+#    in SHA256SUMS.txt). Sub-folders were uploaded as zips; unpack them if Kaggle kept them zipped.
+import zipfile, hashlib
+CAND = "/tmp/candidates"
+for r, d, f in os.walk(IN):
+    if "agroleaf-candidates" in r:
+        for fn in f:
+            src = os.path.join(r, fn); dst = os.path.join(CAND, os.path.relpath(src, r))
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            if fn.endswith(".zip"):
+                with zipfile.ZipFile(src) as z: z.extractall(os.path.join(CAND, fn[:-4]))
+            else:
+                with open(src, "rb") as a, open(dst, "wb") as b: b.write(a.read())
+sum_file = glob.glob(f"{CAND}/**/SHA256SUMS.txt", recursive=True)[0]
+sums = dict(l.split(" *")[::-1] for l in open(sum_file).read().splitlines() if l.strip())
+for rel, h in sums.items():
+    got = hashlib.sha256(open(glob.glob(f"{CAND}/**/{rel}", recursive=True)[0], "rb").read()).hexdigest()
+    if got != h: sys.exit(f"CHECKSUM MISMATCH {rel}")
+print("candidate models verified by SHA-256:", sorted(sums), flush=True)
+
 # 1. same samples as the v4 run
 def find(pred):
     for r, d, f in os.walk(IN):
         if pred(r, f): return r
     return None
-v4_out = find(lambda r, f: "rows.csv" in f and "agroleaf-train-v4" in r)
-mine = Counter((r["src"], r["split"], r["label"], os.path.basename(r["path"])) for r in ROWS)
-with open(f"{v4_out}/rows.csv", encoding="utf-8") as f:
-    theirs = Counter(tuple(x) for x in list(csv.reader(f))[1:])
-if mine != theirs:
-    sys.exit(f"SAMPLE MISMATCH with the v4 run: {sum((mine - theirs).values())} extra, {sum((theirs - mine).values())} missing")
-print("sample list identical to the v4 run:", sum(mine.values()), "rows", flush=True)
-
 EVAL = [r for r in ROWS if r["split"] in ("val", "test", "heldout", "extval")]
 sets = {}
 for r in EVAL:
     sets.setdefault(f"{r['src']}{'_whitebg' if r.get('white_bg') else ''}__{r['split']}", []).append(r)
 print({k: len(v) for k, v in sets.items()}, flush=True)
 
+# The v4 run's own per-set prediction files list every evaluation image (file name and label, in
+# order); its rows.csv was never written (the run stopped at the end, in the v1 baseline step).
+v4_A = os.path.dirname(glob.glob(f"{CAND}/**/v4_A_all_strong/metrics.json", recursive=True)[0])
+theirs = {os.path.basename(p)[len("preds_"):-len(".npz")]: p for p in glob.glob(f"{v4_A}/preds_*.npz")}
+problems = []
+for k, v in sets.items():
+    src_wb, split = k.split("__")
+    p = theirs.pop(f"{src_wb}_{split}", None)
+    if p is None: problems.append(f"{k}: not in the v4 run"); continue
+    z = np.load(p)
+    mine = [(os.path.basename(r["path"]), CI[r["label"]]) for r in v]
+    if mine != list(zip(z["files"].tolist(), z["y"].tolist())): problems.append(f"{k}: files or labels differ")
+problems += [f"{k}: only in the v4 run" for k in theirs]
+if problems: sys.exit("SAMPLE MISMATCH with the v4 run: " + "; ".join(problems))
+print("evaluation samples identical to the v4 run (file, label, order) for all", len(sets), "sets:", sum(map(len, sets.values())), "images", flush=True)
+
 # 2. models
 MODELS = {"v1_mnv3l": f"{ns['REPO']}/frontend/public/models/rice-mnv3l-v1.onnx"}
-def add_model(name, token, sub):
-    root = find(lambda r, f: "model.onnx" in f and token in r and r.rstrip("/").endswith(sub))
-    if root: MODELS[name] = f"{root}/model.onnx"
-    else: print("MODEL NOT FOUND", name, flush=True)
-add_model("v3_effb0", "agroleaf-train-v3/", "efficientnet_b0")
-add_model("v3_convnext_t", "agroleaf-train-v3-big", "convnext_tiny.fb_in22k")
-for v in ("A_all_strong", "B_bdonly_strong", "C_all_v3aug"):
-    add_model(f"v4_{v}", "agroleaf-train-v4", v)
+for name in ("v3_effb0", "v3_convnext_t", "v4_A_all_strong", "v4_B_bdonly_strong", "v4_C_all_v3aug"):
+    MODELS[name] = glob.glob(f"{CAND}/**/{name}/model.onnx", recursive=True)[0]
 print("models:", MODELS, flush=True)
 
 # 3. inputs: the app's preprocessing (Resize 256, CenterCrop 224) on the cached images;
@@ -100,7 +122,8 @@ for name, path in MODELS.items():
     t = []
     for _ in range(30):
         t0 = time.perf_counter(); s1.run(None, {inp.name: x}); t.append((time.perf_counter() - t0) * 1000)
-    info[name] = {"file": os.path.relpath(path, IN) if path.startswith(IN) else "repo:frontend/public/models/rice-mnv3l-v1.onnx",
+    info[name] = {"file": os.path.relpath(path, CAND) if path.startswith(CAND) else "repo:frontend/public/models/rice-mnv3l-v1.onnx",
+                  "sha256": hashlib.sha256(open(path, "rb").read()).hexdigest(),
                   "size_mib": round(os.path.getsize(path) / 2**20, 2), "outputs": sess.get_outputs()[0].shape[-1],
                   "cpu_ms_median_1thread": round(float(np.median(t)), 1)}
     print(name, info[name], flush=True)

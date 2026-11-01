@@ -21,12 +21,9 @@
     "williamscott701/memotion-dataset-7k",
     "raihan150146/rice-leaf-diseases-dataset",
     "nirmalsankalana/dhan-shomadhan",
-    "vbookshelf/rice-leaf-diseases"
+    "vbookshelf/rice-leaf-diseases",
+    "mdmasumakondha/agroleaf-candidates"
   ],
   "competition_sources": [],
-  "kernel_sources": [
-    "mdmasumakondha/agroleaf-train-v3",
-    "mdmasumakondha/agroleaf-train-v3-big",
-    "mdmasumakondha/agroleaf-train-v4"
-  ]
+  "kernel_sources": []
 }
