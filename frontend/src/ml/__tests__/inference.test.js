@@ -143,4 +143,33 @@ describe('decide', () => {
     expect(res.status).toBe('not_sure');
     expect(res.top).toBeNull();
   });
+
+  it('forces not_sure when top-1 class is in calibration.suppress list, preserving class in top2', () => {
+    const probs = {
+      leaf_smut: 0.88,
+      blast: 0.08,
+      healthy: 0.04,
+    };
+    // Suppress leaf_smut
+    const res = decide(probs, 0.60, ['leaf_smut']);
+    expect(res.status).toBe('not_sure');
+    expect(res.suppressed).toBe(true);
+    expect(res.top.key).toBe('leaf_smut');
+    expect(res.top.prob).toBe(0.88);
+    expect(res.top2[0].key).toBe('leaf_smut');
+    expect(res.top2[1].key).toBe('blast');
+  });
+
+  it('keeps decision confident when top-1 class is NOT in calibration.suppress list', () => {
+    const probs = {
+      blast: 0.88,
+      leaf_smut: 0.08,
+      healthy: 0.04,
+    };
+    // Suppress only leaf_smut, but top-1 is blast
+    const res = decide(probs, 0.60, ['leaf_smut']);
+    expect(res.status).toBe('confident');
+    expect(res.top.key).toBe('blast');
+    expect(res.top.prob).toBe(0.88);
+  });
 });
