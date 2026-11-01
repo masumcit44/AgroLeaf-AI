@@ -1,5 +1,6 @@
 // Threshold constants
-// Tuned in M08 for natural agricultural leaf conditions
+// TODO(M07): tune on real sample photos from RiceLeafDiseaseBD v3
+// Note: Current values (DARK_MAX=40, BRIGHT_MIN=230, BLUR_MIN=50) are provisional heuristics.
 export const DARK_MAX = 40;
 export const BRIGHT_MIN = 230;
 export const BLUR_MIN = 50;
