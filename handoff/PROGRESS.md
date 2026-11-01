@@ -55,7 +55,8 @@
 _(none yet)_
 
 ## Assumptions made
-- [DONE by Antigravity 08:12] merged track/opencode
+- [DONE by Antigravity 08:12] merged track/opencode (track 1 + track 2: QA templates & glossary)
+- [DONE by Antigravity 08:58] merged track/opencode track 3 (QA templates, glossary, release bundle tooling, sample picker)
 - Quality thresholds are provisional; to be tuned in M07 on real dataset images.
 
 ## Proposals (not implemented)
