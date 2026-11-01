@@ -55,6 +55,8 @@
 | X4 | Automated release guards | ✅ | 01 Nov 2026 09:25 BST | feat/x4-release-guards / tag x4 | check:release script (8 guards, exit 1 as expected today awaiting Kaggle bundle), checklist documented in README.md, vitest (44/44 pass), oxlint (0 err), build pass |
 | Y1 | M07 rehearsal (toy run on throwaway branch) | ✅ | 01 Nov 2026 09:30 BST | rehearsal/m07-toy (deleted locally, never pushed) | make_release_bundle dry & real run passed, 11 files copied, vitest 44/44 pass, build pass, smoke pass, check:release (6 pass, 1 warn, 1 fail expected), findings in handoff/M07_REHEARSAL_NOTES.md |
 | Y2 | Professional README refresh | ✅ | 01 Nov 2026 09:35 BST | feat/y2-readme-refresh / tag y2 | product page for judges: hero, live demo placeholder, 4 screenshots (390px), problem context, mermaid flow, responsible AI, tech stack, release checklist, zero invented numbers |
+| Y3 | Lighthouse & a11y audit + fixes | ✅ | 01 Nov 2026 09:40 BST | feat/y3-lighthouse-a11y / tag y3 | automated runner (npm run audit:lighthouse), mobile 412px, 100% a11y on Home, Accuracy & About; WCAG 2.5.3 label fixes; robots.txt; report in documentation/qa/lighthouse_v1.md |
+| Y4 | Performance budget | ⬜ | | | |
 | M07 | Real model + accuracy page | ⬜ | | | |
 | M08 | Polish | 🟨 partial (needs M07) | 01 Nov 2026 08:09 BST | feat/m08-polish / tag m08-partial | items 1-4, 6-12 done: onboarding, error boundary, offline check, samples, share, threshold tuning, about transparency, vitest (26/26 pass), oxlint (0 err), build pass |
 | M09 | QA + release | ⬜ | | | |

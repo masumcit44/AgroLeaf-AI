@@ -27,6 +27,7 @@ frontend/dist/
 frontend/public/ort/
 frontend/public/data/disease_information_*.json
 .vite/
+.lh_reports/
 
 # OS / editor
 .DS_Store
