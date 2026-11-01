@@ -106,17 +106,21 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Scope:** the accuracy page and docs state the measured outside-district results and limits.
 
 #### I4 — Offline second analysis and QA-script false alarms
-- **Owner:** OpenCode. **Branch:** `fix/offline-reanalysis`. **Status:** ASSIGNED (`handoff/OPENCODE_TRACK_7.md` in the OpenCode folder).
+- **Owner:** OpenCode. **Branch:** `fix/offline-reanalysis`. **Status:** IN_PROGRESS (branch created, uncommitted work, 2 Nov 00:27).
 - **Acceptance:** the K2 check passes offline; B4 checks use localStorage / `<html lang>`; vitest, lint and build pass.
 - **Review:** the lead re-runs the tests and K2 before merging.
 
 #### I5 — Submission claim audit (read-only)
-- **Owner:** Antigravity. **Branch:** `qa/submission-audit`. **Status:** ASSIGNED.
+- **Owner:** Antigravity. **Branch:** `qa/submission-audit` (`b948dee`). **Status:** REVIEWED + INTEGRATED (report only).
+- **Lead review (2 Nov, 00:35):** all 17 quoted claims found in the files; line numbers within ±1; 1 paraphrase marked as a quote (minor). **Findings to fix in I7:**
+  - `README.md:59` says "evaluation in progress" (outdated);
+  - `README.md:174` says the release check is "expected to fail" (it now passes 8/8);
+  - the deck's "rural internet gap" figure has no source (U2).
 - **Deliverable:** `documentation/qa/submission_audit_antigravity.md`, a table of every claim marked MATCH / MISMATCH / NO SOURCE, with exact quotes.
 - **Review:** the lead spot-checks 10 claims against the files before using it.
 
 #### I6 — Voice intelligibility evidence
-- **Owner:** Antigravity. **Branch:** `qa/voice-asr`. **Status:** ASSIGNED (after I5).
+- **Owner:** Antigravity. **Branch:** `qa/voice-asr`. **Status:** IN_PROGRESS (started 2 Nov, 00:27).
 - **Note:** the voice is already live (`2779990`) and approved by the user's listening. This is extra evidence only.
 
 #### I7 — Final numbers everywhere
