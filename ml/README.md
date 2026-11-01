@@ -76,3 +76,27 @@ python ml/parity_test.py --run ml/outputs/toy --data-root ml/toy_data/raw --spli
 ## 4. Full GPU Training on Kaggle
 
 For training on the real 9.8k image dataset with a free T4 GPU on Kaggle, follow the complete step-by-step instructions in [ml/kaggle/KAGGLE_RUNBOOK.md](kaggle/KAGGLE_RUNBOOK.md).
+
+---
+
+## 5. Offline Bangla Voice Synthesis (Azure Speech F0)
+
+To generate offline static MP3 voice clips for all 7 conditions:
+
+1. In the [Azure Portal](https://portal.azure.com/), create a free **Speech** service resource on pricing tier **Free F0** (includes 500,000 characters free monthly).
+2. Copy `Key 1` and `Region` (e.g., `southeastasia`).
+3. Create a `.env` file in the repo root (git-ignored):
+   ```
+   AZURE_SPEECH_KEY=your_key_here
+   AZURE_SPEECH_REGION=southeastasia
+   ```
+4. Verify character budget safely without invoking API calls:
+   ```bash
+   python ml/tools/generate_tts.py --dry-run
+   ```
+5. Synthesize all audio files:
+   ```bash
+   python ml/tools/generate_tts.py
+   ```
+   Generated MP3s are written directly to `frontend/public/audio/<key>-v1.mp3` along with `frontend/public/audio/manifest.json`.
+6. Alternatively, human voice recordings can be substituted by saving mono MP3s with identical names and setting `"voice": "human"` in the manifest.

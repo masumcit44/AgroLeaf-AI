@@ -1,0 +1,60 @@
+import * as ort from 'onnxruntime-web/wasm';
+import { loadModel } from './loadModel.js';
+import { toInputTensorData } from './preprocess.js';
+import { softmax, decide } from './decide.js';
+
+/**
+ * Run end-to-end leaf disease inference on an HTMLCanvasElement or OffscreenCanvas.
+ *
+ * @param {HTMLCanvasElement | OffscreenCanvas} canvas - In-memory preprocessed leaf image canvas
+ * @param {(progressPercent: number) => void} [onProgress] - Download progress callback on cold start
+ * @returns {Promise<{
+ *   probs: Record<string, number>,
+ *   ms: number,
+ *   calibration: Object,
+ *   decision: ReturnType<typeof decide>
+ * }>}
+ */
+export async function predictLeaf(canvas, onProgress) {
+  // 1. Ensure model session & configs are loaded (singleton)
+  const { session, classIndex, preprocess, calibration } = await loadModel(onProgress);
+
+  // 2. Preprocess canvas into NCHW Float32Array [3, 224, 224]
+  const tensorData = toInputTensorData(canvas, preprocess);
+
+  // 3. Construct input tensor
+  const inputTensor = new ort.Tensor('float32', tensorData, [1, 3, 224, 224]);
+
+  // 4. Run inference and time it
+  const inputName = session.inputNames[0] || 'input';
+  const outputName = session.outputNames[0] || 'logits';
+  const feeds = { [inputName]: inputTensor };
+
+  const t0 = performance.now();
+  const results = await session.run(feeds);
+  const ms = Math.round(performance.now() - t0);
+
+  const outputTensor = results[outputName];
+  const logits = Array.from(outputTensor.data);
+
+  // 5. Apply temperature scaling + softmax
+  const temp = calibration.temperature || 1.0;
+  const rawProbs = softmax(logits, temp);
+
+  // 6. Map to class keys
+  const classes = classIndex.classes || [];
+  const probs = {};
+  for (let i = 0; i < classes.length; i++) {
+    probs[classes[i]] = rawProbs[i] ?? 0;
+  }
+
+  // 7. Make decision based on calibrated threshold
+  const decision = decide(probs, calibration.threshold || 0.60);
+
+  return {
+    probs,
+    ms,
+    calibration,
+    decision,
+  };
+}

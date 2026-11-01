@@ -1,0 +1,11 @@
+{
+  "classes": [
+    "healthy",
+    "blast",
+    "brown_spot",
+    "leaf_smut",
+    "tungro",
+    "sheath_blight"
+  ],
+  "version": "v1"
+}
