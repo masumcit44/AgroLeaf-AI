@@ -53,4 +53,14 @@ if (hasOversized) {
   process.exit(1);
 }
 
+// X2 Guard: Ensure no test fixture metrics leak into production dist
+const metricsDistPath = path.join(distDir, 'data', 'metrics-v1.json');
+if (fs.existsSync(metricsDistPath)) {
+  const content = fs.readFileSync(metricsDistPath, 'utf-8');
+  if (content.includes('FIXTURE_NOT_REAL')) {
+    console.error('[check-dist-sizes] BUILD FAILED: dist/data/metrics-v1.json contains FIXTURE_NOT_REAL! Test fixtures must never be copied to public.');
+    process.exit(1);
+  }
+}
+
 console.log('[check-dist-sizes] All assets verified under Cloudflare 25 MiB limit.');

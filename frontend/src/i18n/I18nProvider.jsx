@@ -6,8 +6,9 @@ import { I18nContext } from './I18nContext.js';
 const STORAGE_KEY = 'agroleaf_lang';
 const DICTIONARIES = { bn, en };
 
-export function I18nProvider({ children }) {
+export function I18nProvider({ children, initialLang }) {
   const [lang, setLangState] = useState(() => {
+    if (initialLang === 'en' || initialLang === 'bn') return initialLang;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved === 'en' || saved === 'bn') {
