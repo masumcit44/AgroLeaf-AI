@@ -4,6 +4,7 @@ export const ROUTES = {
   HOME: '#/',
   ACCURACY: '#/accuracy',
   ABOUT: '#/about',
+  DEV_PARITY: '#/dev/parity',
 };
 
 function normalizeHash(hash) {

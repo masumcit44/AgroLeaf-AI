@@ -48,8 +48,8 @@ export async function predictLeaf(canvas, onProgress) {
     probs[classes[i]] = rawProbs[i] ?? 0;
   }
 
-  // 7. Make decision based on calibrated threshold
-  const decision = decide(probs, calibration.threshold || 0.60);
+  // 7. Make decision based on calibrated threshold and weak-class suppression
+  const decision = decide(probs, calibration.threshold || 0.60, calibration.suppress || []);
 
   return {
     probs,

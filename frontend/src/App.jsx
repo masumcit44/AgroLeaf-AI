@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import AccuracyPage from './pages/AccuracyPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
+import DevParityPage from './pages/DevParityPage.jsx';
 import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
 
 function AppContent() {
@@ -29,6 +30,12 @@ function AppContent() {
         return <AccuracyPage />;
       case ROUTES.ABOUT:
         return <AboutPage />;
+      case ROUTES.DEV_PARITY: {
+        const isDevAllowed =
+          Boolean(import.meta.env?.DEV) ||
+          (typeof window !== 'undefined' && window.location.search.includes('dev=1'));
+        return isDevAllowed ? <DevParityPage /> : <HomePage />;
+      }
       case ROUTES.HOME:
       default:
         return <HomePage />;
