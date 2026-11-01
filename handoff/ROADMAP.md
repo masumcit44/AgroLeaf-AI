@@ -143,6 +143,29 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Scope:** QA script on the live URL, privacy capture, secret scan, Lighthouse.
 - **Acceptance:** every item PASS or documented; GO/NO-GO for submission.
 
+
+#### I9 — Live app preprocessing = evaluated pipeline
+- **Owner:** Claude. **Status:** DONE `bf72231`, live 2 Nov 02:26 BST; the live bundle equals the commit's build.
+- **Why:** the internet-image diagnosis (`documentation/qa/internet_image_failures.md`) found the canvas resize flipping borderline answers.
+- **Evidence:** unit tests 74/74, decode-path 25/25; `Paddy-Leaf-Blast-medium.webp` now gives Blast live.
+
+#### R1 — Independent generalization research
+- **Owner:** Antigravity. **Branch:** `research/generalization`. **Status:** ASSIGNED (`handoff/TASK_R1_RESEARCH_ANTIGRAVITY.md`).
+- **Output:** sourced findings and at most 5 ranked experiments.
+
+#### V5 — Retraining for new-domain photos
+- **Owner:** Claude. **Status:** PROPOSED, needs the user's approval.
+- **The blocker is evaluation, not training.** Every independent Bangladeshi set we have is already used:
+  - raihan was the selection set;
+  - Sylhet and Gujarat were read once as final tests.
+
+  A trustworthy v5 decision needs a **fresh, independent, labelled set of Bangladeshi field photos**. R1 must find one, or one must be collected. Without it, any v5 "improvement" cannot be verified, and the locked rule says it does not ship.
+
+#### G1 — Non-rice gate in front of v1
+- **Owner:** Claude. **Status:** PROPOSED, needs the user's approval.
+- **What:** v4-B's `not_rice` output used only as a gate. v4-B rejects 100% of non-rice test sets. It would fix the screenshot and poster failures.
+- **Evaluation:** false rejection of real rice measured on raihan and Gazipur only.
+
 #### U1–U6 — the user's tasks
 | ID | Task | Status |
 |---|---|---|
