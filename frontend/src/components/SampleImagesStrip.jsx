@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useT from '../i18n/useT.js';
-
-const SAMPLES = [
-  { id: 'blast', labelBn: 'ব্লাস্ট', labelEn: 'Blast', src: '/samples/sample_blast.jpg' },
-  { id: 'brown_spot', labelBn: 'বাদামী দাগ', labelEn: 'Brown Spot', src: '/samples/sample_brown_spot.jpg' },
-  { id: 'healthy', labelBn: 'সুস্থ', labelEn: 'Healthy', src: '/samples/sample_healthy.jpg' },
-  { id: 'tungro', labelBn: 'টুংরো', labelEn: 'Tungro', src: '/samples/sample_tungro.jpg' },
-];
 
 export default function SampleImagesStrip({ onSelectFile, disabled = false, className = '' }) {
   const { lang, t } = useT();
+  const [samples, setSamples] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/samples/manifest.json')
+      .then((res) => {
+        if (!res.ok) return [];
+        return res.json();
+      })
+      .then((data) => {
+        if (isMounted && Array.isArray(data) && data.length > 0) {
+          setSamples(data);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setSamples([]);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // When manifest is missing or empty, render nothing
+  if (!samples || samples.length === 0) {
+    return null;
+  }
 
   const handlePickSample = async (sample) => {
     if (disabled) return;
@@ -31,7 +51,7 @@ export default function SampleImagesStrip({ onSelectFile, disabled = false, clas
       </span>
 
       <div className="grid grid-cols-4 gap-2 mb-1.5">
-        {SAMPLES.map((s) => (
+        {samples.map((s) => (
           <button
             key={s.id}
             type="button"

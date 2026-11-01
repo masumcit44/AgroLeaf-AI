@@ -26,11 +26,11 @@ export default function AboutPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
             <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-emerald-950">
-              <span className="font-bold block mb-1">✓ যা এই অ্যাপটি:</span>
+              <span className="font-bold block mb-1">{t('whatItIsLabel')}</span>
               <span className="leading-relaxed">{t('aboutWhatItIs')}</span>
             </div>
             <div className="p-3.5 bg-red-50/70 border border-red-200 rounded-2xl text-red-950">
-              <span className="font-bold block mb-1">✕ যা এটি নয়:</span>
+              <span className="font-bold block mb-1">{t('whatItIsNotLabel')}</span>
               <span className="leading-relaxed">{t('aboutWhatItIsNot')}</span>
             </div>
           </div>

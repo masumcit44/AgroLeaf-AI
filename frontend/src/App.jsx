@@ -10,6 +10,19 @@ import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
 function AppContent() {
   const { route, navigate } = useHashRoute();
 
+  React.useEffect(() => {
+    if (import.meta.env.DEV) {
+      const updateMetrics = () => {
+        const sw = document.documentElement.scrollWidth;
+        const iw = window.innerWidth;
+        document.title = `SW:${sw}_IW:${iw}`;
+      };
+      updateMetrics();
+      const t = setTimeout(updateMetrics, 500);
+      return () => clearTimeout(t);
+    }
+  });
+
   const renderPage = () => {
     switch (route) {
       case ROUTES.ACCURACY:

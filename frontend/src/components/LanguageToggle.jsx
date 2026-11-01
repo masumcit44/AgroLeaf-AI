@@ -8,10 +8,11 @@ export default function LanguageToggle() {
     <button
       type="button"
       onClick={toggleLang}
-      className="inline-flex items-center justify-center min-w-[48px] min-h-[48px] px-3 py-1.5 text-sm font-semibold text-leaf-700 bg-leaf-50 hover:bg-leaf-700/10 active:bg-leaf-700/20 border border-leaf-700/30 rounded-lg transition-colors cursor-pointer"
+      className="inline-flex items-center justify-center min-w-[40px] sm:min-w-[48px] min-h-[44px] px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold text-leaf-700 bg-leaf-50 hover:bg-leaf-700/10 active:bg-leaf-700/20 border border-leaf-700/30 rounded-lg transition-colors cursor-pointer"
       aria-label={`Switch to ${lang === 'bn' ? 'English' : 'Bangla'}`}
     >
-      <span className="font-bold">{t('langSwitch')}</span>
+      <span className="font-bold hidden sm:inline">{t('langSwitch')}</span>
+      <span className="font-bold sm:hidden">{lang === 'bn' ? 'EN' : 'বাং'}</span>
     </button>
   );
 }

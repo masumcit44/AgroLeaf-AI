@@ -17,7 +17,7 @@
 - **What YOU must do next:**
   1. **Kaggle GPU Training (Unblocks M07):** Follow `ml/kaggle/KAGGLE_RUNBOOK.md` to train MobileNetV3 on the real RiceLeafDiseaseBD v3 dataset on Kaggle T4 GPU, run calibration, export the production ONNX model (`rice-model-v1.onnx`), and place the output files into `frontend/public/models/` and `frontend/public/data/`.
   2. **Azure Speech Key (Optional for M06 voice files):** If you wish to synthesize the offline audio files, create a free Azure Speech F0 resource, put credentials in `.env`, and run `python ml/tools/generate_tts.py`. (Audio player already functions and degrades gracefully without crashing).
-  3. **Cloudflare Pages Connect (For deployment & remote Lighthouse):** Connect the GitHub repository `masumcit44/AgroLeaf-AI` to Cloudflare Pages with build command `cd frontend && npm run build` and output directory `frontend/dist`.
+  3. **Cloudflare Pages Connect (For deployment & remote Lighthouse):** Connect the GitHub repository `masumcit44/AgroLeaf-AI` to Cloudflare Pages with root directory `frontend`, build command `npm run build`, output directory `dist`, and environment variable `NODE_VERSION=22`.
 - **Next module to run when ready:** `M07` (once Kaggle training outputs are copied).
 - **How to preview the app right now:**
   ```bash
@@ -38,6 +38,7 @@
 | M04 | Inference engine | ✅ | 01 Nov 2026 07:51 BST | feat/m04-inference-engine / tag m04 | vitest (17/17 pass), oxlint (0 err), vite build pass, ort-wasm <25MiB checked, CPU WASM singleton inference |
 | M05 | Results + content | ✅ | 01 Nov 2026 07:59 BST | feat/m05-results-content / tag m05 | vitest (25/25 pass), oxlint (0 err), vite build pass, build-time content sync & validation, 7 screenshots captured |
 | M06 | Bangla audio | ✅ (audio files pending user key) | 01 Nov 2026 08:04 BST | feat/m06-bangla-audio / tag m06 | generate_tts.py dry-run pass (1351 chars), player with silent fallback on missing files, vitest (26/26 pass) |
+| M08b | Lead review fixes (fake samples, 360px overflow, EN name, claims) | ✅ | 01 Nov 2026 08:38 BST | fix/m08b-lead-review / tag m08b | removed placeholder noise samples, zero horizontal overflow at 360/390px across 10 pages in headless Chrome, EN disease names from content JSON, provisional thresholds marked, claims softened, vitest (29/29 pass), oxlint (0 err) |
 | M07 | Real model + accuracy page | ⬜ | | | |
 | M08 | Polish | 🟨 partial (needs M07) | 01 Nov 2026 08:09 BST | feat/m08-polish / tag m08-partial | items 1-4, 6-12 done: onboarding, error boundary, offline check, samples, share, threshold tuning, about transparency, vitest (26/26 pass), oxlint (0 err), build pass |
 | M09 | QA + release | ⬜ | | | |
@@ -54,6 +55,7 @@ _(none yet)_
 
 ## Assumptions made
 - [DONE by Antigravity 08:12] merged track/opencode
+- Quality thresholds are provisional; to be tuned in M07 on real dataset images.
 
 ## Proposals (not implemented)
 _(none yet)_
