@@ -138,10 +138,13 @@ def prep(i_row):
     try:
         with Image.open(r["path"]) as im:
             orient = im.getexif().get(0x0112, 1); raw_w, raw_h = im.size
-            im.draft("RGB", (600, 600)); im = ImageOps.exif_transpose(im).convert("RGB")
-            # tags 5-8 are 90-degree turns: the long side must swap after correction
-            turned = orient in (5, 6, 7, 8); swapped = (raw_w > raw_h) != (im.size[0] > im.size[1])
-            exif_ok = raw_w == raw_h or turned == swapped
+            im.draft("RGB", (600, 600)); up = ImageOps.exif_transpose(im)
+            # Correct means: Pillow cleared the orientation (EXIF or XMP) and, for EXIF tags 5-8
+            # (90-degree turns), the long side swapped. A swap without an EXIF tag = XMP orientation.
+            swapped = raw_w != raw_h and (raw_w > raw_h) != (up.size[0] > up.size[1])
+            exif_ok = up.getexif().get(0x0112, 1) in (0, 1) and (orient not in (5, 6, 7, 8) or swapped or raw_w == raw_h)
+            if orient not in (5, 6, 7, 8) and swapped: orient = "xmp_turn"
+            im = up.convert("RGB")
             w, h = im.size; s = 288 / min(w, h)
             if s < 1: im = im.resize((max(1, round(w * s)), max(1, round(h * s))), Image.BILINEAR)
             im.save(out, quality=92)
