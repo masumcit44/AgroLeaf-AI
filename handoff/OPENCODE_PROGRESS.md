@@ -3,6 +3,45 @@
 Branch: `track/opencode` · Agent: opencode (second implementation agent)
 Final summary is added at the top after O5 (or a stop condition).
 
+## Track 3 summary
+
+**Status:** O8–O11 complete, 2026-11-01 ~08:46 BST, pushed on `track/opencode`.
+No existing file was changed except this progress file; `frontend/`, the
+existing `ml/*.py` scripts and `main` were not touched.
+
+- **O8:** `model/metrics.schema.json` (draft 2020-12) covers every key
+  `ml/evaluate.py` writes, with metrics as `number|null` in 0..1 and optional
+  `calibration.warning`; `ml/tools/check_metrics_schema.py` is a stdlib-only
+  validator (no new dependency) that prints every error and exits 1. Tests build
+  a document matching evaluate.py's code, accept nulls, and reject 11 broken
+  copies.
+- **O9:** `ml/tools/make_release_bundle.py` accepts a zip or extracted run,
+  finds the nested `run1/`, validates class order, preprocess, calibration (no
+  `placeholder`), ONNX (< 24 MiB, first byte `0x08`, no external data, opset +
+  operators when `onnx` is installed), the metrics schema, parity samples and
+  PNGs. It prints all problems and copies nothing on failure; on success it
+  copies to the M07 contract paths plus `model/experiments/run1/`, prints sizes
+  and a `MEASURED (from metrics-v1.json)` summary, and leaves `config.js` and the
+  placeholder model untouched. `--dry-run` stops before copying.
+- **O10:** `ml/tools/pick_samples.py` deterministically picks real test-split
+  images, resizes to 480 px on the long side (JPEG q85), writes
+  `frontend/public/samples/<key>_<n>.jpg` + `manifest.json` with the Bangla/
+  English names from `disease_knowledge/` and the CC BY 4.0 DOI credit, and
+  refuses a `--data-root` inside `--repo`.
+- **O11:** `ml/TONIGHT.md` is the one-page Windows sequence (prepare → Kaggle
+  upload/Run All → download zip → dry-run → real bundle → pick samples → tell
+  Antigravity "continue M07"), with expected output lines and failure advice,
+  plus the optional Azure TTS step.
+
+**Tests:** `python ml/tests/test_metrics_schema.py`,
+`python ml/tests/test_release_bundle.py` and
+`python ml/tests/test_pick_samples.py` all PASS; `py_compile` on all six new
+Python files is clean. The release-bundle test builds a tiny valid ONNX and
+checks zip input, dry-run, bad class order and multiple problems (nothing copied
+in either failure case). No real Kaggle run exists yet, so every real number is
+still unmeasured. `handoff/X_BACKLOG.md` referenced by the brief is not present;
+the exact paths listed in `OPENCODE_TRACK_3.md` were used instead.
+
 ## Track 2 summary
 
 **Status:** O6 and O7 complete, 2026-11-01 ~08:15 BST. Pushed on
@@ -95,6 +134,62 @@ Final tree is clean apart from the supplied `handoff/OPENCODE_TRACK.md`.
 | O5 — submission drafts | ✅ done | `documentation/submission/{devpost_story,demo_script_en,deck_outline,submission_checklist}.md` |
 | O6 — QA templates | ✅ done | `documentation/qa/qa_checklist_v1.md`, `documentation/qa/hallway_test_v1.md` |
 | O7 — Bangla/English glossary | ✅ done | `documentation/glossary_bn_en.md` |
+| O8 — metrics schema + checker | ✅ done | `model/metrics.schema.json`, `ml/tools/check_metrics_schema.py`, `ml/tests/test_metrics_schema.py` |
+| O9 — release bundle tool | ✅ done | `ml/tools/make_release_bundle.py`, `ml/tests/test_release_bundle.py` |
+| O10 — real demo samples | ✅ done | `ml/tools/pick_samples.py`, `ml/tests/test_pick_samples.py` |
+| O11 — tonight's run sheet | ✅ done | `ml/TONIGHT.md` |
+
+## Track 3 — release tooling (O8–O11)
+
+**Status:** done — 2026-11-01 ~08:46 BST
+
+**Files added**
+- `model/metrics.schema.json` — draft 2020-12 schema for `metrics-v1.json`:
+  `model`, `calibration` (+ optional `warning`), `internal_test` (+ `per_class`),
+  `external[]` with all ten measured fields, `limitations`. Metric fields are
+  `number|null` in 0..1; counts are non-negative integers.
+- `ml/tools/check_metrics_schema.py` — stdlib-only subset validator (`type`,
+  `required`, `properties`, `additionalProperties`, `items`, `enum`, numeric
+  bounds, `anyOf`, local `$ref`); prints every error and exits 1. `jsonschema`
+  is not required.
+- `ml/tools/make_release_bundle.py` — `--run-zip` (zip or folder), `--repo`,
+  `--dry-run`; safe extraction, nested `run1/` detection, all O9 checks, all-or-
+  nothing copy to `frontend/public/models/rice-mnv3l-v1.onnx`,
+  `frontend/public/data/{class_index,preprocess,calibration,metrics-v1,parity_samples}.json`,
+  `frontend/public/accuracy/*.png`, and `model/experiments/run1/`. It prints
+  sizes, the `MEASURED (from metrics-v1.json)` summary and the M07 config change.
+- `ml/tools/pick_samples.py` — deterministic test-split picking, 480 px long
+  side at JPEG q85, `frontend/public/samples/<key>_<n>.jpg`, `manifest.json`
+  (`id`, `labelBn`, `labelEn`, `src`, `credit`), refuses a data root inside the
+  repo.
+- `ml/tests/test_metrics_schema.py`, `ml/tests/test_release_bundle.py`,
+  `ml/tests/test_pick_samples.py`, `ml/TONIGHT.md`.
+
+**How tested**
+```bash
+python ml/tests/test_metrics_schema.py
+python ml/tests/test_release_bundle.py
+python ml/tests/test_pick_samples.py
+python -m py_compile ml/tools/check_metrics_schema.py ml/tools/make_release_bundle.py ml/tools/pick_samples.py
+```
+Schema test: valid evaluate.py-shaped document, null external metrics, and 11
+broken copies (missing blocks, out-of-range, wrong types, null counts).
+Bundle test: synthetic run with a tiny valid ONNX (`0x08` first byte),
+`FIXTURE_NOT_REAL` metrics, JSON/PNGs; checks copies, dry-run, zip with
+`run1/` prefix, bad class order and missing parity (exit 1, nothing copied).
+Samples test: toy dataset + splits → 4 deterministic images at 480 px, exact
+labels/credit, repeated run identical, source unchanged, unsafe paths refused.
+
+**Notes / problems**
+- No real Kaggle run exists here, so the tools were not run against real
+  artefacts and no number was invented; `metrics-v1.json` stays
+  `[[TBD after training]]`.
+- `handoff/X_BACKLOG.md` (referenced for the shared contract) is missing from
+  this worktree; the exact destination paths in `OPENCODE_TRACK_3.md` were used.
+- `onnx` inspection is optional: without it the checker still does the size,
+  first-byte and `.data` checks.
+- The tools copy into `frontend/public/**` by design (O9/O10), but this branch
+  did not edit `frontend/src/ml/config.js` or delete the placeholder model.
 
 ## O6 — QA templates (release module M09)
 

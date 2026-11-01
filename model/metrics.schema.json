@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agroleaf.ai/schemas/metrics-v1.json",
+  "title": "AgroLeaf AI metrics-v1.json",
+  "description": "Schema for the metrics-v1.json file written by ml/evaluate.py. Metric values are numbers in [0, 1] or null when a set contains no images for that metric.",
+  "type": "object",
+  "required": [
+    "model",
+    "calibration",
+    "internal_test",
+    "external",
+    "limitations"
+  ],
+  "properties": {
+    "model": {
+      "type": "object",
+      "required": [
+        "arch",
+        "onnx_mb",
+        "trained_on",
+        "date"
+      ],
+      "properties": {
+        "arch": {
+          "type": "string",
+          "description": "Model architecture, e.g. mnv3_large."
+        },
+        "onnx_mb": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Size of model.onnx in MiB (0.0 when the file is absent)."
+        },
+        "trained_on": {
+          "type": "string",
+          "description": "Human-readable training dataset and DOI."
+        },
+        "date": {
+          "type": "string",
+          "description": "Evaluation date, formatted YYYY-MM-DD by evaluate.py."
+        }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "required": [
+        "temperature",
+        "threshold",
+        "target_precision"
+      ],
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Temperature scaling value fitted on the validation split."
+        },
+        "threshold": {
+          "$ref": "#/$defs/unit",
+          "description": "Confidence threshold for answering instead of not_sure."
+        },
+        "target_precision": {
+          "$ref": "#/$defs/unit",
+          "description": "Precision target used when choosing the threshold."
+        },
+        "warning": {
+          "type": "string",
+          "description": "Optional calibration warning, also appended to limitations."
+        }
+      }
+    },
+    "internal_test": {
+      "type": "object",
+      "required": [
+        "n",
+        "accuracy",
+        "macro_f1",
+        "coverage",
+        "selective_accuracy",
+        "ece_after",
+        "per_class"
+      ],
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of internal test images."
+        },
+        "accuracy": {
+          "$ref": "#/$defs/unit"
+        },
+        "macro_f1": {
+          "$ref": "#/$defs/unit"
+        },
+        "coverage": {
+          "$ref": "#/$defs/unit"
+        },
+        "selective_accuracy": {
+          "$ref": "#/$defs/unit"
+        },
+        "ece_after": {
+          "$ref": "#/$defs/unit",
+          "description": "Expected calibration error after temperature scaling."
+        },
+        "per_class": {
+          "$ref": "#/$defs/perClassMap"
+        }
+      }
+    },
+    "external": {
+      "type": "array",
+      "description": "One entry per external test set passed to evaluate.py --external.",
+      "items": {
+        "$ref": "#/$defs/externalEntry"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Limitations shown on the Accuracy page."
+    }
+  },
+  "$defs": {
+    "unit": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "A metric in [0, 1], or null when it could not be measured."
+    },
+    "perClassEntry": {
+      "type": "object",
+      "required": [
+        "precision",
+        "recall",
+        "f1",
+        "support"
+      ],
+      "properties": {
+        "precision": {
+          "$ref": "#/$defs/unit"
+        },
+        "recall": {
+          "$ref": "#/$defs/unit"
+        },
+        "f1": {
+          "$ref": "#/$defs/unit"
+        },
+        "support": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "perClassMap": {
+      "type": "object",
+      "description": "Keyed by class key (healthy, blast, ...).",
+      "additionalProperties": {
+        "$ref": "#/$defs/perClassEntry"
+      }
+    },
+    "externalEntry": {
+      "type": "object",
+      "required": [
+        "name",
+        "doi",
+        "classes_tested",
+        "n",
+        "accuracy_mapped",
+        "macro_f1_mapped",
+        "coverage",
+        "selective_accuracy",
+        "unseen_rejection_rate",
+        "per_class"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "doi": {
+          "type": "string"
+        },
+        "classes_tested": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Mapped images plus unseen images evaluated in this set."
+        },
+        "accuracy_mapped": {
+          "$ref": "#/$defs/unit"
+        },
+        "macro_f1_mapped": {
+          "$ref": "#/$defs/unit"
+        },
+        "coverage": {
+          "$ref": "#/$defs/unit"
+        },
+        "selective_accuracy": {
+          "$ref": "#/$defs/unit"
+        },
+        "unseen_rejection_rate": {
+          "$ref": "#/$defs/unit"
+        },
+        "per_class": {
+          "$ref": "#/$defs/perClassMap"
+        }
+      }
+    }
+  }
+}
