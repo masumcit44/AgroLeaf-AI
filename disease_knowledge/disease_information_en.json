@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "language": "en",
+    "version": "0.1-draft",
+    "date": "2026-11-01",
+    "status": "DRAFT — general descriptions for the app; review against BRRI/DAE material before launch. No chemical doses are written by us.",
+    "keys_must_match": "model/class_index.json",
+    "disclaimer_en": "This is a preliminary screening, not a final diagnosis. Ask your Upazila agriculture officer or call 16123 before using any chemical."
+  },
+  "classes": {
+    "healthy": {
+      "name_en": "Healthy leaf",
+      "scientific_name": null,
+      "meaning_en": "The leaf looks healthy. No clear disease sign was found.",
+      "symptoms_en": [],
+      "prevention_en": ["Walk the field regularly.", "Use balanced fertiliser; avoid excess urea.", "Keep field and bunds weed-free."],
+      "verification_status": "needs_agronomist_review"
+    },
+    "blast": {
+      "name_en": "Rice blast",
+      "scientific_name": "Magnaporthe oryzae (anamorph Pyricularia oryzae)",
+      "type": "fungal",
+      "meaning_en": "A fungal disease that can attack leaves, nodes and panicles and spreads quickly.",
+      "symptoms_en": ["Diamond/spindle-shaped lesions on leaves", "Grey or whitish centre with a brown border", "Panicle infection causes empty grains"],
+      "favourable_conditions_en": "Cool nights, warm days, relative humidity above 90%, cloudy weather (BAMIS); excess nitrogen increases risk.",
+      "prevention_en": ["Moderate urea", "Avoid dense planting", "Use disease-free seed", "Remove infected straw and stubble"],
+      "official_guidance_url": "https://www.bamis.gov.bd/diseases/1/all/76",
+      "verification_status": "needs_agronomist_review"
+    },
+    "brown_spot": {
+      "name_en": "Brown spot",
+      "scientific_name": "Bipolaris oryzae (teleomorph Cochliobolus miyabeanus)",
+      "type": "fungal, seed-borne",
+      "meaning_en": "A fungal disease, worse on nutrient-poor soil and from infected seed.",
+      "symptoms_en": ["Small round to oval brown spots", "Often a yellow halo", "Heavy infection dries the leaf"],
+      "favourable_conditions_en": "28–30 °C, high humidity, cloudy weather (BAMIS); poor soil fertility and drought stress.",
+      "prevention_en": ["Balanced fertiliser, especially potash", "Clean, treated seed", "Avoid letting the field dry out completely"],
+      "official_guidance_url": "https://www.bamis.gov.bd/diseases/1/all/76",
+      "verification_status": "needs_agronomist_review"
+    },
+    "leaf_smut": {
+      "name_en": "Leaf smut",
+      "scientific_name": "Entyloma oryzae",
+      "type": "fungal (usually minor)",
+      "meaning_en": "A fungal disease, usually of minor importance, that weakens leaves.",
+      "symptoms_en": ["Small, slightly raised black spots or streaks", "Aligned along leaf veins", "Leaf tips may dry"],
+      "prevention_en": ["Moderate urea", "Remove infected straw"],
+      "official_guidance_url": null,
+      "verification_status": "needs_agronomist_review; not listed by BAMIS"
+    },
+    "tungro": {
+      "name_en": "Rice tungro",
+      "scientific_name": "Rice tungro bacilliform virus + Rice tungro spherical virus; vector: green leafhopper (Nephotettix spp.)",
+      "type": "viral, insect-transmitted",
+      "meaning_en": "A virus disease spread by the green leafhopper.",
+      "symptoms_en": ["Yellow to orange-yellow leaves starting from the tip", "Stunted plants, fewer tillers", "Patches of yellow plants in the field"],
+      "prevention_en": ["Monitor green leafhoppers", "Rogue and bury infected plants", "Synchronised planting with neighbours"],
+      "official_guidance_url": "https://www.bamis.gov.bd/diseases/1/all/76",
+      "verification_status": "needs_agronomist_review"
+    },
+    "sheath_blight": {
+      "name_en": "Sheath blight",
+      "scientific_name": "Rhizoctonia solani",
+      "type": "fungal",
+      "meaning_en": "A fungal disease that starts on the sheath near the water line and moves up.",
+      "symptoms_en": ["Oval grey-green lesions with brown margins on the sheath", "Lesions merge into a snakeskin pattern", "Can spread to leaves"],
+      "favourable_conditions_en": "28–32 °C, high humidity, cloudy weather (BAMIS); dense canopy and excess nitrogen.",
+      "prevention_en": ["Avoid dense planting", "Moderate urea", "Drain the field for a few days", "Remove infected stubble and weeds"],
+      "official_guidance_url": "https://www.bamis.gov.bd/diseases/1/all/76",
+      "verification_status": "needs_agronomist_review"
+    },
+    "not_sure": {
+      "name_en": "Not sure",
+      "meaning_en": "The model is not confident enough. Saying 'not sure' is safer than a wrong answer.",
+      "what_to_do_now_en": "Retake a close, well-lit photo of only the affected leaf. If still unsure, call 16123 (Krishi Call Centre)."
+    }
+  }
+}

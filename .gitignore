@@ -1,0 +1,34 @@
+# private / not for the public repo
+research_files/
+reports/
+documentation/workspace_guide.md
+.env
+*.env.local
+
+# data and model artefacts (datasets live OUTSIDE the repo)
+datasets_raw/
+**/datasets/
+*.zip
+*.pt
+*.pth
+*.ckpt
+ml/outputs/
+ml/toy_data/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# node
+node_modules/
+frontend/dist/
+frontend/public/ort/
+.vite/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

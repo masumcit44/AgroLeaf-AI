@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "language": "bn",
+    "version": "0.1-draft",
+    "date": "2026-11-01",
+    "status": "DRAFT — symptoms and prevention are general descriptions written for this app from the sources in source_references.md and MUST be reviewed by an agronomist (or checked against BRRI/DAE material) before public launch. 'official_guidance' fields are quoted from BAMIS (DAE) as published; they are not written by us.",
+    "keys_must_match": "model/class_index.json (class order is decided after the dataset is downloaded)",
+    "disclaimer_bn": "এটি প্রাথমিক ধারণা, চূড়ান্ত রোগ নির্ণয় নয়। ওষুধ দেওয়ার আগে উপজেলা কৃষি অফিসারের পরামর্শ নিন অথবা ১৬১২৩ নম্বরে কল করুন।",
+    "helpline": "16123"
+  },
+  "classes": {
+    "healthy": {
+      "name_bn": "সুস্থ পাতা",
+      "meaning_bn": "ছবিতে পাতাটি সুস্থ দেখাচ্ছে। কোনো রোগের স্পষ্ট লক্ষণ পাওয়া যায়নি।",
+      "symptoms_bn": [],
+      "prevention_bn": [
+        "নিয়মিত ক্ষেত ঘুরে পাতা দেখুন।",
+        "সুষম সার দিন, বেশি ইউরিয়া দেবেন না।",
+        "ক্ষেত ও আইল আগাছামুক্ত রাখুন।"
+      ],
+      "what_to_do_now_bn": "কিছু করার দরকার নেই। অন্য গাছে দাগ দেখলে সেই পাতার ছবি তুলে আবার পরীক্ষা করুন।",
+      "official_guidance": null,
+      "voice_script_bn": "পাতাটি সুস্থ দেখাচ্ছে। কোনো রোগের লক্ষণ পাওয়া যায়নি। নিয়মিত ক্ষেত দেখুন, সুষম সার দিন, আর আগাছা পরিষ্কার রাখুন।",
+      "audio_file": "audio/healthy.mp3",
+      "verification_status": "needs_agronomist_review"
+    },
+    "blast": {
+      "name_bn": "ব্লাস্ট রোগ",
+      "meaning_bn": "ব্লাস্ট একটি ছত্রাকজনিত রোগ। এটি পাতা, গিঁট ও শীষে আক্রমণ করতে পারে এবং দ্রুত ছড়ায়।",
+      "symptoms_bn": [
+        "পাতায় চোখের মতো বা মাকুর মতো লম্বাটে দাগ।",
+        "দাগের মাঝখান ধূসর বা সাদাটে, কিনারা বাদামী।",
+        "বেশি হলে পাতা পুড়ে যাওয়ার মতো দেখায়; শীষ আক্রান্ত হলে দানা চিটা হয়।"
+      ],
+      "favourable_conditions_bn": "রাতে ঠান্ডা, দিনে গরম, বাতাসে আর্দ্রতা বেশি ও মেঘলা আবহাওয়ায় বাড়ে। বেশি ইউরিয়া দিলে ঝুঁকি বাড়ে।",
+      "prevention_bn": [
+        "ইউরিয়া সার পরিমিত দিন, একবারে বেশি দেবেন না।",
+        "ঘন করে চারা লাগাবেন না, বাতাস চলাচলের জায়গা রাখুন।",
+        "রোগমুক্ত বীজ ব্যবহার করুন।",
+        "আক্রান্ত খড় ও নাড়া পুড়িয়ে বা সরিয়ে ফেলুন।"
+      ],
+      "what_to_do_now_bn": "দ্রুত উপজেলা কৃষি অফিসার বা ১৬১২৩ নম্বরে যোগাযোগ করুন। ব্লাস্ট দ্রুত ছড়ায়, তাই দেরি করবেন না।",
+      "official_guidance": {
+        "source": "BAMIS (কৃষি সম্প্রসারণ অধিদপ্তর)",
+        "url": "https://www.bamis.gov.bd/diseases/1/all/76",
+        "retrieved": "2026-11-01",
+        "text_bn_verbatim": "নাটিভো৭৫ ডব্লিউপি/ ট্টপার ০.৬ গ্রাম/লিটার অথবা এমিস্টার টপ ৩২৫ এসপি ১ মিলি./ লিটার পানিতে মিশিয়ে প্রয়োগ করতে হবে।",
+        "show_rule": "Show only behind 'সরকারি পরামর্শ দেখুন' with the disclaimer. Never read aloud. Never modify."
+      },
+      "voice_script_bn": "সম্ভবত ব্লাস্ট রোগ। এটি ছত্রাকজনিত রোগ এবং দ্রুত ছড়ায়। পাতায় মাঝখানে ধূসর আর কিনারায় বাদামী লম্বাটে দাগ হয়। ইউরিয়া সার কম দিন, ঘন করে চারা লাগাবেন না। দেরি না করে উপজেলা কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে কল করুন।",
+      "audio_file": "audio/blast.mp3",
+      "verification_status": "needs_agronomist_review"
+    },
+    "brown_spot": {
+      "name_bn": "বাদামী দাগ রোগ",
+      "meaning_bn": "বাদামী দাগ একটি ছত্রাকজনিত রোগ। মাটিতে পুষ্টির ঘাটতি থাকলে এবং আক্রান্ত বীজ থেকে বেশি হয়।",
+      "symptoms_bn": [
+        "পাতায় ছোট গোল বা ডিমের মতো বাদামী দাগ।",
+        "অনেক সময় দাগের চারপাশে হলুদ আভা থাকে।",
+        "দাগ বেশি হলে পাতা শুকিয়ে যায়।"
+      ],
+      "favourable_conditions_bn": "গরম, আর্দ্র ও মেঘলা আবহাওয়ায় এবং দুর্বল বা পুষ্টিহীন মাটিতে বেশি হয়।",
+      "prevention_bn": [
+        "সুষম সার দিন, বিশেষ করে পটাশ যেন কম না হয়।",
+        "রোগমুক্ত ও শোধন করা বীজ ব্যবহার করুন।",
+        "ক্ষেতে পানি একেবারে শুকিয়ে যেতে দেবেন না।"
+      ],
+      "what_to_do_now_bn": "সার ব্যবস্থাপনা ঠিক করুন। ওষুধের জন্য উপজেলা কৃষি অফিসার বা ১৬১২৩ নম্বরে পরামর্শ নিন।",
+      "official_guidance": {
+        "source": "BAMIS (কৃষি সম্প্রসারণ অধিদপ্তর)",
+        "url": "https://www.bamis.gov.bd/diseases/1/all/76",
+        "retrieved": "2026-11-01",
+        "text_bn_verbatim": "সার ব্যবস্থপনা;পটাশ+থিওভিট প্রয়োগ;",
+        "show_rule": "Show only behind 'সরকারি পরামর্শ দেখুন' with the disclaimer. Never read aloud. Never modify."
+      },
+      "voice_script_bn": "সম্ভবত বাদামী দাগ রোগ। পাতায় ছোট গোল বাদামী দাগ হয়। সাধারণত সারের ঘাটতি থাকলে বেশি হয়। সুষম সার দিন, বিশেষ করে পটাশ। ভালো বীজ ব্যবহার করুন। ওষুধের জন্য কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে পরামর্শ নিন।",
+      "audio_file": "audio/brown_spot.mp3",
+      "verification_status": "needs_agronomist_review"
+    },
+    "leaf_smut": {
+      "name_bn": "পাতার স্মাট (কালো দাগ) রোগ",
+      "name_bn_note": "Bangla name to be confirmed by an agronomist; not found in BAMIS list.",
+      "meaning_bn": "এটি একটি ছত্রাকজনিত রোগ। সাধারণত বড় ক্ষতি করে না, তবে পাতা দুর্বল করে।",
+      "symptoms_bn": [
+        "পাতায় ছোট ছোট কালো, সামান্য উঁচু দাগ বা রেখা।",
+        "দাগগুলো পাতার শিরা বরাবর থাকে।",
+        "বেশি হলে পাতার ডগা শুকিয়ে যায়।"
+      ],
+      "prevention_bn": [
+        "ইউরিয়া সার পরিমিত দিন।",
+        "আক্রান্ত খড় ও নাড়া ক্ষেত থেকে সরিয়ে ফেলুন।"
+      ],
+      "what_to_do_now_bn": "নিশ্চিত হতে উপজেলা কৃষি অফিসার বা ১৬১২৩ নম্বরে পাতাটি দেখান।",
+      "official_guidance": null,
+      "voice_script_bn": "সম্ভবত পাতার স্মাট রোগ। পাতায় ছোট ছোট কালো দাগ বা রেখা হয়। সাধারণত বড় ক্ষতি করে না। ইউরিয়া সার পরিমিত দিন এবং আক্রান্ত খড় সরিয়ে ফেলুন। নিশ্চিত হতে কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে যোগাযোগ করুন।",
+      "audio_file": "audio/leaf_smut.mp3",
+      "verification_status": "needs_agronomist_review; no official BD source found"
+    },
+    "tungro": {
+      "name_bn": "টুংরো রোগ",
+      "meaning_bn": "টুংরো একটি ভাইরাসজনিত রোগ। সবুজ পাতাফড়িং নামের পোকা এক গাছ থেকে আরেক গাছে এই রোগ ছড়ায়।",
+      "symptoms_bn": [
+        "পাতা হলুদ বা কমলা-হলুদ হয়ে যায়, সাধারণত ডগা থেকে শুরু হয়।",
+        "গাছ খাটো হয়ে যায়, কুশি কম হয়।",
+        "ক্ষেতের জায়গায় জায়গায় গোল হয়ে গাছ হলুদ দেখায়।"
+      ],
+      "prevention_bn": [
+        "ক্ষেতে সবুজ পাতাফড়িং আছে কিনা নিয়মিত দেখুন।",
+        "আক্রান্ত গাছ তুলে মাটিতে পুঁতে ফেলুন।",
+        "আশপাশের সবাই কাছাকাছি সময়ে চারা লাগালে ঝুঁকি কমে।"
+      ],
+      "what_to_do_now_bn": "আক্রান্ত গাছ তুলে ফেলুন এবং পাতাফড়িং দমনের জন্য উপজেলা কৃষি অফিসার বা ১৬১২৩ নম্বরে পরামর্শ নিন।",
+      "official_guidance": {
+        "source": "BAMIS (কৃষি সম্প্রসারণ অধিদপ্তর)",
+        "url": "https://www.bamis.gov.bd/diseases/1/all/76",
+        "retrieved": "2026-11-01",
+        "text_bn_verbatim": "টুংরো ভাইরাস রোগের বাহক হলো সবুজ পাতা পড়িং এবং ইহা দমনের জন্য অনুমোদিত কীটনাশকসমূহ: [BAMIS lists Malathion and Chlorpyrifos products at 2 ml per litre water — copy the exact text from the page before display]",
+        "show_rule": "Show only behind 'সরকারি পরামর্শ দেখুন' with the disclaimer. Never read aloud. Check current registration of listed insecticides with DAE before showing."
+      },
+      "voice_script_bn": "সম্ভবত টুংরো রোগ। এটি ভাইরাসজনিত রোগ, সবুজ পাতাফড়িং পোকা এটি ছড়ায়। পাতা হলুদ বা কমলা হয়ে যায় এবং গাছ খাটো হয়। আক্রান্ত গাছ তুলে মাটিতে পুঁতে ফেলুন। পোকা দমনের জন্য কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে পরামর্শ নিন।",
+      "audio_file": "audio/tungro.mp3",
+      "verification_status": "needs_agronomist_review"
+    },
+    "sheath_blight": {
+      "name_bn": "খোল পোড়া রোগ",
+      "meaning_bn": "খোল পোড়া একটি ছত্রাকজনিত রোগ। এটি সাধারণত পানির কাছাকাছি গাছের খোলে শুরু হয়ে উপরের দিকে ছড়ায়।",
+      "symptoms_bn": [
+        "পানির উপরে খোলে ডিমের মতো ধূসর-সবুজ দাগ, কিনারা বাদামী।",
+        "দাগ বড় হয়ে একসাথে মিশে যায়, দেখতে সাপের চামড়ার মতো।",
+        "পরে পাতাতেও ছড়াতে পারে।"
+      ],
+      "favourable_conditions_bn": "গরম ও আর্দ্র আবহাওয়ায়, ঘন গাছ ও বেশি ইউরিয়া দিলে বাড়ে।",
+      "prevention_bn": [
+        "ঘন করে চারা লাগাবেন না।",
+        "ইউরিয়া সার পরিমিত দিন।",
+        "আক্রান্ত হলে কিছুদিন ক্ষেতের পানি সরিয়ে দিন।",
+        "আক্রান্ত নাড়া ও আগাছা পরিষ্কার করুন।"
+      ],
+      "what_to_do_now_bn": "খোলের নিচের অংশ ভালো করে দেখুন। ওষুধের জন্য উপজেলা কৃষি অফিসার বা ১৬১২৩ নম্বরে পরামর্শ নিন।",
+      "official_guidance": {
+        "source": "BAMIS (কৃষি সম্প্রসারণ অধিদপ্তর)",
+        "url": "https://www.bamis.gov.bd/diseases/1/all/76",
+        "retrieved": "2026-11-01",
+        "text_bn_verbatim": "[BAMIS lists Hexaconazole (Nativo WG) and Tebuconazole (Folicur 250 EC), 1 ml per litre water — copy the exact Bangla text from the page before display]",
+        "show_rule": "Show only behind 'সরকারি পরামর্শ দেখুন' with the disclaimer. Never read aloud. Never modify."
+      },
+      "voice_script_bn": "সম্ভবত খোল পোড়া রোগ। পানির কাছে গাছের খোলে ধূসর দাগ হয়, পরে উপরে ছড়ায়। ঘন করে চারা লাগাবেন না, ইউরিয়া পরিমিত দিন, আর কিছুদিন ক্ষেতের পানি সরিয়ে দিন। ওষুধের জন্য কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে পরামর্শ নিন।",
+      "audio_file": "audio/sheath_blight.mp3",
+      "verification_status": "needs_agronomist_review"
+    },
+    "not_sure": {
+      "name_bn": "নিশ্চিত নই",
+      "meaning_bn": "ছবিটি দেখে আমি নিশ্চিত হতে পারছি না। ভুল পরামর্শ দেওয়ার চেয়ে না বলাই ভালো।",
+      "what_to_do_now_bn": "আলোতে, কাছ থেকে, শুধু আক্রান্ত পাতার আরেকটি পরিষ্কার ছবি তুলুন। তবুও নিশ্চিত না হলে ১৬১২৩ নম্বরে কল করুন।",
+      "official_guidance": null,
+      "voice_script_bn": "আমি নিশ্চিত নই। দিনের আলোতে, কাছ থেকে, শুধু আক্রান্ত পাতার আরেকটি পরিষ্কার ছবি তুলুন। তবুও না হলে এক ছয় এক দুই তিন নম্বরে কৃষি কল সেন্টারে ফোন করুন।",
+      "audio_file": "audio/not_sure.mp3",
+      "verification_status": "app_text"
+    }
+  }
+}

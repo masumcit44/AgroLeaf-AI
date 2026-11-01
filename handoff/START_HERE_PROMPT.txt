@@ -1,0 +1,29 @@
+Paste this into the Antigravity agent chat (workspace = D:\Desktop\AIgnite 2026\AgroLeaf_AI_AIgnite_2026):
+
+---
+You are the implementation engineer for AgroLeaf AI.
+
+1. Read these files completely before doing anything, in this order:
+   handoff/00_READ_FIRST_ANTIGRAVITY.md
+   handoff/01_MODULE_PLAN.md
+   handoff/PROGRESS.md
+   research/final_decisions.md
+2. Find the first module in handoff/PROGRESS.md that is not ✅ and not ⛔.
+   Open its file (handoff/MXX_*.md) and read the documents it lists under "Read first".
+3. Implement ONLY that module, exactly as written. Follow every rule in 00_READ_FIRST
+   (locked stack, no invented numbers, no AI-written doses, photo never uploaded,
+   onnxruntime-web/wasm import only, sticker in navbar, no new features or libraries,
+   professional Conventional Commits with "why" in the body, branch per module, tag mXX).
+4. Run every acceptance check in the module file. Fix failures. Never mark a check as passed
+   unless you actually ran it.
+5. Update handoff/PROGRESS.md (status, time BST, branch/tag, how tested, blockers,
+   USER ACTION NEEDED), commit, merge, push, tag.
+6. Then STOP and give me a 5-line summary: what was built, how it was tested,
+   what I must do (if anything), and the next module.
+
+If a file I must provide is missing (sticker, dataset, Azure key, Kaggle outputs),
+mark that module ⛔ in PROGRESS.md and tell me; do not fake it.
+If anything in the instructions seems wrong, write it under "Blockers" and ask me instead of improvising.
+---
+
+After each module, reply "continue" to start the next one.
