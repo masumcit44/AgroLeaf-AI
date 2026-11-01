@@ -26,3 +26,8 @@ All boundaries in `handoff/OPENCODE_TRACK.md` apply: this folder only; branch `t
 
 ## Done
 Push. Add a "Track 4 summary" at the top of OPENCODE_PROGRESS.md. Print `TRACK4_DONE` as the very last line.
+
+## Restart note (lead, 10:50)
+- The first attempt timed out after 90 min, looping on Windows console encoding errors ("charmap codec can't encode character '\u2713'"). **Do not print non-ASCII characters to the console.** Python runs with `PYTHONUTF8=1` now, but keep console output ASCII anyway.
+- `deck_build.py` and `AgroLeaf_AI_deck_v1.pptx` already exist (uncommitted) from the first attempt. **Review and finish them; don't start over.** Text-fit polishing: at most 2 passes. Then commit, push and finish.
+- **Time box:** 30 minutes.
