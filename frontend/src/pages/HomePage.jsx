@@ -1,28 +1,144 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useT from '../i18n/useT.js';
 import PageContainer from '../components/PageContainer.jsx';
 import PhotoPicker from '../components/PhotoPicker.jsx';
 import PreviewScreen from '../components/PreviewScreen.jsx';
+import BigButton from '../components/BigButton.jsx';
 import { useScanFlow, SCAN_STEPS } from '../state/useScanFlow.js';
+import { loadModel } from '../ml/loadModel.js';
 
 export default function HomePage() {
   const { t } = useT();
   const scanFlow = useScanFlow();
 
-  // If in preview mode, render PreviewScreen
-  if (scanFlow.step === SCAN_STEPS.PREVIEW && scanFlow.canvas) {
+  // Pre-load model after first paint in background idle callback
+  useEffect(() => {
+    let cancelIdle = null;
+    let timer = null;
+
+    if ('requestIdleCallback' in window) {
+      const handle = window.requestIdleCallback(() => {
+        loadModel().catch((err) => {
+          console.debug('Idle background model load deferred:', err.message);
+        });
+      }, { timeout: 2000 });
+      cancelIdle = () => window.cancelIdleCallback(handle);
+    } else {
+      timer = setTimeout(() => {
+        loadModel().catch((err) => {
+          console.debug('Timer background model load deferred:', err.message);
+        });
+      }, 1500);
+      cancelIdle = () => clearTimeout(timer);
+    }
+
+    return () => {
+      if (cancelIdle) cancelIdle();
+    };
+  }, []);
+
+  // 1. Preview / Analysing state
+  if (
+    (scanFlow.step === SCAN_STEPS.PREVIEW || scanFlow.step === SCAN_STEPS.ANALYSING) &&
+    scanFlow.canvas
+  ) {
     return (
       <PreviewScreen
         canvas={scanFlow.canvas}
         quality={scanFlow.quality}
         onRetake={scanFlow.reset}
-        onAnalyze={() => {
-          // Handled in M04
-        }}
+        onAnalyze={scanFlow.runInference}
+        isAnalyzing={scanFlow.step === SCAN_STEPS.ANALYSING}
+        modelProgress={scanFlow.modelProgress}
+        errorKey={scanFlow.inferenceError}
+        onRetry={scanFlow.runInference}
       />
     );
   }
 
+  // 2. Result state (M04 interim debug view, upgraded to cards in M05)
+  if (scanFlow.step === SCAN_STEPS.RESULT && scanFlow.analysisResult) {
+    const { probs, ms, calibration, decision } = scanFlow.analysisResult;
+    const isPlaceholder = calibration?.placeholder === true;
+
+    return (
+      <PageContainer className="py-4">
+        {/* Placeholder Warning Banner */}
+        {isPlaceholder && (
+          <div className="w-full bg-amber-500/15 border-2 border-amber-500/40 rounded-xl p-3 mb-4 text-center">
+            <span className="text-amber-900 font-bold text-sm block">
+              ⚠️ {t('demoModelBanner')}
+            </span>
+          </div>
+        )}
+
+        <h1 className="text-xl font-bold text-gray-800 mb-2 text-center">
+          {t('resultTitle')}
+        </h1>
+
+        {/* Decision Badge */}
+        <div className={`w-full p-3 rounded-xl mb-4 text-center font-bold text-sm ${
+          decision.status === 'confident'
+            ? 'bg-leaf-100 text-leaf-800 border border-leaf-700/30'
+            : 'bg-amber-100 text-amber-800 border border-amber-300'
+        }`}>
+          <span>
+            {decision.status === 'confident'
+              ? `${t('decisionConfident')}: ${decision.top?.key}`
+              : t('decisionNotSure')}
+          </span>
+        </div>
+
+        {/* Interim Debug Probability Breakdown */}
+        <div className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+            Class Probabilities
+          </h2>
+          <div className="space-y-2">
+            {Object.entries(probs)
+              .sort((a, b) => b[1] - a[1])
+              .map(([clsKey, prob]) => {
+                const pct = (prob * 100).toFixed(1);
+                return (
+                  <div key={clsKey} className="flex items-center justify-between text-xs">
+                    <span className="font-medium text-gray-700 capitalize">
+                      {clsKey.replace('_', ' ')}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 bg-gray-200 h-2 rounded-full overflow-hidden">
+                        <div
+                          className="bg-leaf-700 h-2 rounded-full"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="w-12 text-right font-mono font-semibold text-gray-900">
+                        {pct}%
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+          <div className="mt-3 pt-2 border-t border-gray-200 text-[11px] text-gray-500 text-right">
+            {t('inferenceTime').replace('{ms}', ms)}
+          </div>
+        </div>
+
+        {/* Reset / Test Another Button */}
+        <div className="w-full mt-auto pt-2">
+          <BigButton
+            variant="primary"
+            onClick={scanFlow.reset}
+            ariaLabel={t('btnTestAnother')}
+          >
+            {t('btnTestAnother')}
+          </BigButton>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  // 3. Idle / Landing State
   return (
     <PageContainer className="items-center justify-center text-center py-6">
       {/* Visual Badge */}
