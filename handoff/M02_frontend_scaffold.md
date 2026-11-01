@@ -34,6 +34,10 @@ frontend/
    - `--color-leaf-700:#1f6b3a`, `--color-leaf-50:#eef7f0`, `--color-amber-600:#b45309`, `--color-danger-700:#9f1d1d`, `--color-paper:#fbfaf6`, `--color-ink:#1c1c1c`
    - font family `"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif`
    - base font 18px, Bangla line-height 1.65
+4b. **Sticker file (official rules, read `documentation/competition_compliance.md`):**
+   - The organiser's file is `Built for AIgnite 2026.png` (1.1 MB). Save the untouched original as `public/brand/aignite-sticker-original.png`.
+   - Create a proportionally resized copy about 120 px tall as `public/brand/aignite-sticker.png`, with Pillow or any resizer. Same image; no recolouring, cropping or redrawing. Commit both.
+   - The rules say the sticker must be near the top and "must not be hidden at the end of the app or placed only in the footer". It must therefore appear on **every route and every state**, and must **never** be inside a collapsed/hamburger menu or covered by a banner or modal.
 5. **Navbar** (sticky, top):
    - **AIgnite sticker, left, height 44–52 px, always visible on mobile**, with `alt="Built for Ostad Presents YUNet AIgnite Buildathon 2026"`
    - App name "এগ্রোলিফ এআই" with small "AgroLeaf AI" under it

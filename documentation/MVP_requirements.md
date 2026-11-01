@@ -3,7 +3,7 @@
 *Updated 1 Nov 2026 after the cross-AI research review (`research/final_decisions.md`).*
 
 **Constraint:** one person, about 4 days (to 5 Nov 2026), one **public web app**, **free tools only**.
-**Judging:** Problem 12 · Innovation 12 · AI/Tech 10 · **UX & Readiness 16**.
+**Judging:** Problem 12 · Innovation 12 · AI/Tech 10 · **UX & Readiness 16**. The official rules page also lists **Presentation & Pitch** (marks not published). See `documentation/competition_compliance.md`.
 
 ---
 
