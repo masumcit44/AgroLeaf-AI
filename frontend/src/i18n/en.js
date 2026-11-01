@@ -117,7 +117,7 @@ export default {
   aboutPrivacyTitle: "On-Device Privacy",
   aboutPrivacyDesc: "Photos never leave your smartphone and are never uploaded to any cloud server. All image processing happens on your device. No user account or tracking cookies.",
   aboutVoiceTitle: "Audio Voice Note",
-  aboutVoiceDesc: "Voice explanations use AI neural speech synthesis (Azure Neural Speech). It is not a live agronomist.",
+  aboutVoiceDesc: "Voice explanations are pre-generated AI speech (Microsoft neural voice bn-BD-Nabanita, made once with the open-source edge-tts tool). It is not a live agronomist.",
   aboutContactTitle: "Open Source & Contact",
   aboutContactDesc: "Source code and technical documentation are openly available on GitHub:",
   aboutKeyPointsTitle: "Key Principles",

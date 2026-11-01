@@ -43,7 +43,7 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 | 6 | Existing projects need meaningful AIgnite improvements | All app code is new; if asked, state the idea/research began earlier and this app was built for AIgnite | You | [ ] |
 | 7 | Rights to third-party content, software, datasets | CC BY 4.0 datasets with DOIs; Google Fonts OFL; onnxruntime-web MIT; BAMIS quoted with link; app credits page | You | [ ] |
 | 7a | Earlier research was made with others | Get their agreement before submitting; credit them in the repo/About | You | [ ] |
-| 8 | Comply with third-party terms | Azure voice: confirm output may be used in a public app **or** record the clips yourself; Cloudflare/Vercel personal non-commercial use | You | [ ] |
+| 8 | Comply with third-party terms | Voice clips were generated with edge-tts, which uses Microsoft Edge's online read-aloud voices. Microsoft has not published terms for reusing that output: decide whether that is acceptable for this non-commercial entry, **or** record the 7 clips yourself. Cloudflare Pages free plan for hosting | You | [ ] |
 | 9 | Deck ≤ 5 slides incl. participant intro | See section A | You | [ ] |
 | 10 | Demo video optional; if submitted, **English**, on YouTube | ~2-min script in `documentation/submission/demo_script_en.md` | You | [ ] |
 | 11 | GitHub link optional; source may be requested | Public repo: https://github.com/masumcit44/AgroLeaf-AI | — | [x] |
@@ -121,8 +121,8 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 
 ## G. Open items / unknowns
 
-- [ ] Live URLs: `[[Cloudflare Pages URL]]`, `[[Vercel URL]]`.
-- [ ] Azure voice output terms, or switch to human-recorded clips.
+- [x] Live URL: https://agroleaf-ai.pages.dev (Cloudflare Pages). No Vercel mirror.
+- [ ] Voice terms: edge-tts output (item 8), or switch to human-recorded clips.
 - [ ] Agreement from the earlier research collaborators.
 - [ ] Participant introduction: `[[name, university, skills]]`.
 - [x] Trained model and all metrics: model v1 + safety gate, in `metrics-v1.json` (1 Nov).

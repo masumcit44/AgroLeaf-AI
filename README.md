@@ -167,7 +167,7 @@ npm run check:release
 4. **Class Index Parity:** `class_index.json` matches the exact 6 target classes (`["healthy","blast","brown_spot","leaf_smut","tungro","sheath_blight"]`).
 5. **Real Metrics:** `public/data/metrics-v1.json` contains verified test evaluations (`internal_test.n > 0`) with zero synthetic fixture leakage (`FIXTURE_NOT_REAL`).
 6. **Sample Images:** `public/samples/manifest.json` specifies ≥ 3 sample images, and every referenced image exists on disk.
-7. **Audio Narration:** `public/audio/manifest.json` lists 7 audio guidance files (warns gracefully if offline MP3s are pending user Azure Speech synthesis).
+7. **Audio Narration:** `public/audio/manifest.json` lists the 7 Bangla voice clips (generated once with edge-tts, voice bn-BD-NabanitaNeural; see `ml/tools/generate_tts_edge.py`).
 8. **Competition Branding:** The official AIgnite Buildathon competition sticker is present in both `assets/brand/` and `frontend/public/brand/`.
 
 > [!NOTE]
