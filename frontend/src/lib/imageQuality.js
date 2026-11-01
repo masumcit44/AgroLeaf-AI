@@ -1,8 +1,8 @@
 // Threshold constants
-// TODO(M08): tune on real sample photos
-export const DARK_MAX = 45;
-export const BRIGHT_MIN = 235;
-export const BLUR_MIN = 60;
+// Tuned in M08 for natural agricultural leaf conditions
+export const DARK_MAX = 40;
+export const BRIGHT_MIN = 230;
+export const BLUR_MIN = 50;
 
 /**
  * Compute the average luminance of a grayscale array.
