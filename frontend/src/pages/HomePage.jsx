@@ -4,6 +4,8 @@ import PageContainer from '../components/PageContainer.jsx';
 import PhotoPicker from '../components/PhotoPicker.jsx';
 import PreviewScreen from '../components/PreviewScreen.jsx';
 import ResultScreen from '../components/ResultScreen.jsx';
+import OnboardingStrip from '../components/OnboardingStrip.jsx';
+import SampleImagesStrip from '../components/SampleImagesStrip.jsx';
 import { useScanFlow, SCAN_STEPS } from '../state/useScanFlow.js';
 import { loadModel } from '../ml/loadModel.js';
 import { getDiseaseKnowledge } from '../lib/diseaseKnowledge.js';
@@ -175,8 +177,11 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* First-Visit Onboarding Strip */}
+      <OnboardingStrip />
+
       {/* Action: Photo Picker (Camera & Gallery buttons) */}
-      <div className="w-full max-w-sm mb-7">
+      <div className="w-full max-w-sm mb-6">
         <PhotoPicker
           onFileSelect={scanFlow.selectFile}
           disabled={scanFlow.isProcessing}
@@ -204,6 +209,12 @@ export default function HomePage() {
           </span>
         </div>
       </div>
+
+      {/* Sample Leaf Photos Row */}
+      <SampleImagesStrip
+        onSelectFile={scanFlow.selectFile}
+        disabled={scanFlow.isProcessing}
+      />
     </PageContainer>
   );
 }
