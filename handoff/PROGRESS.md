@@ -11,7 +11,7 @@
 | M03 | Image input + quality | ✅ | 01 Nov 2026 07:42 BST | feat/m03-image-input / tag m03 | vitest (9/9 pass), oxlint (0 err), vite build pass, EXIF decode & quality hints |
 | M04 | Inference engine | ✅ | 01 Nov 2026 07:51 BST | feat/m04-inference-engine / tag m04 | vitest (17/17 pass), oxlint (0 err), vite build pass, ort-wasm <25MiB checked, CPU WASM singleton inference |
 | M05 | Results + content | ✅ | 01 Nov 2026 07:59 BST | feat/m05-results-content / tag m05 | vitest (25/25 pass), oxlint (0 err), vite build pass, build-time content sync & validation, 7 screenshots captured |
-| M06 | Bangla audio | ⬜ | | | |
+| M06 | Bangla audio | ✅ (audio files pending user key) | 01 Nov 2026 08:04 BST | feat/m06-bangla-audio / tag m06 | generate_tts.py dry-run pass (1351 chars), player with silent fallback on missing files, vitest (26/26 pass) |
 | M07 | Real model + accuracy page | ⬜ | | | |
 | M08 | Polish | ⬜ | | | |
 | M09 | QA + release | ⬜ | | | |
