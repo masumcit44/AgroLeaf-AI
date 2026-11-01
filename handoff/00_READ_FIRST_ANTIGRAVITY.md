@@ -96,6 +96,11 @@ Refs: research/final_decisions.md §3, handoff/M04_inference_engine.md
   - **Known limitations**
   - **Next module**
 - Never force-push `main`. Never rewrite published history.
+- **Clean-tree rule (added after M00):**
+  - Before every commit, run `git status` and `git diff --stat`.
+  - After every push, run `git status` again. It must say "nothing to commit, working tree clean".
+  - If files you did not intend to change show as modified (in M00, `LICENSE` was emptied on disk and 5 files gained a blank line after the push), restore them with `git restore <file>`. Never commit them.
+  - Close editor tabs of files you are not editing.
 
 ## 6. Coding standards
 - Small files, one job each. Folder layout as given in M02.

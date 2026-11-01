@@ -5,7 +5,7 @@
 | # | Module | Status | Date/time (BST) | Branch / PR / tag | Tested how |
 |---|---|---|---|---|---|
 | M00 | Repo bootstrap | ✅ | 01 Nov 2026 07:05 BST | main / tag m00 | Git init, .gitignore, clean status, push & tag |
-| M01 | ML pipeline scripts | ⬜ | | | |
+| M01 | ML pipeline scripts | ✅ | 01 Nov 2026 07:16 BST | ml/m01-training-pipeline / tag m01 | CPU smoke test end-to-end, 0 group leaks, export <24MiB, parity 1.86e-9 < 1e-3 |
 | M02 | Frontend scaffold + deploy | ⬜ | | | |
 | M03 | Image input + quality | ⬜ | | | |
 | M04 | Inference engine | ⬜ | | | |
