@@ -63,6 +63,8 @@ export default {
   officialWarning: "Confirm with your Upazila agriculture officer or call 16123 before using any chemical.",
   notSureTitle: "I'm not sure",
   notSurePossibly: "Possible conditions",
+  notSureNotLeaf: "This does not look like a rice leaf. Take a close, daylight photo of one leaf and try again.",
+  notSureHealthyCaution: "The leaf may be healthy, but I am not confident enough to say so. If you see spots, photograph that part clearly, or ask 16123.",
   callKrishiHelp: "📞 16123 Krishi Call Centre",
   callChargeNote: "Call charges may apply",
   btnRetakePhoto: "↺ Retake Photo",

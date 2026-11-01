@@ -8,5 +8,13 @@
   "ece_after": 0.0501,
   "suppress": [
     "leaf_smut"
-  ]
+  ],
+  "leaf_check": {
+    "hue_bin_min": 6,
+    "hue_bin_max": 14,
+    "sat_min": 77,
+    "val_min": 77,
+    "min_fraction": 0.006
+  },
+  "healthy_threshold": 0.9
 }

@@ -1,7 +1,7 @@
 # Smoke Test Report (X1 Automated Check)
 
-**Date / Time:** 01 Nov 2026, 09:55:53 BST
-**Target URL:** http://localhost:53789 (Vite production preview)
+**Date / Time:** 01 Nov 2026, 17:17:57 BST
+**Target URL:** http://localhost:56139 (Vite production preview)
 **Overall Status:** ✅ ALL CHECKS PASSED
 
 ## Asset Verification

@@ -61,7 +61,7 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 - [ ] Story pasted from `documentation/submission/devpost_story.md`; all `[[...]]` replaced.
 - [ ] Solo builder: text uses "I", not "we".
 - [ ] Inspiration section is transparent about the earlier team research and the individual app build.
-- [ ] Every accuracy/coverage/latency number is `[[TBD after training]]` replaced by a value from `metrics-v1.json`, with the sample size nearby.
+- [ ] Every accuracy/coverage number in the story, deck and video matches `frontend/public/data/metrics-v1.json`, with the sample size nearby. (Story and demo script filled 1 Nov; re-check on the day you submit.)
 - [ ] Chosen track/category selected on Devpost.
 - [ ] Thumbnail and gallery images uploaded (show the app + sticker).
 - [ ] "Built with" list matches the draft.
@@ -81,10 +81,10 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 - [ ] The app never says "diagnosis", "first", "only", "free call", "100% accurate", "works everywhere in Bangladesh", or claims a BRRI/DAE/AIS partnership.
 - [ ] It says **preliminary screening / প্রাথমিক ধারণা**, not a diagnosis.
 - [ ] `16123` is described as a hand-off; the app does not say the call is free.
-- [ ] "Not sure" shows top-2 possibilities, retake tips and 16123; it does not force a class.
+- [x] "Not sure" shows top-2 possibilities, retake tips and 16123; it does not force a class. Non-leaf photos show no disease names (safety gate; QA F1–F2).
 - [ ] Accuracy page shows external-district results, coverage, sample sizes, dataset credits (CC BY, DOIs) and the Leaf Smut external-test gap.
 - [ ] No accuracy, F1, latency or user number appears until it is measured; otherwise "মূল্যায়ন চলছে / Evaluation in progress".
-- [ ] Leaf Smut is routed to "not sure" if its validation recall is poor.
+- [x] Leaf Smut is routed to "not sure" (`calibration.json` `suppress`; internal recall 0.7113).
 - [ ] Voice is pre-recorded, plays only on user tap, has a transcript beside it and is labelled "AI voice".
 - [ ] No analytics, error-tracking SDK or third-party script that could capture images; only Google Fonts (CSS).
 
@@ -109,7 +109,7 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 
 1. [ ] Freeze app content; run the full smoke flow on the live URL on a phone.
 2. [ ] Merge production to the `release` branch; deploy; confirm the judged URL.
-3. [ ] Fill every `[[TBD after training]]` from `metrics-v1.json` (app, deck, story, video, model card).
+3. [ ] Re-check every number against `metrics-v1.json` (app, deck, story, video, model card).
 4. [ ] Record/re-record the video if numbers changed; upload to YouTube (English).
 5. [ ] Final sticker check on every route and state, including modals.
 6. [ ] Paste the story into Devpost; add video, links and images.
@@ -125,6 +125,8 @@ Built from `documentation/competition_compliance.md`. Tick each box only when it
 - [ ] Azure voice output terms, or switch to human-recorded clips.
 - [ ] Agreement from the earlier research collaborators.
 - [ ] Participant introduction: `[[name, university, skills]]`.
-- [ ] Trained model and all metrics: `[[TBD after training]]`.
-- [ ] Real-phone latency: `[[TBD after measurement]]`.
+- [x] Trained model and all metrics: model v1 + safety gate, in `metrics-v1.json` (1 Nov).
+- [ ] Real-phone latency: `[[measure on your phone]]`.
+- [ ] Bangla voice MP3s generated and checked by a native speaker (until then the ▶ button does nothing; QA E3).
+- [ ] Merge the three independent test reports (`documentation/qa/test_report_*.md`) and fix the findings.
 - [ ] Official rules re-checked on the submission day.

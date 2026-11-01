@@ -140,6 +140,64 @@
     "Training images come from one district (Gazipur) and one season.",
     "On photos from other districts the accuracy drops sharply: Sylhet-Dhaka 52% (mapped classes, 1,560 images) and Savar 34% (3,150 images, cut leaves on white background). Brown spot is rarely recognised outside Gazipur.",
     "External test sets are community Kaggle copies of the published datasets; their provenance was not verified file-by-file against Mendeley.",
-    "This is a research prototype: use the result as a first hint and confirm with an agriculture officer or 16123."
-  ]
+    "This is a research prototype: use the result as a first hint and confirm with an agriculture officer or 16123.",
+    "Safety gate: about 4% of everyday photos and 14% of other-crop leaves still get an answer; about 2% of real rice photos from other districts are wrongly called \"not a leaf\". On Savar photos the app now answers only 37% of the time and \"Healthy\" is right 64% of the time, so it must be field-tested before wider use."
+  ],
+  "safety_gate": {
+    "summary_en": "Two extra checks run before an answer is shown: a leaf-colour check rejects photos that are not leaves, and \"Healthy\" is only said at high confidence (>= 90%), because wrongly telling a farmer to do nothing is the costliest error. Thresholds were chosen on the validation split and on half of the other sets; the numbers below come from data not used for tuning. Coverage here counts leaf smut as \"not sure\".",
+    "summary_bn": "উত্তর দেখানোর আগে দুটি বাড়তি পরীক্ষা হয়: পাতার রং-পরীক্ষা পাতা নয় এমন ছবি বাদ দেয়, আর \"সুস্থ\" কেবল উচ্চ আস্থায় (>= 90%) বলা হয়, কারণ ভুল করে \"কিছু করার দরকার নেই\" বলা সবচেয়ে ক্ষতিকর। সীমাগুলো যাচাই-অংশ ও অন্য সেটগুলোর অর্ধেক দিয়ে ঠিক করা; নিচের সংখ্যা সেই ডেটা থেকে যা সীমা ঠিক করতে ব্যবহার হয়নি। এখানে লিফ স্মাটকে \"নিশ্চিত নই\" ধরা হয়েছে।",
+    "leaf_check": {
+      "hue_bin_min": 6,
+      "hue_bin_max": 14,
+      "sat_min": 77,
+      "val_min": 77,
+      "min_fraction": 0.006
+    },
+    "healthy_threshold": 0.9,
+    "rows": [
+      {
+        "label_en": "Internal test: coverage",
+        "label_bn": "অভ্যন্তরীণ পরীক্ষা: উত্তরের হার",
+        "before": 0.8786,
+        "after": 0.8145
+      },
+      {
+        "label_en": "Internal test: selective accuracy",
+        "label_bn": "অভ্যন্তরীণ পরীক্ষা: নির্বাচনী নির্ভুলতা",
+        "before": 0.9089,
+        "after": 0.9107
+      },
+      {
+        "label_en": "Internal test: \"Healthy\" answers that were right",
+        "label_bn": "অভ্যন্তরীণ পরীক্ষা: \"সুস্থ\" উত্তর সঠিক",
+        "before": 0.9474,
+        "after": 0.987
+      },
+      {
+        "label_en": "Savar (other district): \"Healthy\" answers that were right",
+        "label_bn": "সাভার (অন্য জেলা): \"সুস্থ\" উত্তর সঠিক",
+        "before": 0.3963,
+        "after": 0.6427
+      },
+      {
+        "label_en": "Everyday photos (not plants) rejected",
+        "label_bn": "সাধারণ ছবি (গাছ নয়) বাদ দেওয়া",
+        "before": 0.5065,
+        "after": 0.9565
+      },
+      {
+        "label_en": "Leaves of other crops rejected",
+        "label_bn": "অন্য ফসলের পাতা বাদ দেওয়া",
+        "before": 0.3962,
+        "after": 0.8568
+      },
+      {
+        "label_en": "Real rice photos wrongly called \"not a leaf\" (Savar)",
+        "label_bn": "আসল ধানের ছবি ভুল করে \"পাতা নয়\" (সাভার)",
+        "before": 0.0,
+        "after": 0.0176
+      }
+    ],
+    "source": "model/experiments/2026-11-01_safety_gate.json (Kaggle kernel agroleaf-ood-scores; ml/tools/fit_safety_gate.py)"
+  }
 }

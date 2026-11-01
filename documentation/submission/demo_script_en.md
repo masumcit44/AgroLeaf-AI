@@ -1,7 +1,7 @@
 # AgroLeaf AI — 2-minute demo video script (English)
 
 **Format:** English voiceover, phone-screen footage with light text overlays. Total 2:00.
-**Rule:** every on-screen metric stays `[[TBD after training]]` until it is in `metrics-v1.json`. Do not read an estimate aloud.
+**Rule:** every number below is copied from `frontend/public/data/metrics-v1.json` (model v1 plus the safety gate, 1 Nov 2026). If that file changes, update this script before recording. Never read an estimate aloud.
 
 ---
 
@@ -32,24 +32,24 @@
 
 ### 0:55–1:10 — Blurry or non-rice photo → "not sure"
 
-**Visual:** Upload a deliberately blurry leaf photo, then a photo of a non-rice leaf or a hand. The app shows "নিশ্চিত নই / not sure", the top two possibilities, retake tips and 16123.
+**Visual:** Upload a deliberately blurry leaf photo. The app shows "নিশ্চিত নই / not sure", the two closest possibilities, retake tips and 16123. Then upload a photo that is not a leaf (a hand, a wall, a screenshot). The app says "This does not look like a rice leaf" and shows **no** disease names.
 
 **Voiceover:**
-> "Now the harder case. This photo is blurry, and this one is not a rice leaf. Instead of guessing, the app says 'not sure'. It shows the two closest possibilities, tells me how to retake the photo, and still offers 16123. A confident wrong answer would be worse than this."
+> "Now the harder case. This photo is blurry. Instead of guessing, the app says 'not sure', shows the two closest possibilities, tells me how to retake the photo, and still offers 16123. And this one is not a leaf at all. A colour check runs before the model, so the app says so instead of inventing a disease. It only says 'healthy' when it is highly confident, because wrongly telling a farmer to do nothing is the most harmful mistake."
 
 ### 1:10–1:30 — Accuracy page
 
-**Visual:** Open "কতটা নির্ভুল? / How accurate is it?". Show the external-district results, coverage, sample sizes, the Leaf Smut gap, dataset credits and the limitations. Blur or hold on the measured numbers.
+**Visual:** Open the accuracy page (📊). Hold on the plain-language summary, then the internal-test cards, the outside-district results, the Safety Gate table, the Leaf Smut gap, dataset credits and the limitations.
 
 **Voiceover:**
-> "I do not want a number I cannot check. This page shows the measured results on photos from other districts, how often the app chooses to answer, and the cases it cannot test. The external macro-F1 is `[[TBD after training]]`, at coverage `[[TBD after training]]`. Leaf Smut has no external test, and the page says so."
+> "I do not want a number I cannot check. On 1,499 held-out test photos, macro-F1 is 84.3 percent. On 1,560 photos from Sylhet, another district, the app chose to answer 78.9 percent of the time, and 56 percent of those answers were right. On Savar photos it is much weaker, and the page says so. The safety gate now rejects 95.7 percent of everyday photos that are not plants. Leaf Smut has no outside test, so the app always says 'not sure' for it."
 
 ### 1:30–1:45 — Privacy
 
-**Visual:** Turn the phone's Wi-Fi off after the app has loaded; run another sample. Show the result. Cut to a simple diagram: photo → phone → result, with a crossed-out cloud.
+**Visual:** After the first result, turn the phone's Wi-Fi and mobile data off. Tap Retake, choose a leaf photo **from the gallery** (not a sample button: samples are downloaded and need the network), and show the result. Cut to a simple diagram: photo → phone → result, with a crossed-out cloud.
 
 **Voiceover:**
-> "The model runs on the device. There is no upload, no account and no analytics that can capture the photo. The page and the model are cached after the first load, so a weak connection is not a blocker for the next check."
+> "The model runs on the device. There is no upload, no account and no analytics that can capture the photo. Once the app has loaded, I can switch the internet off and still check a photo from my gallery."
 
 ### 1:45–2:00 — Close
 
@@ -75,10 +75,10 @@
 | 7 | 0:38–0:46 | Result body | 3–5 next steps, official advice link, 16123 | Do not show a dose |
 | 8 | 0:46–0:55 | Audio | Tap ▶, show transcript and "AI voice" label | Audio starts only on tap |
 | 9 | 0:55–1:02 | Blurry photo | "not sure", top-2 possibilities, retake tips | Make the blur obvious |
-| 10 | 1:02–1:10 | Non-rice photo | "not sure" again, 16123 | Show it does not force a class |
-| 11 | 1:10–1:20 | Accuracy page top | External results, coverage, sample sizes | Numbers readable; placeholders removed only after training |
+| 10 | 1:02–1:10 | Non-leaf photo | "does not look like a rice leaf", no disease names, 16123 | Show it does not force a class |
+| 11 | 1:10–1:20 | Accuracy page top | Summary, internal cards, outside districts, Safety Gate table | Numbers readable |
 | 12 | 1:20–1:30 | Accuracy page bottom | Leaf Smut gap, credits, limitations, privacy line | Scroll slowly |
-| 13 | 1:30–1:38 | Airplane/Wi-Fi off | Run another sample after load | Proves on-device inference |
+| 13 | 1:30–1:38 | Airplane/Wi-Fi off | Gallery photo after the first result | Proves on-device inference; sample buttons need the network |
 | 14 | 1:38–1:45 | Privacy diagram | Photo → phone → result; crossed-out cloud | Simple motion graphic |
 | 15 | 1:45–1:52 | Closing app shot | Home, sticker, app name | Hold long enough to read |
 | 16 | 1:52–2:00 | Title card | App name, sticker, tagline, "solo entry" | End card |
@@ -87,7 +87,8 @@
 
 - Record the phone at 1080p or higher; keep the status bar clean.
 - Use the **live** production URL, not a local build, so judges see what they will open.
-- Replace all `[[TBD after training]]` values before recording. If training is not finished, record the flow and add the numbers in a second pass.
+- Re-check every number against `frontend/public/data/metrics-v1.json` on the day you record.
+- Generate the Bangla MP3s before recording. Without them the ▶ button currently does nothing (QA finding E3).
 - Keep the sticker in frame whenever the app is on screen.
 - Do not say "accurate", "first", "only", "free call" or any partnership. Do not show a pesticide dose.
 - Upload to YouTube as **English**, unlisted or public, and put the link in Devpost.

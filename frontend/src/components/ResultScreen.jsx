@@ -81,6 +81,7 @@ export default function ResultScreen({
         <NotSureCard
           top2={decision.top2}
           diseaseInfo={classesData}
+          reason={decision.reason}
         />
       )}
 

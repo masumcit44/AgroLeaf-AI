@@ -227,6 +227,38 @@ export default function AccuracyPage({
           </div>
         )}
 
+        {/* 5b. Safety gate (leaf-colour check + stricter "healthy") — before/after on held-out data */}
+        {hasMetrics && metrics.safety_gate && (
+          <div className="space-y-3" data-testid="safety-gate">
+            <h2 className="text-sm sm:text-base font-bold text-gray-800">
+              {lang === 'bn' ? 'নিরাপত্তা ছাঁকনি (Safety Gate)' : 'Safety Gate'}
+            </h2>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              {lang === 'bn' ? metrics.safety_gate.summary_bn : metrics.safety_gate.summary_en}
+            </p>
+            <div className="overflow-x-auto border border-gray-200 rounded-xl">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-gray-50 text-gray-600">
+                  <tr>
+                    <th className="p-2.5 font-semibold">{lang === 'bn' ? 'পরীক্ষা' : 'Test set'}</th>
+                    <th className="p-2.5 font-semibold text-right">{lang === 'bn' ? 'আগে' : 'Before'}</th>
+                    <th className="p-2.5 font-semibold text-right">{lang === 'bn' ? 'পরে' : 'After'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {(metrics.safety_gate.rows || []).map((row) => (
+                    <tr key={row.label_en}>
+                      <td className="p-2.5 text-gray-800">{lang === 'bn' ? row.label_bn : row.label_en}</td>
+                      <td className="p-2.5 text-right text-gray-600">{formatMetric(row.before)}</td>
+                      <td className="p-2.5 text-right font-bold text-gray-900">{formatMetric(row.after)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* 6. Confusion Matrix & Calibration Diagram (Cleanly hidden on error if not yet present) */}
         {hasMetrics && (
           <div className="space-y-3" data-testid="visual-evidence">

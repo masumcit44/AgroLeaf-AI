@@ -5,6 +5,7 @@ import AudioExplain from './AudioExplain.jsx';
 export default function NotSureCard({
   top2 = [],
   diseaseInfo = {},
+  reason,
   className = '',
 }) {
   const { lang, t } = useT();
@@ -16,9 +17,15 @@ export default function NotSureCard({
   const title = lang === 'en' ? nameEn : nameBn;
   const secondaryTitle = lang === 'en' ? nameBn : nameEn;
 
-  const meaning = lang === 'en'
+  const generalMeaning = lang === 'en'
     ? (notSureData.meaning_en || 'The model is not confident enough. Saying "not sure" is safer than a wrong guess.')
     : (notSureData.meaning_bn || 'ছবিটি দেখে আমি নিশ্চিত হতে পারছি না। ভুল পরামর্শ দেওয়ার চেয়ে না বলাই ভালো।');
+  // Safety-gate reasons get their own explanation (see ml/decide.js)
+  const meaning = reason === 'not_leaf'
+    ? t('notSureNotLeaf')
+    : reason === 'healthy_needs_high_confidence'
+      ? t('notSureHealthyCaution')
+      : generalMeaning;
 
   return (
     <div
