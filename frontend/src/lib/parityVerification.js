@@ -66,8 +66,8 @@ export async function runParityCheckB(sample, sampleBaseUrl = '/samples') {
     });
 
     const canvas = document.createElement('canvas');
-    canvas.width = img.width || 224;
-    canvas.height = img.height || 224;
+    canvas.width = img.naturalWidth || img.width || 224;
+    canvas.height = img.naturalHeight || img.height || 224;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
 
