@@ -23,7 +23,9 @@ export default function NotSureCard({
   // Safety-gate reasons get their own explanation (see ml/decide.js)
   const meaning = reason === 'not_leaf'
     ? t('notSureNotLeaf')
-    : reason === 'healthy_needs_high_confidence'
+    : reason === 'other_problem'
+      ? t('notSureOtherProblem')
+      : reason === 'healthy_needs_high_confidence'
       ? t('notSureHealthyCaution')
       : generalMeaning;
 

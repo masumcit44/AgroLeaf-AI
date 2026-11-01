@@ -31,6 +31,9 @@ export function softmax(logits, temperature = 1.0) {
   return probs;
 }
 
+/** Model outputs that mean "do not name a disease" (model v3 and later). */
+export const REJECT_KEYS = ['not_rice', 'other_rice'];
+
 /**
  * Apply calibrated threshold abstention rule with weak-class suppression.
  * Pure function.
@@ -50,7 +53,7 @@ export function softmax(logits, temperature = 1.0) {
  *   top: { key: string, prob: number } | null,
  *   top2: Array<{ key: string, prob: number }>,
  *   suppressed?: boolean,
- *   reason?: 'not_leaf'|'low_confidence'|'healthy_needs_high_confidence'|'suppressed'
+ *   reason?: 'not_leaf'|'other_problem'|'low_confidence'|'healthy_needs_high_confidence'|'suppressed'
  * }}
  */
 export function decide(probs, threshold = 0.60, suppress = [], safety = {}) {
@@ -78,7 +81,21 @@ export function decide(probs, threshold = 0.60, suppress = [], safety = {}) {
   entries.sort((a, b) => b[1] - a[1]);
 
   const top1 = { key: entries[0][0], prob: entries[0][1] };
-  const top2 = entries.slice(0, 2).map(([k, p]) => ({ key: k, prob: p }));
+  // "Possible" candidates are diseases with a knowledge card, never the
+  // model's reject outputs (v3: not_rice, other_rice)
+  const top2 = entries
+    .filter(([k]) => !REJECT_KEYS.includes(k))
+    .slice(0, 2)
+    .map(([k, p]) => ({ key: k, prob: p }));
+
+  // Model v3 reject outputs: a photo the model itself calls "not a rice leaf",
+  // or a rice problem the app does not cover (bacterial blight, hispa, ...)
+  if (top1.key === 'not_rice') {
+    return { status: 'not_sure', top: null, top2: [], reason: 'not_leaf' };
+  }
+  if (top1.key === 'other_rice') {
+    return { status: 'not_sure', top: null, top2: [], reason: 'other_problem' };
+  }
 
   // Safety gate 1: not a leaf photo. Candidates are hidden (top2 empty),
   // because "possibly blast" for a photo of a wall would be meaningless.
