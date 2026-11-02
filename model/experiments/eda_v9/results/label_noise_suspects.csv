@@ -1,0 +1,110 @@
+src,file,label,suggested,p_label,p_suggested
+gazipur,blast_1183.jpg,blast,brown_spot,0.0442,0.8982
+gazipur,blast_1289.jpg,blast,tungro,0.0419,0.8114
+gazipur,blast_1302.jpg,blast,tungro,0.0264,0.8941
+gazipur,blast_1303.jpg,blast,tungro,0.0372,0.8744
+gazipur,blast_632.jpg,blast,tungro,0.0429,0.8685
+gazipur,blast_633.jpg,blast,tungro,0.0412,0.8556
+gazipur,blast_824.jpg,blast,tungro,0.0192,0.9379
+gazipur,blast_825.jpg,blast,tungro,0.0158,0.9688
+gazipur,brown spot_2152.jpg,brown_spot,tungro,0.0287,0.92
+gazipur,brown spot_2156.jpg,brown_spot,tungro,0.0494,0.8048
+gazipur,brown spot_312.jpg,brown_spot,sheath_blight,0.0112,0.8553
+gazipur,brown spot_533.jpg,brown_spot,tungro,0.0424,0.828
+gazipur,Healthy_746.jpg,healthy,sheath_blight,0.001,0.9574
+gazipur,Leaf smut_316.jpg,leaf_smut,healthy,0.0338,0.8734
+gazipur,Leaf smut_317.jpg,leaf_smut,healthy,0.029,0.9296
+gazipur,Leaf smut_339.jpg,leaf_smut,healthy,0.0469,0.8441
+gazipur,Leaf smut_355.jpg,leaf_smut,healthy,0.0465,0.8761
+gazipur,Rice Tungro_562.jpg,tungro,sheath_blight,0.0488,0.8292
+gazipur,Sheath blight_1018.jpg,sheath_blight,tungro,0.0095,0.8752
+gazipur,Sheath blight_1489.jpg,sheath_blight,healthy,0.0468,0.8584
+gazipur,Sheath blight_1589.jpg,sheath_blight,healthy,0.0151,0.9112
+gazipur,Sheath blight_1678.jpg,sheath_blight,tungro,0.0105,0.8507
+gazipur,Sheath blight_555.jpg,sheath_blight,tungro,0.0128,0.9327
+savar,IMG_20241103_121342.jpg,blast,healthy,0.0341,0.8262
+savar,IMG_20241031_130621.jpg,other_rice,healthy,0.0428,0.9304
+savar,IMG_20241031_133220.jpg,other_rice,healthy,0.0209,0.8449
+savar,IMG_20241031_133223.jpg,other_rice,healthy,0.0124,0.9333
+savar,IMG_20241031_133226.jpg,other_rice,healthy,0.0155,0.9037
+savar,IMG_20241031_133548.jpg,other_rice,healthy,0.0456,0.9301
+savar,IMG_20241031_133627.jpg,other_rice,healthy,0.0404,0.9541
+savar,IMG_20241031_133652.jpg,other_rice,healthy,0.0479,0.9111
+savar,IMG_20241031_133933.jpg,other_rice,healthy,0.0216,0.9609
+savar,IMG_20241031_134056.jpg,other_rice,healthy,0.0363,0.882
+savar,IMG_20241031_134451.jpg,other_rice,healthy,0.0135,0.9779
+savar,IMG_20241031_134832.jpg,other_rice,healthy,0.0462,0.9373
+savar,IMG_20241031_134844.jpg,other_rice,healthy,0.0377,0.9467
+savar,IMG_20241031_134851.jpg,other_rice,healthy,0.0366,0.9577
+savar,IMG_20241031_135131.jpg,other_rice,healthy,0.0435,0.9181
+savar,IMG_20241031_135346.jpg,other_rice,healthy,0.0148,0.973
+savar,IMG_20241031_135749.jpg,other_rice,healthy,0.0298,0.9218
+savar,IMG_20241031_135750.jpg,other_rice,healthy,0.0481,0.8914
+savar,IMG_20241031_140651.jpg,other_rice,healthy,0.0069,0.9558
+savar,IMG_20241031_140744.jpg,other_rice,healthy,0.0404,0.9065
+savar,IMG_20241031_140957.jpg,healthy,blast,0.0121,0.8596
+savar,IMG_20241031_140958.jpg,healthy,blast,0.0105,0.8064
+savar,IMG_20241031_140959.jpg,healthy,blast,0.0108,0.8684
+savar,IMG_20241031_141000_1.jpg,healthy,blast,0.004,0.9531
+savar,IMG_20241031_123618.jpg,sheath_blight,blast,0.0261,0.9302
+savar,IMG_20241031_125836.jpg,sheath_blight,healthy,0.0179,0.8547
+raihan_bd,Narrow_brown_leaf_spot (26).jpg,other_rice,tungro,0.034,0.9302
+raihan_bd,IMG_20231014_172945.jpg,sheath_blight,other_rice,0.0077,0.8455
+raihan_bd,IMG_20231014_173915.jpg,sheath_blight,other_rice,0.0314,0.93
+raihan_bd,Brown_spot (122).jpg,brown_spot,healthy,0.05,0.8752
+raihan_bd,IMG_20231018_143157.jpg,blast,other_rice,0.0442,0.8879
+raihan_bd,IMG_20231018_143157_1.jpg,blast,other_rice,0.0279,0.914
+raihan_bd,Leaf_scald (109).jpg,other_rice,sheath_blight,0.045,0.8143
+raihan_bd,Narrow_brown_leaf_spot (20).jpg,other_rice,tungro,0.0403,0.937
+raihan_bd,Rice_Hispa (36).jpg,other_rice,sheath_blight,0.0329,0.9372
+raihan_bd,Rice_Hispa (37).jpg,other_rice,sheath_blight,0.0413,0.9229
+raihan_bd,IMG_20231014_171738.jpg,sheath_blight,other_rice,0.0134,0.9476
+raihan_bd,IMG_20231014_172619.jpg,sheath_blight,other_rice,0.0253,0.8353
+raihan_bd,IMG_20231014_172622.jpg,sheath_blight,other_rice,0.0154,0.8885
+raihan_bd,Sheath_Blight (25).jpg,sheath_blight,other_rice,0.002,0.8759
+raihan_bd,IMG_20231006_172820.jpg,blast,other_rice,0.0247,0.8657
+raihan_bd,IMG_20231018_143509.jpg,blast,tungro,0.0273,0.8938
+raihan_bd,IMG_20231018_143510.jpg,blast,tungro,0.0337,0.8338
+raihan_bd,IMG_20231014_173759.jpg,sheath_blight,other_rice,0.0441,0.9507
+dhan_shomadhan_bd,sb_wb_145.jpg,sheath_blight,blast,0.0171,0.8538
+dhan_shomadhan_bd,sb_wb_205.jpg,sheath_blight,blast,0.0225,0.9255
+dhan_shomadhan_bd,rb_wb_6.jpg,blast,other_rice,0.0271,0.814
+dhan_shomadhan_bd,bs_wb_10.jpg,brown_spot,sheath_blight,0.0016,0.8562
+dhan_shomadhan_bd,bs_wb_48.jpg,brown_spot,sheath_blight,0.0019,0.9485
+dhan_shomadhan_bd,bs_wb_75.jpg,brown_spot,sheath_blight,0.0221,0.8486
+dhan_shomadhan_bd,bs_wb_84.jpg,brown_spot,blast,0.0447,0.8461
+dhan_shomadhan_bd,bs_wb_87.jpg,brown_spot,blast,0.0219,0.8766
+dhan_shomadhan_bd,ls_wb_142.jpg,other_rice,blast,0.0374,0.8246
+dhan_shomadhan_bd,ls_wb_20.jpg,other_rice,tungro,0.0101,0.9197
+dhan_shomadhan_bd,ls_wb_21.jpg,other_rice,tungro,0.0142,0.898
+dhan_shomadhan_bd,ls_wb_23.jpg,other_rice,tungro,0.0065,0.9712
+dhan_shomadhan_bd,ls_wb_24.jpg,other_rice,tungro,0.0039,0.9348
+dhan_shomadhan_bd,ls_wb_40.jpg,other_rice,tungro,0.0475,0.8369
+dhan_shomadhan_bd,ls_wb_47.jpg,other_rice,tungro,0.0273,0.8586
+paddy_doctor_in,101218.jpg,blast,other_rice,0.0448,0.851
+paddy_doctor_in,101969.jpg,blast,other_rice,0.0314,0.9326
+paddy_doctor_in,102621.jpg,blast,other_rice,0.042,0.8492
+paddy_doctor_in,103460.jpg,blast,other_rice,0.047,0.802
+paddy_doctor_in,104934.jpg,blast,other_rice,0.0254,0.8596
+paddy_doctor_in,105331.jpg,blast,other_rice,0.0365,0.8174
+paddy_doctor_in,106560.jpg,blast,other_rice,0.0379,0.8218
+paddy_doctor_in,108025.jpg,blast,other_rice,0.0496,0.8648
+paddy_doctor_in,109685.jpg,blast,other_rice,0.0425,0.8551
+paddy_doctor_in,102402.jpg,brown_spot,other_rice,0.0388,0.8791
+paddy_doctor_in,102415.jpg,brown_spot,other_rice,0.0398,0.836
+paddy_doctor_in,102959.jpg,brown_spot,other_rice,0.0413,0.8591
+paddy_doctor_in,110038.jpg,brown_spot,other_rice,0.0456,0.8497
+paddy_doctor_in,101564.jpg,healthy,other_rice,0.0332,0.9216
+paddy_doctor_in,104482.jpg,healthy,other_rice,0.0412,0.9079
+paddy_doctor_in,105872.jpg,healthy,other_rice,0.0424,0.9155
+paddy_doctor_in,106203.jpg,healthy,other_rice,0.0227,0.8283
+paddy_doctor_in,106959.jpg,healthy,other_rice,0.0495,0.8777
+paddy_doctor_in,108521.jpg,healthy,other_rice,0.0117,0.8206
+paddy_doctor_in,108200.jpg,tungro,other_rice,0.0446,0.8115
+sethy_in,BROWNSPOT1_111.jpg,brown_spot,other_rice,0.0172,0.8076
+sethy_in,TUNGRO3_022.jpg,tungro,other_rice,0.0111,0.8617
+sethy_in,TUNGRO4_022.jpg,tungro,other_rice,0.0379,0.831
+taiwan_tw,P_20181227_160902_vHDR_Auto.jpg,brown_spot,healthy,0.0321,0.9449
+taiwan_tw,IMG_20190305_115912.jpg,blast,healthy,0.0239,0.9216
+taiwan_tw,IMG_20190305_115951.jpg,blast,healthy,0.0116,0.9617
+taiwan_tw,IMG_20190308_112937.jpg,healthy,blast,0.0032,0.9753

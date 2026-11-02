@@ -132,5 +132,18 @@ Writeup read in the browser.
 7. Hard-domain oversampling (ECG 2nd); RandomShadow (ECG 2nd); no grayscale.
 8. Later: ArcFace + cross-entropy head (Recursion 1st) for cleaner rejection of unknown problems.
 
-## D. Our own EDA
-`model/experiments/eda_v9/`, Kaggle `agroleaf-eda-v9`. Results are added below when the job finishes.
+## D. Our own EDA (`model/experiments/eda_v9/`, Kaggle `agroleaf-eda-v9`, DINOv2-small embeddings)
+- **Source is predictable from the image:** 95.2% balanced accuracy overall; within class 92.1% (healthy) to 98.9% (tungro). Each dataset has its own look, so the risk of a source shortcut is high.
+- **Leave-one-source-out linear probe:** macro-F1 0.12 (Taiwan) to 0.36 (Savar). Generic features transfer poorly across sources.
+- **Label-noise suspects:** 109 of ~29k (0.4%). Labels are not the bottleneck. Largest group: Savar "other_rice" that looks healthy (19).
+- **Test-set distance** (median cosine to the nearest training image; training itself 0.973): Aman 0.938, Sylhet 0.857, Gujarat 0.860, DIU 0.800.
+- **Per-source image statistics:**
+  - saturation 27 (Dhan, DIU) to 160 (Paddy Doctor);
+  - sharpness (Laplacian variance) 65 (Dhan) to 2,229 (Paddy Doctor);
+  - median size 300 px (Savar, Sethy) to 4000 px (Taiwan);
+  - white border 0.88 (DIU), 0.84 (Savar), ≈ 0.02–0.05 (field sets).
+
+**Design response (run9_v9/PROTOCOL.md):**
+- resolution jitter and Mixup / CutMix to break source cues;
+- a domain-adversarial variant to remove source information from the features;
+- selection on a never-trained source (DIU half A).
