@@ -1,6 +1,6 @@
 import * as ort from 'onnxruntime-web/wasm';
 import {
-  MODEL_URL,
+  MODEL_PARTS,
   CLASS_INDEX_URL,
   PREPROCESS_URL,
   CALIBRATION_URL,
@@ -17,9 +17,10 @@ let sessionPromise = null;
  *
  * @param {string} url
  * @param {(progressPercent: number) => void} [onProgress]
+ * @param {boolean} [checkHeader] - check the ONNX header byte (first part of a split model only)
  * @returns {Promise<ArrayBuffer>}
  */
-async function fetchWithProgress(url, onProgress) {
+async function fetchWithProgress(url, onProgress, checkHeader = true) {
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`MODEL_NOT_FOUND: HTTP ${response.status} fetching ${url}`);
@@ -65,7 +66,7 @@ async function fetchWithProgress(url, onProgress) {
   }
 
   // Guard: Validate ONNX protobuf header byte (ONNX model proto starts with field 1: ir_version -> 0x08)
-  if (combined.length === 0 || combined[0] !== 0x08) {
+  if (checkHeader && (combined.length === 0 || combined[0] !== 0x08)) {
     throw new Error(
       `MODEL_NOT_FOUND: Invalid ONNX binary format (first byte 0x${combined[0]?.toString(16) || 'none'} != 0x08)`
     );
@@ -73,6 +74,32 @@ async function fetchWithProgress(url, onProgress) {
 
   if (onProgress) onProgress(100);
   return combined.buffer;
+}
+
+/**
+ * Fetch a model served as one or more parts and join them in order.
+ *
+ * @param {string[]} urls
+ * @param {(progressPercent: number) => void} [onProgress]
+ * @returns {Promise<ArrayBuffer>}
+ */
+async function fetchModel(urls, onProgress) {
+  if (urls.length === 1) return fetchWithProgress(urls[0], onProgress);
+  const parts = [];
+  for (let i = 0; i < urls.length; i++) {
+    const partProgress = onProgress
+      ? (pct) => onProgress(Math.min(99, Math.round(((i + pct / 100) / urls.length) * 100)))
+      : undefined;
+    parts.push(new Uint8Array(await fetchWithProgress(urls[i], partProgress, i === 0)));
+  }
+  const joined = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+  let position = 0;
+  for (const p of parts) {
+    joined.set(p, position);
+    position += p.length;
+  }
+  if (onProgress) onProgress(100);
+  return joined.buffer;
 }
 
 /**
@@ -102,7 +129,7 @@ export function loadModel(onProgress) {
           if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${CALIBRATION_URL}`);
           return r.json();
         }),
-        fetchWithProgress(MODEL_URL, onProgress),
+        fetchModel(MODEL_PARTS, onProgress),
       ]);
 
       // 2. Instantiate ONNX Runtime InferenceSession with CPU wasm

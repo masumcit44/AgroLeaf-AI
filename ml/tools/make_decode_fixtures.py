@@ -15,6 +15,7 @@ Usage: python ml/tools/make_decode_fixtures.py
 Writes frontend/tests/fixtures/decode/ (images + expected.json).
 """
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -31,12 +32,17 @@ TOLERANCE = 0.05  # max |p_browser - p_reference| for photos over the 1024 px ca
 pre = json.loads((PUBLIC / "data" / "preprocess.json").read_text())
 cal = json.loads((PUBLIC / "data" / "calibration.json").read_text())
 classes = json.loads((PUBLIC / "data" / "class_index.json").read_text())["classes"]
-sess = ort.InferenceSession(str(PUBLIC / "models" / "rice-mnv3l-v1.onnx"), providers=["CPUExecutionProvider"])
+# the deployed model: the parts listed in frontend/src/ml/config.js MODEL_PARTS, joined in order
+_cfg = (ROOT / "frontend" / "src" / "ml" / "config.js").read_text(encoding="utf-8")
+_url = re.search(r"MODEL_URL = '([^']+)'", _cfg).group(1)
+_parts = re.findall(r"'(/models/[^']+)'", re.search(r"MODEL_PARTS = \[([^\]]*)\]", _cfg).group(1)) or [_url]
+sess = ort.InferenceSession(b"".join((PUBLIC / p.lstrip("/")).read_bytes() for p in _parts), providers=["CPUExecutionProvider"])
+_inp = sess.get_inputs()[0].name
 tf = T.Compose([T.Resize(pre["resize_shorter"]), T.CenterCrop(pre["crop"]), T.ToTensor(), T.Normalize(pre["mean"], pre["std"])])
 
 
 def probs(rgb):
-    logits = sess.run(None, {"input": tf(rgb).unsqueeze(0).numpy()})[0][0] / cal["temperature"]
+    logits = sess.run(None, {_inp: tf(rgb).unsqueeze(0).numpy()})[0][0] / cal["temperature"]
     e = np.exp(logits - logits.max())
     return (e / e.sum()).tolist()
 
