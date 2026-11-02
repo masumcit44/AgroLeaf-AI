@@ -119,24 +119,26 @@ print("Dhan-Shomadhan relabelled from filename codes (folder label -> true label
 # Gujarat (UCI, 120 photos incl. 40 leaf smut): the only leaf-smut photos from outside Gazipur.
 # Too few to change training, so they are kept as an independent external TEST set (never trained on).
 # DIU Bangladesh raw set: the v5 final test (never trained on)
-run([sys.executable, "-m", "pip", "install", "-q", "datasets"])
-from datasets import load_dataset
+# Direct download of the two raw parquet files (the HF `datasets` loader failed on Kaggle)
+import urllib.request, io as _io, pyarrow.parquet as pq
+DIU_URL = "https://huggingface.co/datasets/Project-AgML/rice_disease_classification_bangladesh/resolve/main/raw/train-0000{}-of-00002.parquet"
+# class names from the parquet metadata: Healthy, Insect, Leaf Scald, Rice, Rice Blast, Rice Leaffolder,
+# Rice Stripes, Rice Tungro. "Rice" (unclear) is excluded, per PROTOCOL.md
 DIU_MAP = {"healthy": "healthy", "rice blast": "blast", "rice tungro": "tungro", "leaf scald": "other_rice",
-           "insect": "other_rice", "leaffolder": "other_rice", "stripes": "other_rice"}
-diu = load_dataset("Project-AgML/rice_disease_classification_bangladesh", data_dir="raw", split="train")
-img_col = [c for c, f in diu.features.items() if f.__class__.__name__ == "Image"][0]
-cl_cols = [c for c, f in diu.features.items() if f.__class__.__name__ == "ClassLabel"]
-if cl_cols:
-    lab_col = cl_cols[0]; names = diu.features[lab_col].names; label_name = lambda ex: names[ex[lab_col]]
-else:  # labels stored as text
-    lab_col = [c for c, f in diu.features.items() if getattr(f, "dtype", None) == "string"][0]; label_name = lambda ex: ex[lab_col]
-print("DIU columns:", list(diu.features), "| label column:", lab_col, flush=True)
-os.makedirs(f"{T}/diu", exist_ok=True); diu_counts = Counter(); diu_skipped = Counter()
-for i, ex in enumerate(diu):
-    raw_name = str(label_name(ex)); key = DIU_MAP.get(raw_name.strip().lower().replace('_', ' '))
-    if key is None: diu_skipped[raw_name] += 1; continue
-    pth = f"{T}/diu/{i:05d}.jpg"; ex[img_col].convert("RGB").save(pth, quality=95)
-    ROWS.append({"src": "diu_bd", "path": pth, "label": key, "split": "heldout"}); diu_counts[(raw_name, key)] += 1
+           "insect": "other_rice", "rice leaffolder": "other_rice", "rice stripes": "other_rice"}
+os.makedirs(f"{T}/diu", exist_ok=True); diu_counts = Counter(); diu_skipped = Counter(); n_img = 0
+for shard in (0, 1):
+    local = f"{T}/diu_raw_{shard}.parquet"
+    urllib.request.urlretrieve(DIU_URL.format(shard), local)
+    pf = pq.ParquetFile(local)
+    names = json.loads(pf.schema_arrow.metadata[b"huggingface"])["info"]["features"]["label"]["names"]
+    tbl = pf.read()
+    for img, lab in zip(tbl["image"].to_pylist(), tbl["label"].to_pylist()):
+        raw_name = names[lab]; key = DIU_MAP.get(raw_name.strip().lower())
+        if key is None: diu_skipped[raw_name] += 1; continue
+        pth = f"{T}/diu/{n_img:05d}.jpg"; n_img += 1
+        Image.open(_io.BytesIO(img["bytes"])).convert("RGB").save(pth, quality=95)
+        ROWS.append({"src": "diu_bd", "path": pth, "label": key, "split": "heldout"}); diu_counts[(raw_name, key)] += 1
 print("DIU used:", dict(diu_counts), "| skipped (unmapped):", dict(diu_skipped), flush=True)
 # 3. not-rice sources (capped per source so they do not swamp the rice classes)
 rng = random.Random(SEED)
