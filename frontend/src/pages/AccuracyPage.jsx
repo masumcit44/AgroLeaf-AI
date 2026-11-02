@@ -4,7 +4,7 @@ import PageContainer from '../components/PageContainer.jsx';
 import { CLASS_NAMES, formatMetric, formatCount } from '../lib/metricsFormatting.js';
 
 export default function AccuracyPage({
-  metricsUrl = '/data/metrics-v1.json',
+  metricsUrl = '/data/metrics-v8.json',
   initialMetrics = undefined,
 }) {
   const { lang, t } = useT();

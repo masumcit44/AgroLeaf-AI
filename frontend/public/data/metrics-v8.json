@@ -1,0 +1,141 @@
+{
+  "model": {
+    "arch": "efficientnet_b0",
+    "onnx_mb": 15.3,
+    "trained_on": "Bangladesh: RiceLeafDiseaseBD v3 (Gazipur), BD5 (Savar), KYAU/raihan (Sirajganj-Pabna), Dhan-Shomadhan; India: Paddy Doctor, Sethy; Taiwan. Plus non-rice photos.",
+    "date": "2026-11-02"
+  },
+  "calibration": {
+    "temperature": 0.66,
+    "threshold": 0.3,
+    "target_precision": 0.92
+  },
+  "internal_test": {
+    "n": 1467,
+    "accuracy": 0.8643,
+    "macro_f1": 0.8482,
+    "coverage": 0.9005,
+    "selective_accuracy": 0.8827,
+    "ece_after": 0.0487,
+    "per_class": {
+      "healthy": {
+        "precision": 0.9658,
+        "recall": 0.904,
+        "f1": 0.9339,
+        "support": 250
+      },
+      "blast": {
+        "precision": 0.8125,
+        "recall": 0.7772,
+        "f1": 0.7944,
+        "support": 184
+      },
+      "brown_spot": {
+        "precision": 0.7781,
+        "recall": 0.8343,
+        "f1": 0.8052,
+        "support": 332
+      },
+      "leaf_smut": {
+        "precision": 0.6607,
+        "recall": 0.7629,
+        "f1": 0.7081,
+        "support": 97
+      },
+      "tungro": {
+        "precision": 0.8988,
+        "recall": 0.8886,
+        "f1": 0.8937,
+        "support": 350
+      },
+      "sheath_blight": {
+        "precision": 0.9753,
+        "recall": 0.9331,
+        "f1": 0.9537,
+        "support": 254
+      }
+    }
+  },
+  "external": [
+    {
+      "name": "DIU Rice Leaf Disease and Pest Dataset, Bangladesh (half B, never used for training or tuning)",
+      "doi": "10.17632/vwv3nry3wr.1",
+      "classes_tested": [
+        "blast",
+        "healthy",
+        "tungro"
+      ],
+      "n": 1375,
+      "accuracy_mapped": 0.5439,
+      "macro_f1_mapped": 0.5615,
+      "coverage": 0.5282,
+      "selective_accuracy": 0.7469,
+      "unseen_rejection_rate": 0.5458,
+      "per_class": {
+        "healthy": {
+          "precision": 0.6206,
+          "recall": 0.771,
+          "f1": 0.6877,
+          "support": 297
+        },
+        "blast": {
+          "precision": 0.8216,
+          "recall": 0.4355,
+          "f1": 0.5693,
+          "support": 349
+        },
+        "tungro": {
+          "precision": 0.8095,
+          "recall": 0.2906,
+          "f1": 0.4277,
+          "support": 117
+        }
+      },
+      "method": "2 Nov 2026, read once: app preprocessing (EXIF upright, Resize 366 + CenterCrop 320) and the app's full decision rule. Close-ups of single leaves on white. Classes outside the app's six count as 'other rice problem'. See model/experiments/run8_v8/FINAL_RESULT.md."
+    },
+    {
+      "name": "Rice Leaf Disease Classification BD (Aman 2025, Hugging Face Project-AgML), 422 photos with no copy in other datasets",
+      "doi": "10.5281/zenodo.21140529",
+      "classes_tested": [
+        "blast",
+        "brown_spot",
+        "healthy"
+      ],
+      "n": 422,
+      "accuracy_mapped": 0.8805,
+      "macro_f1_mapped": 0.9189,
+      "coverage": 0.9308,
+      "selective_accuracy": 0.9324,
+      "unseen_rejection_rate": 0.6502,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.9792,
+          "f1": 0.9592,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.9412,
+          "recall": 0.9231,
+          "f1": 0.932,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.7627,
+          "f1": 0.8654,
+          "support": 59
+        }
+      },
+      "method": "2 Nov 2026, read once: only images with no pHash match within 8 bits in any other dataset (351 of 773 are copies). Same app preprocessing and rule. See model/experiments/run7_v7/PROTOCOL_AMENDMENT_1.md."
+    }
+  ],
+  "limitations": [
+    "No independent test covers sheath blight or leaf smut. Leaf smut is never named by the app (one field source only).",
+    "Tungro is often missed on new photos: recall 29% on the DIU test.",
+    "Rice problems the app does not cover are rejected only about half the time on the DIU test (55%, 'unseen rejection' above).",
+    "The DIU test is close-ups of single leaves on white; the Aman test is 422 field photos. Neither proves accuracy on every district, season or phone.",
+    "Version 8 did not pass the project's locked release rule on one condition (answer rate on the Aman test). This preview exists for review.",
+    "Disease text is preliminary and has not been reviewed by an agronomist."
+  ]
+}

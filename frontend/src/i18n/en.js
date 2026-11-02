@@ -109,7 +109,7 @@ export default {
   evalMethodLabel: "Method",
 
   aboutTitle: "About AgroLeaf AI",
-  aboutDescription: "AgroLeaf AI is a mobile-first web app designed for Bangladeshi rice farmers. It uses on-device WebAssembly machine learning (MobileNetV3) to screen for foliar rice diseases entirely in the browser. After the first load, it keeps working on a slow or broken connection.",
+  aboutDescription: "AgroLeaf AI is a mobile-first web app designed for Bangladeshi rice farmers. It uses on-device WebAssembly machine learning (EfficientNet-B0) to screen for foliar rice diseases entirely in the browser. After the first load, it keeps working on a slow or broken connection.",
   aboutWhatIsTitle: "What this app is and isn't",
   whatItIsLabel: "✓ What this app is:",
   whatItIsNotLabel: "✕ What this is not:",
