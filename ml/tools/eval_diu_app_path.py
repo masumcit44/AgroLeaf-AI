@@ -41,8 +41,13 @@ from eval_app import evaluate_set  # noqa: E402
 DIU_MAP = {"healthy": "healthy", "rice blast": "blast", "rice tungro": "tungro", "leaf scald": "other_rice",
            "insect": "other_rice", "rice leaffolder": "other_rice", "rice stripes": "other_rice"}
 RULES = {"healthy_threshold": 0.9, "suppress": ["leaf_smut"]}
+# Aman 2025 Bangladesh (Hugging Face Project-AgML/rice_leaf_disease_classification_bd): v7's second final test
+AMAN_MAP = {"healthy": "healthy", "leaf_blast": "blast", "brown_spot": "brown_spot", "bacterial_leaf_blight": "other_rice",
+            "leaf_scald": "other_rice", "narrow_brown_spot": "other_rice"}
 GEO = T.Compose([T.Resize(256), T.CenterCrop(224)])
 NORM = T.Compose([T.ToTensor(), T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+MEAN = np.array([0.485, 0.456, 0.406], np.float32)
+STD = np.array([0.229, 0.224, 0.225], np.float32)
 
 
 def label_names(pf):
@@ -54,7 +59,7 @@ def label_names(pf):
     return None, None
 
 
-def load_diu(raw_dir):
+def load_diu(raw_dir, mapping=DIU_MAP):
     items, skipped = [], Counter()
     for path in sorted(glob.glob(f"{raw_dir}/*.parquet")):
         pf = pq.ParquetFile(path)
@@ -63,7 +68,7 @@ def load_diu(raw_dir):
         img_col = [c for c in tbl.column_names if c != lab_col][0]
         for img, lab in zip(tbl[img_col].to_pylist(), tbl[lab_col].to_pylist()):
             raw = names[lab] if names else str(lab)
-            key = DIU_MAP.get(raw.strip().lower().replace("_", " "))
+            key = mapping.get(raw.strip().lower().replace("_", " ") if mapping is DIU_MAP else raw)
             if key is None:
                 skipped[raw] += 1
                 continue
@@ -72,13 +77,24 @@ def load_diu(raw_dir):
 
 
 def app_tensor(data):
+    cs, crop, ph = app_crops(data, [224])
+    return normalise(cs[224]), crop, ph
+
+
+def app_crops(data, sizes):
+    """App preprocessing for each input size: EXIF upright, long side <= 1024, Resize(size * 8 / 7) +
+    CenterCrop(size) (Pillow bilinear, as torchvision). Returns uint8 crops, the 224 crop and the pHash."""
     im = ImageOps.exif_transpose(Image.open(io.BytesIO(data))).convert("RGB")
     w, h = im.size
     if max(w, h) > 1024:
         s = 1024 / max(w, h)
         im = im.resize((round(w * s), round(h * s)), Image.BILINEAR)
-    crop = GEO(im)
-    return NORM(crop).numpy(), crop, str(imagehash.phash(im))
+    crops = {sz: T.Compose([T.Resize(round(sz * 8 / 7)), T.CenterCrop(sz)])(im) for sz in sizes}
+    return {sz: np.asarray(c) for sz, c in crops.items()}, crops[224], str(imagehash.phash(im))
+
+
+def normalise(u8):
+    return ((u8.astype(np.float32) / 255 - MEAN) / STD).transpose(2, 0, 1)
 
 
 def leaf_fraction(crop, lc):
@@ -87,9 +103,9 @@ def leaf_fraction(crop, lc):
     return float(np.mean((b >= lc["hue_bin_min"]) & (b <= lc["hue_bin_max"]) & (hsv[:, 1] >= lc["sat_min"]) & (hsv[:, 2] >= lc["val_min"])))
 
 
-def run(sess, x):
+def run(sess, crops):
     name = sess.get_inputs()[0].name
-    return np.concatenate([sess.run(None, {name: x[i:i + 1]})[0] for i in range(len(x))])
+    return np.concatenate([sess.run(None, {name: normalise(c)[None]})[0] for c in crops])
 
 
 def diu_half(phash_hex):
@@ -100,22 +116,25 @@ def diu_half(phash_hex):
 def main():
     raw_dir, v1p, v1c, gatep, out, half = sys.argv[1:7]
     cands = [a.split("=", 1) for a in sys.argv[7:]]  # name=model.onnx,calibration.json
-    assert half in ("A", "B"), "half must be A (selection) or B (release decision, one candidate, read once)"
-    assert cands and (half == "A" or len(cands) == 1), "half B scores exactly one (the selected) candidate"
-    out = Path(out) / f"half_{half}"
+    assert half in ("A", "B", "AMAN"), "half: A (selection), B or AMAN (final tests: one candidate, read once)"
+    assert cands and (half == "A" or len(cands) == 1), "final tests score exactly one (the selected) candidate"
+    out = Path(out) / (f"half_{half}" if half != "AMAN" else "aman2025")
     v1_cal = json.load(open(v1c))
-    items, skipped = load_diu(raw_dir)
-    xs, lfs, keep = [], [], []
+    cand_cals = {name: {**RULES, **json.load(open(spec.split(",", 1)[1]))} for name, spec in cands}
+    sizes = sorted({224} | {c.get("input_size", 224) for c in cand_cals.values()})
+    items, skipped = load_diu(raw_dir, AMAN_MAP if half == "AMAN" else DIU_MAP)
+    crops, lfs, keep = {sz: [] for sz in sizes}, [], []
     for data, key, raw in items:
-        x, crop, ph = app_tensor(data)
-        if diu_half(ph) != half:
+        cs, crop224, ph = app_crops(data, sizes)
+        if half != "AMAN" and diu_half(ph) != half:
             continue
-        xs.append(x); lfs.append(leaf_fraction(crop, v1_cal["leaf_check"])); keep.append((key, raw))
-    print(f"DIU half {half}:", dict(Counter(keep)), "| skipped:", dict(skipped), flush=True)
-    X = np.stack(xs).astype(np.float32)
+        for sz in sizes:
+            crops[sz].append(cs[sz])
+        lfs.append(leaf_fraction(crop224, v1_cal["leaf_check"])); keep.append((key, raw))
+    print(f"set {half}:", dict(Counter(keep)), "| skipped:", dict(skipped), "| input sizes:", sizes, flush=True)
     y = np.array([cm.CLASSES.index(k) for k, _ in keep])
     s = lambda p: ort.InferenceSession(p, providers=["CPUExecutionProvider"])
-    L1, Lg = run(s(v1p), X), run(s(gatep), X)
+    L1, Lg = run(s(v1p), crops[224]), run(s(gatep), crops[224])
     gate = Lg.argmax(1) == 7
     # live system: v1 logits padded to 8 outputs; gated rows forced to the not_rice outcome
     L1p = np.concatenate([L1, np.full((len(L1), 2), -1e4)], 1)
@@ -123,9 +142,9 @@ def main():
     L1p[gate, 7] = 0.0
     logits, cals = {"v1_live": L1p}, {"v1_live": v1_cal}
     for name, spec in cands:
-        mp, cp = spec.split(",", 1)
-        logits[name] = run(s(mp), X)
-        cals[name] = {**RULES, **json.load(open(cp))}  # app rules (Healthy >= 0.90, leaf smut not named) as in PROTOCOL.md
+        mp = spec.split(",", 1)[0]
+        cals[name] = cand_cals[name]  # app rules (Healthy >= 0.90, leaf smut not named) as in PROTOCOL.md
+        logits[name] = run(s(mp), crops[cals[name].get("input_size", 224)])
     for name, L in logits.items():
         (out / name).mkdir(parents=True, exist_ok=True)
         np.savez(out / name / "diu__heldout.npz", logits=L, y=y, leaf_fraction=np.array(lfs))
