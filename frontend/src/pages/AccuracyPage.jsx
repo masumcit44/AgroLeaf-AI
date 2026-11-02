@@ -281,7 +281,7 @@ export default function AccuracyPage({
                   {lang === 'bn' ? 'কনফিউশন ম্যাট্রিক্স (Confusion Matrix)' : 'Internal Confusion Matrix'}
                 </span>
                 <img
-                  src="/accuracy/confusion_internal.png"
+                  src="/accuracy/confusion_internal_v8.png"
                   alt="Confusion Matrix"
                   className="max-h-64 mx-auto rounded-lg object-contain"
                   onError={(e) => {
@@ -294,7 +294,7 @@ export default function AccuracyPage({
                   {lang === 'bn' ? 'নির্ভরযোগ্যতা ডায়াগ্রাম (Reliability Curve)' : 'Validation Reliability Curve'}
                 </span>
                 <img
-                  src="/accuracy/reliability_val.png"
+                  src="/accuracy/reliability_val_v8.png"
                   alt="Reliability Diagram"
                   className="max-h-64 mx-auto rounded-lg object-contain"
                   onError={(e) => {
