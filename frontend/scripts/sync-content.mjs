@@ -32,7 +32,10 @@ const classIndexData = JSON.parse(fs.readFileSync(CLASS_INDEX_PATH, 'utf-8'));
 const bnData = JSON.parse(fs.readFileSync(BN_SRC, 'utf-8'));
 const enData = JSON.parse(fs.readFileSync(EN_SRC, 'utf-8'));
 
-const requiredKeys = [...(classIndexData.classes || []), 'not_sure'];
+// Reject outputs (model v3+) never get a disease card: decide.js turns them into
+// "not a rice leaf" / "other rice problem" messages (src/ml/decide.js REJECT_KEYS)
+const REJECT_KEYS = ['not_rice', 'other_rice'];
+const requiredKeys = [...(classIndexData.classes || []).filter((k) => !REJECT_KEYS.includes(k)), 'not_sure'];
 const missingBn = [];
 const missingEn = [];
 

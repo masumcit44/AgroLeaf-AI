@@ -1,26 +1,9 @@
 {
-  "temperature": 0.909,
-  "threshold": 0.48,
-  "target_precision": 0.9,
-  "val_coverage": 0.9523,
-  "val_selective_accuracy": 0.9021,
-  "ece_before": 0.0778,
-  "ece_after": 0.0501,
+  "temperature": 0.66,
+  "threshold": 0.3,
   "suppress": [
     "leaf_smut"
   ],
-  "leaf_check": {
-    "hue_bin_min": 6,
-    "hue_bin_max": 14,
-    "sat_min": 77,
-    "val_min": 77,
-    "min_fraction": 0.006
-  },
   "healthy_threshold": 0.9,
-  "nonrice_gate": {
-    "model": "/models/rice-nonrice-gate-v4b.onnx",
-    "not_rice_index": 7,
-    "num_outputs": 8,
-    "source": "v4-B (EfficientNet-B0, Bangladesh-only), sha256 cae86b66410a234bf0e3b4b3fdb7466e72c7873e106cd85b03d7cbaf9e04e7ac; rule: argmax == not_rice; see handoff/ROADMAP.md G1"
-  }
+  "source": "V8_all_b0_320 (EfficientNet-B0, 8 outputs, input 320; Kaggle agroleaf-train-v8 v1); temperature and threshold fitted on in-domain val only; evaluated in model/experiments/run8_v8/FINAL_RESULT.md (gate NOT passed: Aman condition). PREVIEW ONLY."
 }

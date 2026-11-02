@@ -5,7 +5,9 @@
     "brown_spot",
     "leaf_smut",
     "tungro",
-    "sheath_blight"
+    "sheath_blight",
+    "other_rice",
+    "not_rice"
   ],
-  "version": "v1"
+  "version": "v8_b0_320"
 }

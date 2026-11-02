@@ -1,6 +1,6 @@
 {
-  "resize_shorter": 256,
-  "crop": 224,
+  "resize_shorter": 366,
+  "crop": 320,
   "mean": [
     0.485,
     0.456,

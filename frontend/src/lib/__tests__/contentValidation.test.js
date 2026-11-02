@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { shouldShowOfficialGuidance } from '../resultRules.js';
+import { REJECT_KEYS } from '../../ml/decide.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +18,8 @@ describe('Disease Content Validation', () => {
   const bn = JSON.parse(fs.readFileSync(bnPath, 'utf-8'));
   const en = JSON.parse(fs.readFileSync(enPath, 'utf-8'));
 
-  const requiredClasses = [...classIndex.classes, 'not_sure'];
+  // Reject outputs (not_rice, other_rice) are never named, so they have no disease card
+  const requiredClasses = [...classIndex.classes.filter((k) => !REJECT_KEYS.includes(k)), 'not_sure'];
 
   it('contains all required classes plus not_sure in both Bangla and English sources', () => {
     for (const key of requiredClasses) {
