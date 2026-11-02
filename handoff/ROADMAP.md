@@ -158,7 +158,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Result (2 Nov, 13:05 BST):** v8_b0 (EfficientNet-B0, input 320, Bangladesh + India + Taiwan field photos) beats live v1 + G1 on both one-time final tests.
   - DIU half B: macro-F1 0.562 vs 0.324; +5.5 points right at the live answer rate; diseased called Healthy 8.8% vs 21.2%.
   - Aman unique subset: macro-F1 0.919 vs 0.495.
-  - **But the Aman answer-rate condition cannot be met** (50.5% vs live 54.5%), so it is **NO-GO** under the locked rule (`run8_v8/FINAL_RESULT.md`).
+  - **But the Aman answer-rate condition cannot be met** (50.5% vs live 54.5%), so it is **NO-GO** under the locked rule (`run8_v8/FINAL_RESULT.md`). The user kept the locked gate (decision 5), so v8_b0 is not released.
   - Preview: https://deploy-candidate-ready.agroleaf-ai.pages.dev (branch `deploy/candidate-ready`, `11f5c34`).
 - **Data:** consolidated manifest, 41,665 files → 30,419 unique scenes (`model/experiments/data_manifest/results/`).
 - History: protocol fixed first (`model/experiments/run5_v5/PROTOCOL.md`, `d464f78`).
@@ -217,7 +217,7 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 ## 7. Decisions needing the user's approval
 1. **No backend/database for the competition release** (§3). **APPROVED by the user, 2 Nov 2026.**
 2. ~~No new model training before the deadline~~ superseded by the user's data and overnight directives (v5–v8 trained, 2 Nov).
-5. **v8_b0 release (NEW, 2 Nov):** keep the locked gate (production stays v1 + G1), or accept a revised Aman answer-rate condition. A revision is post hoc and must be labelled as such. Evidence: `run8_v8/FINAL_RESULT.md`. **Waiting for the user.**
+5. **v8_b0 release (NEW, 2 Nov):** keep the locked gate (production stays v1 + G1), or accept a revised Aman answer-rate condition. A revision is post hoc and must be labelled as such. Evidence: `run8_v8/FINAL_RESULT.md`. **DECIDED by the user, 2 Nov 2026 ~20:00 BST: keep the locked gate.** Production stays v1 + G1; v8_b0 remains on the preview branch as evidence only.
 3. ~~U3~~ decided: keep it preliminary, with the disclaimer.
 4. **After the competition:** whether to pursue P1–P3 (consented data collection is the real path to better accuracy).
 
