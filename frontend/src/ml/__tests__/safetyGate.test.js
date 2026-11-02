@@ -64,3 +64,29 @@ describe('decide with safety gate', () => {
     expect(decide(healthyMid, 0.7).reason).toBe('low_confidence');
   });
 });
+
+describe('decide with model v3 reject outputs', () => {
+  const v3 = (top, p) => {
+    const keys = ['healthy', 'blast', 'brown_spot', 'leaf_smut', 'tungro', 'sheath_blight', 'other_rice', 'not_rice'];
+    const rest = (1 - p) / (keys.length - 1);
+    return Object.fromEntries(keys.map((k) => [k, k === top ? p : rest]));
+  };
+
+  it('treats a "not_rice" answer as not a leaf, with no candidates', () => {
+    const d = decide(v3('not_rice', 0.9), 0.5);
+    expect(d).toMatchObject({ status: 'not_sure', top: null, top2: [], reason: 'not_leaf' });
+  });
+
+  it('never names a disease for "other_rice"', () => {
+    const d = decide(v3('other_rice', 0.6), 0.5);
+    expect(d).toMatchObject({ status: 'not_sure', top: null, top2: [], reason: 'other_problem' });
+  });
+
+  it('never offers reject outputs as possible conditions', () => {
+    const probs = { ...v3('blast', 0.4), not_rice: 0.35, other_rice: 0.1 };
+    const d = decide(probs, 0.5);
+    expect(d.reason).toBe('low_confidence');
+    expect(d.top2.map((x) => x.key)).not.toContain('not_rice');
+    expect(d.top2.map((x) => x.key)).not.toContain('other_rice');
+  });
+});

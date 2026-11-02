@@ -21,8 +21,8 @@ export async function predictLeaf(canvas, onProgress) {
   // 1. Ensure model session & configs are loaded (singleton)
   const { session, gateSession, classIndex, preprocess, calibration } = await loadModel(onProgress);
 
-  // 2. Preprocess canvas into NCHW Float32Array [3, 224, 224]; the leaf-colour
-  //    gate reads the same 224x224 crop the model sees
+  // 2. Preprocess canvas into NCHW Float32Array [3, crop, crop]; the leaf-colour
+  //    gate reads the same crop the model sees
   const cropSize = preprocess.crop || 224;
   const imageData = resizeAndCrop(canvas, preprocess);
   const tensorData = normalizeToNCHW(imageData.data, cropSize, cropSize, preprocess);
@@ -30,7 +30,7 @@ export async function predictLeaf(canvas, onProgress) {
   const leafFraction = leafCheck ? plantPixelFraction(imageData.data, leafCheck) : undefined;
 
   // 3. Construct input tensor
-  const inputTensor = new ort.Tensor('float32', tensorData, [1, 3, 224, 224]);
+  const inputTensor = new ort.Tensor('float32', tensorData, [1, 3, cropSize, cropSize]);
 
   // 4. Run inference and time it
   const inputName = session.inputNames[0] || 'input';
