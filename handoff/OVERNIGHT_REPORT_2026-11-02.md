@@ -30,8 +30,20 @@ Checked and **not** the cause: class mapping, model runtime, colour order, norma
 - **Kaggle job `agroleaf-train-v5`:**
   - version 1 stopped before training (the HF `datasets` loader failed on Kaggle);
   - fixed in `3fe3149` (direct parquet download, exact DIU class names);
-  - **version 2: RUNNING** (launched ~02:47 BST; still running at 06:49, unexpectedly long).
-- **v6 (data-expanded) `agroleaf-train-v6`: RUNNING** (launched 06:52 BST, `da942c4`).
+  - **version 2: COMPLETE** (~07:40 BST). Log checks:
+    - DIU mapping as in the protocol: 2,706 images used, "Rice" (16) excluded.
+    - Leakage guard dropped 8 Savar rows.
+    - 15 identical images with conflicting labels were dropped, and 1,548 near-identical duplicates.
+    - Every raihan EXIF turn was corrected.
+    - ONNX parity: 6e-6.
+    - In-domain tests: Gazipur 93.9% answered / 87.7% right (v1: 94.7% / 88.7%). These share sources with training, so they are not evidence of generalization.
+  - **Disclosure:** the training kernel also printed v5's own score on the *whole* DIU set (kernel preprocessing): 74.2% answered, 55.6% of answers right, macro-F1 0.38. It was read at ~07:45, before v6 finished.
+    - No v1 number was printed beside it.
+    - No setting was changed after reading it.
+    - The half-A selection and half-B decision remain the mechanical rules in `PROTOCOL_AMENDMENT_1.md`.
+- **v6 (data-expanded) `agroleaf-train-v6`: COMPLETE** (~07:55 BST). Its DIU lines have **not** been read.
+  - The leakage guard dropped **185 Vietnam rows** within 4 pHash bits of DIU or the Dhan-Shomadhan report set. The Vietnam set (`minhhuy2810`, "found online") contains copies of Bangladeshi photos.
+  - Before half A is read, a CPU job (`run6_v6/leak_check/`) measures how close the remaining Vietnam images are to DIU. If looser copies remain, v6's DIU score is not trustworthy.
 - **Decision on DIU** (local, live-app preprocessing, `ml/tools/eval_diu_app_path.py`, `5781b03`): **PENDING**.
 
 ## 4b. Data inventory (file-level audit; images per class)
