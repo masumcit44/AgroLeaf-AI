@@ -84,5 +84,53 @@ Writeup read in the browser.
 | Checkpoint chosen on grouped validation | Choose the epoch on leave-source-out macro-F1, not random-split validation |
 | **Pitfall:** missing files silently replaced by black images | Not adopted: our pipeline drops unreadable files and prints the count |
 
+## C4. Recursion Cellular, 1st place (Maciej Sypetkowski, 2019; writeup read in the browser)
+**Data and augmentation:**
+- Original 512 px images.
+- Random resized crop preserving aspect, scale ~U(0.5, 1).
+- Flips and 90° rotations.
+- Per-channel normalisation with small random gain / offset.
+- **CutMix**, or Mixup in some ensemble members.
+
+**Model and training:**
+- ImageNet backbone; neck BN-FC-ReLU-BN-FC-BN; FC head.
+- Loss = 0.8 × softmax cross-entropy + 0.2 × ArcFace / 2.
+- Adam, weight decay 1e-5, lr 1.5e-4 cosine, 90 epochs, batch 24 (48 with accumulation).
+
+**Inference:** TTA flips / rot90, mean of logits; ensembles of 3–11 models.
+
+**Author's view of what mattered** (comment): zoom augmentation ("significant boost"), Mixup / CutMix plus long training ("significant boost"; Mixup needs more epochs), the head design. Per-channel normalisation randomness changed nothing. Larger DenseNets were better; EfficientNets did not work for him.
+
+**Not adoptable:** progressive pseudo-labelling on the **test** set (transductive; would read our final tests).
+
+## C5. Human Protein Atlas, 3rd place (pudae/kaggle-hpa; code read)
+- Duplicate and leak search with ahash / phash (we already do this).
+- 5-fold stratified split.
+- **Augmentation policy searched with a small model** (resnet18, 256 px).
+- Per-image normalisation; binary focal loss; attention head; up to 1024 px.
+- **SWA (weight averaging of checkpoints).**
+- **Per-class thresholds found on validation** (`find_best_thres`).
+- Ensemble of resnet34 ×5 + inception-v3 + se-resnext50.
+
+## C6. Borda/kaggle_image-classify (plant pathology, cassava; code read)
+- timm backbones (Lightning), AdamW + cosine.
+- Train augmentation: Resize 512 → RandomRotation 30 → RandomPerspective 0.4 → RandomResizedCrop 224 → h/v flips. ColorJitter is commented out.
+- Validation Resize 256 / CenterCrop 224.
+- Dataset mean / std; F1 tracked during training.
+
+## C7. MitraDP Intel scenes; jayinai/kaggle-image
+- **Intel:** ResNet50, OneCycle, 91% accuracy. "More comprehensive augmentation does not improve" *for that dataset*. Lesson: test augmentation choices, don't assume them.
+- **jayinai:** a 2016 index of past competitions. The only takeaway is that a literature review is worth the time.
+
+## E. Merged v9 candidates (ranked by our measured failures; each must be tested on leave-source-out validation)
+1. **Leave-source-out selection** (Dhaka notebook, Recursion GroupKFold, HPA folds).
+2. **Mixup / CutMix with longer training** (Recursion 1st: "significant boost"; needs more epochs).
+3. **Zoom / perspective / rotation geometry** (Recursion 1st zoom; Borda rotation 30 + perspective 0.4). We already have zoom via RandomResizedCrop 0.25–1.
+4. **Per-class thresholds on validation** (HPA): directly targets per-class precision.
+5. **Weight averaging of the last epochs (SWA)** (HPA): cheap.
+6. **Flip / rot90 TTA and a 2-model ensemble** (ECG 2nd, Recursion 1st, HPA): browser cost must be measured.
+7. Hard-domain oversampling (ECG 2nd); RandomShadow (ECG 2nd); no grayscale.
+8. Later: ArcFace + cross-entropy head (Recursion 1st) for cleaner rejection of unknown problems.
+
 ## D. Our own EDA
 `model/experiments/eda_v9/`, Kaggle `agroleaf-eda-v9`. Results are added below when the job finishes.
