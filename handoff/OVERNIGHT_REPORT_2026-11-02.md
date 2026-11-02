@@ -30,8 +30,33 @@ Checked and **not** the cause: class mapping, model runtime, colour order, norma
 - **Kaggle job `agroleaf-train-v5`:**
   - version 1 stopped before training (the HF `datasets` loader failed on Kaggle);
   - fixed in `3fe3149` (direct parquet download, exact DIU class names);
-  - **version 2: RUNNING.**
+  - **version 2: RUNNING** (launched ~02:47 BST; still running at 06:49, unexpectedly long).
+- **v6 (data-expanded) `agroleaf-train-v6`: RUNNING** (launched 06:52 BST, `da942c4`).
 - **Decision on DIU** (local, live-app preprocessing, `ml/tools/eval_diu_app_path.py`, `5781b03`): **PENDING**.
+
+## 4b. Data inventory (file-level audit; images per class)
+| Source | Role | healthy | blast | brown spot | leaf smut | tungro | sheath blight | other |
+|---|---|---|---|---|---|---|---|---|
+| Gazipur | train (BD) | 1575 | 1326 | 2178 | 724 | 2244 | 1722 | 0 |
+| Savar | train (BD) | 834 | 720 | 0 | 0 | 494 | 626 | 476 |
+| raihan (Sirajganj/Pabna) | train from v5 (BD) | 187 | 310 | 274 | 0 | 0 | 288 | 827 |
+| Dhan-Shomadhan | report-only (BD, white paper) | 0 | 198 | 90 | 0 | 119 | 219 | 143 |
+| Sylhet | final test (BD) | 252 | 0 | 356 | 0 | 530 | 0 | 422 |
+| Gujarat | final test (IN) | 0 | 0 | 40 | 40 | 0 | 0 | 40 |
+| Paddy Doctor | v6 train (IN) | 1764 | 1738 | 965 | 0 | 1088 | 0 | 4852 |
+| Sethy | v6 train (IN) | 0 | 1440 | 1600 | 0 | 1308 | 0 | 1584 |
+| Vietnam | v6 train (VN) | 1488 | 779 | 523 | 0 | 0 | 0 | 565 |
+| **BD training total (v5)** | | 2596 | 2356 | 2452 | 724 | 2738 | 2636 | 1303 |
+
+**Finding:** file counts are not the bottleneck; **Bangladeshi source diversity is.**
+- Each class comes from 1–3 Bangladeshi places: leaf smut from one (Gazipur), brown spot and tungro from two.
+- Burst shots mean far fewer independent scenes than files.
+- Legally usable, verified Bangladeshi field data beyond these barely exists publicly:
+  - `under167` has an unknown licence;
+  - DIU set 2 is from the same lab as the DIU test, so it would leak;
+  - Philippines (AGPL) is web-scraped with unreliable labels.
+- **v6 tests the "more diverse data" hypothesis directly:** Bangladesh + India + Vietnam + Karnataka, same recipe as v5. The protocol amendment `0a90df1` splits DIU into A (choose v5 or v6) and B (one final test).
+- **Real leverage:** consented Bangladeshi field photos, especially leaf smut, brown spot and tungro, collected across districts and labelled by an agronomist.
 
 ## 5. Still unreliable (true today)
 - Disease answers on photos from new districts and on internet photos (see §2).
