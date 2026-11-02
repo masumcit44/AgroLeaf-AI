@@ -65,5 +65,24 @@ Writeup read in the browser.
 | Dataset mean / std normalisation | **Not adopted.** With pretrained backbones we keep the backbone's ImageNet statistics, which the app already uses. |
 | No validation, training accuracy only | **Not adopted:** our selection uses leave-source-out validation |
 
+## C3. Recursion Cellular "NewFinalRunBest" (rohanmalhotracodes, Kaggle; source read, not executed)
+**What it is:**
+- EfficientNet-B0 (torchvision ImageNet) with a 6-channel first convolution: the RGB weights are copied twice and scaled by 0.5.
+- 384 px input, both microscope sites per sample, AdamW 3e-4, cosine LR, AMP, 10 epochs.
+- **GroupKFold by experiment**; the checkpoint with the best validation accuracy is kept.
+- Validation and test probabilities are **averaged over the two sites of the same sample**.
+- TTA: identity, h-flip, v-flip, rot90.
+- Metrics: accuracy, top-5, macro / weighted / micro F1.
+- No scores are shown in the notebook.
+
+| Idea | Our use |
+|---|---|
+| **Validation grouped by experiment** (the batch effect is the domain shift) | The same as our leave-source-out plan. Each source / district plays the role of an "experiment". |
+| **Average several views of the same specimen** (two sites) | Product option: let the farmer take 2 photos of the same leaf and average them. Within one photo, flip / rot90 TTA is cheap. Leaves have no fixed orientation, so dihedral TTA matches how the data varies. |
+| Dihedral augmentation (flips, rot90) | Already in our "strong" pipeline |
+| 384 px input | Supports trying 384 after our 224 → 320 gain, subject to browser speed |
+| Checkpoint chosen on grouped validation | Choose the epoch on leave-source-out macro-F1, not random-split validation |
+| **Pitfall:** missing files silently replaced by black images | Not adopted: our pipeline drops unreadable files and prints the count |
+
 ## D. Our own EDA
 `model/experiments/eda_v9/`, Kaggle `agroleaf-eda-v9`. Results are added below when the job finishes.
