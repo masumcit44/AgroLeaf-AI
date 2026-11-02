@@ -15,7 +15,10 @@ Branches:
 - I did **not** change the rule after seeing this, so **production is unchanged** (v1 + G1).
 - v8_b0 is **live on the preview site** for your decision: https://deploy-candidate-ready.agroleaf-ai.pages.dev.
 
-## Your decision (only you can make it)
+## Decision (2 Nov 2026, ~20:00 BST)
+**The user kept the locked gate.** Production stays v1 + G1. v8_b0 is not released; the preview branch is kept as evidence.
+
+## Options that were offered
 1. **Keep the locked gate:** production stays v1 + G1. Nothing to do.
 2. **Accept a revised Aman condition** (post hoc, and must be labelled so in the submission), for example "no worse right-share at the candidate's own maximum answer rate" or "compare on diagnosable photos only". If yes:
    - merge `deploy/candidate-ready` into `main`;
