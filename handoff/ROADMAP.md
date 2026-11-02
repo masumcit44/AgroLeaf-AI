@@ -2,7 +2,7 @@
 
 **Owner:** Claude (lead). Only the lead edits this file. Workers report on their own branch and in their own progress files. Older files in `handoff/` (`PROGRESS.md`, `01_MODULE_PLAN.md`, `X_BACKLOG.md`, `Y_BACKLOG.md`, `M00`–`M09`) are **historical**; where they differ, this file wins.
 
-**Deadline:** Devpost, Wed 5 Nov 2026, 11:59 PM BST. Internal target: 6 PM that day. **Last verified:** 2 Nov 2026, 00:00 BST.
+**Deadline:** Devpost, Wed 5 Nov 2026, 11:59 PM BST. Internal target: 6 PM that day. **Last verified:** 2 Nov 2026, 13:15 BST.
 
 ## 0. Product goal (priority order)
 1. **Core:** a farmer uploads a rice-leaf photo, and the app answers one of: a supported disease, Healthy, "this is not a rice leaf", or "not sure", with each answer justified by measured evidence.
@@ -150,11 +150,18 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 - **Evidence:** unit tests 74/74, decode-path 25/25; `Paddy-Leaf-Blast-medium.webp` now gives Blast live.
 
 #### R1 — Independent generalization research
-- **Owner:** Antigravity. **Branch:** `research/generalization`. **Status:** ASSIGNED (`handoff/TASK_R1_RESEARCH_ANTIGRAVITY.md`).
+- **Owner:** Antigravity. **Branch:** `research/generalization`. **Status:** DONE (`c09ad17`), reviewed and integrated on `feat/model-v3` (`641decb`, `documentation/research/generalization_research_REVIEW.md`). Its 5 experiments were not adopted as written: they reused already-read test sets.
 - **Output:** sourced findings and at most 5 ranked experiments.
 
 #### V5 — Retraining for new-domain photos
-- **Owner:** Claude. **Status:** IN_PROGRESS. Kaggle `agroleaf-train-v5`, launched ~02:42 BST; protocol fixed first (`model/experiments/run5_v5/PROTOCOL.md`, `d464f78`).
+- **Owner:** Claude. **Status:** v5–v8 DONE; **gate NOT passed; production unchanged.** Full report: `handoff/REPORT_2026-11-02_MISSION.md` on `feat/model-v3`.
+- **Result (2 Nov, 13:05 BST):** v8_b0 (EfficientNet-B0, input 320, Bangladesh + India + Taiwan field photos) beats live v1 + G1 on both one-time final tests.
+  - DIU half B: macro-F1 0.562 vs 0.324; +5.5 points right at the live answer rate; diseased called Healthy 8.8% vs 21.2%.
+  - Aman unique subset: macro-F1 0.919 vs 0.495.
+  - **But the Aman answer-rate condition cannot be met** (50.5% vs live 54.5%), so it is **NO-GO** under the locked rule (`run8_v8/FINAL_RESULT.md`). The user kept the locked gate (decision 5), so v8_b0 is not released.
+  - Preview: https://deploy-candidate-ready.agroleaf-ai.pages.dev (branch `deploy/candidate-ready`, `11f5c34`).
+- **Data:** consolidated manifest, 41,665 files → 30,419 unique scenes (`model/experiments/data_manifest/results/`).
+- History: protocol fixed first (`model/experiments/run5_v5/PROTOCOL.md`, `d464f78`).
 - **Fresh independent test found** by a research subagent: DIU "Rice Leaf Disease and Pest Dataset" (Mendeley 10.17632/vwv3nry3wr.1; Hugging Face `Project-AgML/rice_disease_classification_bangladesh`; CC BY 4.0). It has healthy, blast and tungro only; no brown spot, sheath blight or leaf smut.
 - **Other candidates noted** (not used): DIU g7tcwvshff (same lab, may overlap), `under167` BanglaRiceLeaf (licence unknown), IRDD West Bengal (availability UNVERIFIED).
 - **The blocker is evaluation, not training.** Every independent Bangladeshi set we have is already used:
@@ -209,7 +216,8 @@ Each increment has an owner, its own branch, acceptance criteria, required tests
 
 ## 7. Decisions needing the user's approval
 1. **No backend/database for the competition release** (§3). **APPROVED by the user, 2 Nov 2026.**
-2. **No new model training before the deadline.** Ship v1 or v4-B according to I1.
+2. ~~No new model training before the deadline~~ superseded by the user's data and overnight directives (v5–v8 trained, 2 Nov).
+5. **v8_b0 release (NEW, 2 Nov):** keep the locked gate (production stays v1 + G1), or accept a revised Aman answer-rate condition. A revision is post hoc and must be labelled as such. Evidence: `run8_v8/FINAL_RESULT.md`. **DECIDED by the user, 2 Nov 2026 ~20:00 BST: keep the locked gate.** Production stays v1 + G1; v8_b0 remains on the preview branch as evidence only.
 3. ~~U3~~ decided: keep it preliminary, with the disclaimer.
 4. **After the competition:** whether to pursue P1–P3 (consented data collection is the real path to better accuracy).
 
