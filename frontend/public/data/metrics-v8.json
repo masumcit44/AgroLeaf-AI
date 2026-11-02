@@ -135,7 +135,7 @@
     "Tungro is often missed on new photos: recall 29% on the DIU test.",
     "Rice problems the app does not cover are rejected only about half the time on the DIU test (55%, 'unseen rejection' above).",
     "The DIU test is close-ups of single leaves on white; the Aman test is 422 field photos. Neither proves accuracy on every district, season or phone.",
-    "Version 8 did not pass the project's locked release rule on one condition (answer rate on the Aman test). This preview exists for review.",
+    "Version 8 was released by the project owner's decision after one release rule was revised post hoc: it beat the previous model on both independent tests, but on the Aman test it answers fewer photos (50.5% vs 54.5%), which the original rule required to be at least equal.",
     "Disease text is preliminary and has not been reviewed by an agronomist."
   ]
 }

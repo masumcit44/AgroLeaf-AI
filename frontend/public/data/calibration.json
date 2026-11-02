@@ -5,5 +5,5 @@
     "leaf_smut"
   ],
   "healthy_threshold": 0.9,
-  "source": "V8_all_b0_320 (EfficientNet-B0, 8 outputs, input 320; Kaggle agroleaf-train-v8 v1); temperature and threshold fitted on in-domain val only; evaluated in model/experiments/run8_v8/FINAL_RESULT.md (gate NOT passed: Aman condition). PREVIEW ONLY."
+  "source": "V8_all_b0_320 (EfficientNet-B0, 8 outputs, input 320; Kaggle agroleaf-train-v8 v1, sha256 dda84502...0b51b04); temperature and threshold fitted on in-domain val only. Evaluation: model/experiments/run8_v8/FINAL_RESULT.md. Released by the owner's decision after a post-hoc revision of the Aman answer-rate condition: run8_v8/RELEASE_DECISION.md."
 }
