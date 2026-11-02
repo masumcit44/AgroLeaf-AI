@@ -47,5 +47,23 @@ Writeup read in the browser.
   - no head-to-head domain-generalization benchmark was found;
   - Mixup / CutMix are often layered on top.
 
+## C2. CIFAR-100 notebook (lakhindarpal, Kaggle; source read, not executed)
+**What it is:** a plain transfer-learning baseline.
+- ResNet-50 with ImageNet `IMAGENET1K_V2` weights; the 32 px images are upscaled to 224.
+- RandAugment(num_ops=2, magnitude=9).
+- Normalisation with mean / std computed on the training set.
+- AdamW lr 3e-4, weight decay 1e-4, OneCycle, 10 epochs, plain cross-entropy.
+- Predictions by argmax.
+
+**What it does not have:** a validation split (only running training accuracy is shown), label smoothing, TTA, ensembling, checkpoint selection or calibration. No score is shown in the notebook.
+
+| Idea | Our use |
+|---|---|
+| RandAugment(2, 9) as a no-tuning automatic policy | Agrees with the research (RandAugment / TrivialAugment). Candidate replacement for our hand-made "strong" pipeline. |
+| Upscale small inputs to the backbone's native resolution | The same lesson as our 224 → 320 result: detail must survive to the network |
+| Stronger pretrained weights (V2 recipe) | Use the best available ImageNet weights for the chosen timm backbone |
+| Dataset mean / std normalisation | **Not adopted.** With pretrained backbones we keep the backbone's ImageNet statistics, which the app already uses. |
+| No validation, training accuracy only | **Not adopted:** our selection uses leave-source-out validation |
+
 ## D. Our own EDA
 `model/experiments/eda_v9/`, Kaggle `agroleaf-eda-v9`. Results are added below when the job finishes.
