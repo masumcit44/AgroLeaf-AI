@@ -19,6 +19,7 @@ import glob
 import hashlib
 import io
 import json
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -123,6 +124,11 @@ def main():
     cand_cals = {name: {**RULES, **json.load(open(spec.split(",", 1)[1]))} for name, spec in cands}
     sizes = sorted({224} | {c.get("input_size", 224) for c in cand_cals.values()})
     items, skipped = load_diu(raw_dir, AMAN_MAP if half == "AMAN" else DIU_MAP)
+    if half == "AMAN":  # run7_v7/PROTOCOL_AMENDMENT_1.md: only images with no near-copy in another dataset
+        keep_rows = {int(x) for x in open(os.environ["AMAN_KEEP"]).read().split()}
+        assert len(glob.glob(f"{raw_dir}/*.parquet")) == 1, "row indices refer to the single Aman parquet"
+        items = [it for i, it in enumerate(items) if i in keep_rows]
+        assert len(items) == len(keep_rows), (len(items), len(keep_rows))
     crops, lfs, keep = {sz: [] for sz in sizes}, [], []
     for data, key, raw in items:
         cs, crop224, ph = app_crops(data, sizes)

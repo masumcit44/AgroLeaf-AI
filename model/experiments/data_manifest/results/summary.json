@@ -1,0 +1,738 @@
+{
+ "files_total": 41665,
+ "unreadable": {
+  "taiwan_tw": 2
+ },
+ "skipped": {
+  "paddy_doctor_in: unmapped folder test_images": 3469,
+  "kyau_bd: augmented": 5188,
+  "gazipur_bd: unmapped folder RiceLeafDiseaseBD A Field-Based Annotated Smartpho": 2,
+  "gazipur_bd: annotated copies": 8194,
+  "diu_bd: unmapped folder Rice": 16,
+  "diu_bd: augmented": 18536
+ },
+ "exact_duplicate_files": 3899,
+ "near_dup_clusters_total": 30419,
+ "label_conflict_clusters": 187,
+ "label_conflict_kinds": {
+  "other_rice|tungro": 61,
+  "blast|other_rice": 25,
+  "healthy|other_rice": 15,
+  "blast|healthy": 14,
+  "healthy|tungro": 10,
+  "blast|tungro": 8,
+  "brown_spot|other_rice": 7,
+  "blast|brown_spot": 6,
+  "sheath_blight|tungro": 6,
+  "blast|healthy|other_rice": 6,
+  "blast|healthy|other_rice|tungro": 5,
+  "brown_spot|tungro": 4,
+  "blast|other_rice|tungro": 4,
+  "brown_spot|leaf_smut": 3,
+  "brown_spot|healthy": 2,
+  "healthy|sheath_blight": 2,
+  "other_rice|sheath_blight": 2,
+  "blast|healthy|tungro": 2,
+  "blast|leaf_smut": 1,
+  "leaf_smut|tungro": 1
+ },
+ "train_pool_unique_scenes": 26381,
+ "train_pool_unique_scenes_label_consistent": 26294,
+ "train_pool_unique_by_class_country": {
+  "healthy": {
+   "??": 206,
+   "BD": 2363,
+   "IN": 1505,
+   "TW": 290
+  },
+  "blast": {
+   "??": 300,
+   "BD": 2198,
+   "IN": 1899,
+   "TW": 499
+  },
+  "brown_spot": {
+   "??": 0,
+   "BD": 2190,
+   "IN": 1365,
+   "TW": 76
+  },
+  "leaf_smut": {
+   "??": 0,
+   "BD": 617,
+   "IN": 0,
+   "TW": 0
+  },
+  "tungro": {
+   "??": 0,
+   "BD": 2388,
+   "IN": 1438,
+   "TW": 0
+  },
+  "sheath_blight": {
+   "??": 0,
+   "BD": 2733,
+   "IN": 0,
+   "TW": 0
+  },
+  "other_rice": {
+   "??": 206,
+   "BD": 1622,
+   "IN": 4399,
+   "TW": 0
+  }
+ },
+ "test_clusters_also_in_train_pool": {
+  "test_diu": 19,
+  "final_test_used": 9
+ },
+ "per_source": {
+  "gazipur_bd": {
+   "role": "train_pool",
+   "country": "BD",
+   "region": "Gazipur",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/86s4jzj2m4.3)",
+   "files": 9769,
+   "files_by_class": {
+    "blast": 1326,
+    "brown_spot": 2178,
+    "healthy": 1575,
+    "leaf_smut": 724,
+    "tungro": 2244,
+    "sheath_blight": 1722
+   },
+   "exact_dups_within_or_earlier": 39,
+   "unique_scenes": 8502,
+   "unique_scenes_by_class": {
+    "tungro": 1848,
+    "sheath_blight": 1656,
+    "healthy": 1484,
+    "blast": 1110,
+    "brown_spot": 1807,
+    "leaf_smut": 623
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "aman2025_bd": 162
+   }
+  },
+  "savar_bd": {
+   "role": "train_pool",
+   "country": "BD",
+   "region": "Savar, Dhaka",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/sjkptpgv79; Kaggle copy says unknown)",
+   "files": 3150,
+   "files_by_class": {
+    "blast": 720,
+    "other_rice": 476,
+    "healthy": 834,
+    "sheath_blight": 626,
+    "tungro": 494
+   },
+   "exact_dups_within_or_earlier": 3,
+   "unique_scenes": 2493,
+   "unique_scenes_by_class": {
+    "other_rice": 390,
+    "blast": 534,
+    "sheath_blight": 527,
+    "healthy": 655,
+    "tungro": 390
+   },
+   "white_bg_share": 0.94,
+   "clusters_shared_with": {
+    "diu_bd": 6,
+    "dhan_shomadhan_bd": 1
+   }
+  },
+  "sylhet_bd": {
+   "role": "final_test_used",
+   "country": "BD",
+   "region": "Sylhet + Dhaka",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/kx9rx8p2mz)",
+   "files": 1560,
+   "files_by_class": {
+    "other_rice": 422,
+    "brown_spot": 356,
+    "healthy": 252,
+    "tungro": 530
+   },
+   "exact_dups_within_or_earlier": 109,
+   "unique_scenes": 1431,
+   "unique_scenes_by_class": {
+    "other_rice": 342,
+    "tungro": 511,
+    "healthy": 251,
+    "brown_spot": 350
+   },
+   "white_bg_share": 0.001,
+   "clusters_shared_with": {
+    "aman2025_bd": 9
+   }
+  },
+  "diu_bd": {
+   "role": "test_diu",
+   "country": "BD",
+   "region": "BRRI (DIU)",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/vwv3nry3wr)",
+   "files": 2753,
+   "files_by_class": {
+    "healthy": 603,
+    "other_rice": 1215,
+    "blast": 696,
+    "tungro": 239
+   },
+   "exact_dups_within_or_earlier": 36,
+   "unique_scenes": 2487,
+   "unique_scenes_by_class": {
+    "other_rice": 1164,
+    "tungro": 222,
+    "blast": 629,
+    "healthy": 563
+   },
+   "white_bg_share": 0.964,
+   "clusters_shared_with": {
+    "dhan_shomadhan_bd": 4,
+    "shivas_blast": 10,
+    "savar_bd": 6
+   }
+  },
+  "kyau_bd": {
+   "role": "train_pool",
+   "country": "BD",
+   "region": "Sirajganj/Pabna",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/hx6f852hw4.2)",
+   "files": 1701,
+   "files_by_class": {
+    "other_rice": 701,
+    "brown_spot": 267,
+    "healthy": 157,
+    "blast": 305,
+    "sheath_blight": 271
+   },
+   "exact_dups_within_or_earlier": 49,
+   "unique_scenes": 1455,
+   "unique_scenes_by_class": {
+    "healthy": 145,
+    "other_rice": 634,
+    "brown_spot": 188,
+    "sheath_blight": 259,
+    "blast": 230
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "raihan_bd": 1415,
+    "aman2025_bd": 5,
+    "shivas_blast": 2
+   }
+  },
+  "dhan_shomadhan_bd": {
+   "role": "train_pool",
+   "country": "BD",
+   "region": "Dhaka Division",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/znsxdctwtt)",
+   "files": 1106,
+   "files_by_class": {
+    "brown_spot": 139,
+    "other_rice": 217,
+    "blast": 272,
+    "tungro": 195,
+    "sheath_blight": 283
+   },
+   "exact_dups_within_or_earlier": 0,
+   "unique_scenes": 1096,
+   "unique_scenes_by_class": {
+    "sheath_blight": 282,
+    "blast": 268,
+    "other_rice": 217,
+    "brown_spot": 139,
+    "tungro": 193
+   },
+   "white_bg_share": 0.216,
+   "clusters_shared_with": {
+    "savar_bd": 1,
+    "diu_bd": 4,
+    "aman2025_bd": 16
+   }
+  },
+  "raihan_bd": {
+   "role": "mirror_check",
+   "country": "BD",
+   "region": "Sirajganj/Pabna (KYAU mirror)",
+   "licence": "CC0 claimed by mirror",
+   "files": 1886,
+   "files_by_class": {
+    "other_rice": 827,
+    "brown_spot": 274,
+    "healthy": 187,
+    "blast": 310,
+    "sheath_blight": 288
+   },
+   "exact_dups_within_or_earlier": 1662,
+   "unique_scenes": 1631,
+   "unique_scenes_by_class": {
+    "healthy": 175,
+    "other_rice": 754,
+    "brown_spot": 194,
+    "sheath_blight": 275,
+    "blast": 235
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "kyau_bd": 1415,
+    "aman2025_bd": 6,
+    "shivas_blast": 4
+   }
+  },
+  "paddy_doctor_in": {
+   "role": "train_pool",
+   "country": "IN",
+   "region": "Tirunelveli, Tamil Nadu",
+   "licence": "CC0 per mirror; original UNVERIFIED",
+   "files": 10407,
+   "files_by_class": {
+    "other_rice": 4852,
+    "blast": 1738,
+    "brown_spot": 965,
+    "healthy": 1764,
+    "tungro": 1088
+   },
+   "exact_dups_within_or_earlier": 74,
+   "unique_scenes": 8441,
+   "unique_scenes_by_class": {
+    "healthy": 1511,
+    "other_rice": 3855,
+    "tungro": 907,
+    "blast": 1428,
+    "brown_spot": 762
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "aman2025_bd": 66
+   }
+  },
+  "sethy_in": {
+   "role": "train_pool",
+   "country": "IN",
+   "region": "India (region unverified)",
+   "licence": "CC BY 4.0 (Mendeley 10.17632/fwcj7stb8r.2)",
+   "files": 5932,
+   "files_by_class": {
+    "other_rice": 1584,
+    "blast": 1440,
+    "brown_spot": 1600,
+    "tungro": 1308
+   },
+   "exact_dups_within_or_earlier": 1138,
+   "unique_scenes": 2138,
+   "unique_scenes_by_class": {
+    "other_rice": 514,
+    "blast": 480,
+    "brown_spot": 606,
+    "tungro": 538
+   },
+   "white_bg_share": 0.003,
+   "clusters_shared_with": {
+    "karnataka_in": 140,
+    "aman2025_bd": 56
+   }
+  },
+  "gujarat_in": {
+   "role": "final_test_used",
+   "country": "IN",
+   "region": "Shertha, Gujarat",
+   "licence": "CC BY 4.0 (UCI 486)",
+   "files": 120,
+   "files_by_class": {
+    "other_rice": 40,
+    "brown_spot": 40,
+    "leaf_smut": 40
+   },
+   "exact_dups_within_or_earlier": 0,
+   "unique_scenes": 120,
+   "unique_scenes_by_class": {
+    "leaf_smut": 40,
+    "other_rice": 40,
+    "brown_spot": 40
+   },
+   "white_bg_share": 0.833,
+   "clusters_shared_with": {}
+  },
+  "karnataka_in": {
+   "role": "train_pool",
+   "country": "IN",
+   "region": "Gangavathi, Karnataka",
+   "licence": "MIT",
+   "files": 200,
+   "files_by_class": {
+    "other_rice": 100,
+    "blast": 50,
+    "brown_spot": 50
+   },
+   "exact_dups_within_or_earlier": 146,
+   "unique_scenes": 190,
+   "unique_scenes_by_class": {
+    "brown_spot": 48,
+    "other_rice": 99,
+    "blast": 43
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "sethy_in": 140,
+    "aman2025_bd": 13
+   }
+  },
+  "taiwan_tw": {
+   "role": "train_pool",
+   "country": "TW",
+   "region": "Taiwan",
+   "licence": "CC BY 4.0",
+   "files": 927,
+   "files_by_class": {
+    "brown_spot": 92,
+    "blast": 519,
+    "healthy": 316
+   },
+   "exact_dups_within_or_earlier": 34,
+   "unique_scenes": 865,
+   "unique_scenes_by_class": {
+    "blast": 499,
+    "healthy": 290,
+    "brown_spot": 76
+   },
+   "white_bg_share": 0.084,
+   "clusters_shared_with": {}
+  },
+  "shivas_blast": {
+   "role": "train_pool",
+   "country": "??",
+   "region": "unverified",
+   "licence": "CC BY 4.0",
+   "files": 1249,
+   "files_by_class": {
+    "other_rice": 748,
+    "healthy": 251,
+    "blast": 250
+   },
+   "exact_dups_within_or_earlier": 584,
+   "unique_scenes": 615,
+   "unique_scenes_by_class": {
+    "other_rice": 206,
+    "healthy": 210,
+    "blast": 199
+   },
+   "white_bg_share": 0.329,
+   "clusters_shared_with": {
+    "raihan_bd": 4,
+    "diu_bd": 10,
+    "kyau_bd": 2
+   }
+  },
+  "iqbal_blast": {
+   "role": "train_pool",
+   "country": "??",
+   "region": "unverified",
+   "licence": "CC0",
+   "files": 132,
+   "files_by_class": {
+    "blast": 132
+   },
+   "exact_dups_within_or_earlier": 0,
+   "unique_scenes": 111,
+   "unique_scenes_by_class": {
+    "blast": 111
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {}
+  },
+  "aman2025_bd": {
+   "role": "train_pool",
+   "country": "BD",
+   "region": "Bangladesh (Aman 2025, iPhone)",
+   "licence": "CC BY 4.0 (Zenodo 10.5281/zenodo.21140529)",
+   "files": 773,
+   "files_by_class": {
+    "other_rice": 340,
+    "blast": 133,
+    "brown_spot": 190,
+    "healthy": 110
+   },
+   "exact_dups_within_or_earlier": 25,
+   "unique_scenes": 738,
+   "unique_scenes_by_class": {
+    "brown_spot": 178,
+    "other_rice": 327,
+    "healthy": 100,
+    "blast": 133
+   },
+   "white_bg_share": 0.0,
+   "clusters_shared_with": {
+    "gazipur_bd": 162,
+    "paddy_doctor_in": 66,
+    "kyau_bd": 5,
+    "raihan_bd": 6,
+    "dhan_shomadhan_bd": 16,
+    "sethy_in": 56,
+    "karnataka_in": 13,
+    "sylhet_bd": 9
+   }
+  }
+ },
+ "cross_source_cluster_overlap": {
+  "gazipur_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 162
+  },
+  "savar_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 6,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 1,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "sylhet_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 9
+  },
+  "diu_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 6,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 4,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 10,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "kyau_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 1415,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 2,
+   "iqbal_blast": 0,
+   "aman2025_bd": 5
+  },
+  "dhan_shomadhan_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 1,
+   "sylhet_bd": 0,
+   "diu_bd": 4,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 16
+  },
+  "raihan_bd": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 1415,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 4,
+   "iqbal_blast": 0,
+   "aman2025_bd": 6
+  },
+  "paddy_doctor_in": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 66
+  },
+  "sethy_in": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 140,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 56
+  },
+  "gujarat_in": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "karnataka_in": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 140,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 13
+  },
+  "taiwan_tw": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "shivas_blast": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 10,
+   "kyau_bd": 2,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 4,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "iqbal_blast": {
+   "gazipur_bd": 0,
+   "savar_bd": 0,
+   "sylhet_bd": 0,
+   "diu_bd": 0,
+   "kyau_bd": 0,
+   "dhan_shomadhan_bd": 0,
+   "raihan_bd": 0,
+   "paddy_doctor_in": 0,
+   "sethy_in": 0,
+   "gujarat_in": 0,
+   "karnataka_in": 0,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  },
+  "aman2025_bd": {
+   "gazipur_bd": 162,
+   "savar_bd": 0,
+   "sylhet_bd": 9,
+   "diu_bd": 0,
+   "kyau_bd": 5,
+   "dhan_shomadhan_bd": 16,
+   "raihan_bd": 6,
+   "paddy_doctor_in": 66,
+   "sethy_in": 56,
+   "gujarat_in": 0,
+   "karnataka_in": 13,
+   "taiwan_tw": 0,
+   "shivas_blast": 0,
+   "iqbal_blast": 0,
+   "aman2025_bd": 0
+  }
+ },
+ "near_dup_rule": "pHash Hamming <= 4 bits (64-bit pHash, EXIF-upright image)"
+}
