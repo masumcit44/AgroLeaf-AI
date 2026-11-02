@@ -23,7 +23,9 @@ Evaluation and gate: `PROTOCOL_EVAL.md` (`722b6a0`). Design inputs: `documentati
 ## Variants
 1. **V9_mix:** the common recipe.
 2. **V9_mix_dann:** the common recipe plus a domain-adversarial head.
-   - The head is an MLP on pooled features, through a gradient-reversal layer, predicting the rice source (not_rice rows masked).
+   - The head is an MLP on pooled features, through a gradient-reversal layer, predicting the source of every row: each rice dataset and each not_rice dataset counts as its own source.
+   - Domain targets are mixed with the same λ / pairs as Mixup / CutMix.
+   - Edited before training: not_rice rows are no longer masked, so mixed batches stay consistent.
    - λ ramps 0 → 0.1 (Ganin & Lempitsky 2015 schedule).
    - The ONNX export contains only the classifier path.
 
