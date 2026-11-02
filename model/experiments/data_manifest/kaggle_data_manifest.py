@@ -32,8 +32,8 @@ SOURCES = [
     ("riceleafbd-mendeley", "sylhet_bd", "BD", "Sylhet + Dhaka", "CC BY 4.0 (Mendeley 10.17632/kx9rx8p2mz)", "field", "final_test_used"),
     ("hasanmojumdar-rice", "diu_bd", "BD", "BRRI (DIU)", "CC BY 4.0 (Mendeley 10.17632/vwv3nry3wr)", "field", "test_diu"),
     ("rice-leaf-bacterial-and-fungal", "kyau_bd", "BD", "Sirajganj/Pabna", "CC BY 4.0 (Mendeley 10.17632/hx6f852hw4.2)", "field", "train_pool"),
+    ("dhan-shomadhan", "dhan_shomadhan_bd", "BD", "Dhaka Division", "CC BY 4.0 (Mendeley 10.17632/znsxdctwtt)", "path", "train_pool"),  # before raihan: its slug contains raihan's token
     ("rice-leaf-diseases-dataset", "raihan_bd", "BD", "Sirajganj/Pabna (KYAU mirror)", "CC0 claimed by mirror", "field", "mirror_check"),
-    ("dhan-shomadhan", "dhan_shomadhan_bd", "BD", "Dhaka Division", "CC BY 4.0 (Mendeley 10.17632/znsxdctwtt)", "path", "train_pool"),
     ("paddy-doctor", "paddy_doctor_in", "IN", "Tirunelveli, Tamil Nadu", "CC0 per mirror; original UNVERIFIED", "field", "train_pool"),
     ("rice-leaf-disease-image", "sethy_in", "IN", "India (region unverified)", "CC BY 4.0 (Mendeley 10.17632/fwcj7stb8r.2)", "unverified", "train_pool"),
     ("rice-leaf-diseases/", "gujarat_in", "IN", "Shertha, Gujarat", "CC BY 4.0 (UCI 486)", "white_bg", "final_test_used"),
@@ -90,7 +90,7 @@ for root, _, files in os.walk(IN):
         s = source_of(p)
         if s is None: skipped["no source"] += 1; continue
         if "augment" in rl: skipped[f"{s[1]}: augmented"] += 1; continue
-        if s[1] == "gazipur_bd" and "annotated" in rl: skipped["gazipur_bd: annotated copies"] += 1; continue
+        if s[1] == "gazipur_bd" and "annotated images" in rl: skipped["gazipur_bd: annotated copies"] += 1; continue
         if s[1] == "diu_bd" and "original dataset" not in rl: skipped["diu_bd: not original"] += 1; continue
         raw, key = label_of(rel)
         if key is None: skipped[f"{s[1]}: unmapped folder {os.path.basename(root)}"] += 1; continue
