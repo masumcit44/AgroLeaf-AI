@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useT from '../../i18n/useT.js';
 import BigButton from '../../components/BigButton.jsx';
 import { getProfile } from '../profile/profileStore.js';
@@ -28,17 +28,21 @@ function getReasonText(reason, t, _lang) {
   }
 }
 
-export { getReasonText, formatDate, createSummaryImage };
-
-function formatDate(dateString) {
+function formatDate(dateString, lang) {
   const date = new Date(dateString);
-  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  return date.toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 }
+
+export { getReasonText, formatDate, createSummaryImage };
 
 /**
  * Create a summary image on canvas for sharing/downloading
  */
-async function createSummaryImage(scan, diseaseName, dateStr, districtName, _lang) {
+async function createSummaryImage(scan, diseaseName, dateStr, districtName, lang) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const width = 400;
@@ -105,7 +109,11 @@ export function HelpButton({ scan, _context }) {
   const [districtName, setDistrictName] = useState('');
   const [shareStatus, setShareStatus] = useState('');
   const [currentDateStr, setCurrentDateStr] = useState('');
-  const summaryCanvasRef = useRef(null);
+  
+  // Two refs: one for visible preview, one for share/download canvas
+  const previewCanvasRef = useRef(null);
+  const shareCanvasRef = useRef(null);
+  const helpButtonRef = useRef(null);
 
   // Load disease knowledge and profile when modal opens
   useEffect(() => {
@@ -116,7 +124,7 @@ export function HelpButton({ scan, _context }) {
     async function loadData() {
       try {
         // Set current date string for display
-        if (mounted) setCurrentDateStr(formatDate(new Date().toISOString()));
+        if (mounted) setCurrentDateStr(formatDate(new Date().toISOString(), lang));
 
         // Get disease name from scan
         if (scan?.decision) {
@@ -151,21 +159,69 @@ export function HelpButton({ scan, _context }) {
     return () => { mounted = false; };
   }, [isOpen, scan, lang, t]);
 
-  // Create summary image when data is ready
+  // Create summary image when data is ready (for share/download)
   useEffect(() => {
     if (!isOpen || !scan?.canvas || !diseaseName) return;
 
-    const dateStr = formatDate(new Date().toISOString());
+    const dateStr = formatDate(new Date().toISOString(), lang);
     
     createSummaryImage(scan, diseaseName, dateStr, districtName, lang)
       .then((canvas) => {
-        summaryCanvasRef.current = canvas;
+        shareCanvasRef.current = canvas;
       })
       .catch((err) => console.error('HelpButton: failed to create summary image', err));
   }, [isOpen, scan, diseaseName, districtName, lang]);
 
+  // Draw preview canvas when share canvas is ready
+  useEffect(() => {
+    if (!previewCanvasRef.current || !shareCanvasRef.current) return;
+    
+    const previewCtx = previewCanvasRef.current.getContext('2d');
+    if (previewCtx) {
+      previewCanvasRef.current.width = shareCanvasRef.current.width;
+      previewCanvasRef.current.height = shareCanvasRef.current.height;
+      previewCtx.drawImage(shareCanvasRef.current, 0, 0);
+    }
+  }, [shareCanvasRef.current]);
+
+  // Handler for backdrop click
+  const handleBackdropClick = useCallback((e) => {
+    if (e.target === e.currentTarget) {
+      setIsOpen(false);
+    }
+  }, []);
+
+  // Handler for Escape key
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsOpen(false);
+    }
+  }, []);
+
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus the dialog content
+    const dialog = document.querySelector('[role="dialog"]');
+    if (dialog) {
+      dialog.focus();
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // Return focus to the help button
+      if (helpButtonRef.current) {
+        helpButtonRef.current.focus();
+      }
+    };
+  }, [isOpen, handleKeyDown]);
+
   const handleShare = async () => {
-    if (!summaryCanvasRef.current) {
+    if (!shareCanvasRef.current) {
       setShareStatus(t('help.shareFailed'));
       return;
     }
@@ -176,7 +232,7 @@ export function HelpButton({ scan, _context }) {
     const shareText = `${lang === 'en' ? 'AgroLeaf AI: Possible condition' : 'এগ্রোলিফ এআই: সম্ভাব্য সমস্যা'} — ${diseaseName}. ${whatToDo} ${origin}`;
 
     const blob = await new Promise((resolve) => {
-      summaryCanvasRef.current.toBlob(resolve, 'image/png');
+      shareCanvasRef.current.toBlob(resolve, 'image/png');
     });
     const file = new File([blob], 'agroleaf-summary.png', { type: 'image/png' });
 
@@ -217,11 +273,11 @@ export function HelpButton({ scan, _context }) {
   };
 
   const handleDownload = () => {
-    if (!summaryCanvasRef.current) return;
+    if (!shareCanvasRef.current) return;
     
-    const blob = summaryCanvasRef.current.toDataURL('image/png');
+    const dataUrl = shareCanvasRef.current.toDataURL('image/png');
     const a = document.createElement('a');
-    a.href = blob;
+    a.href = dataUrl;
     a.download = 'agroleaf-summary.png';
     document.body.appendChild(a);
     a.click();
@@ -235,6 +291,7 @@ export function HelpButton({ scan, _context }) {
   return (
     <>
       <button
+        ref={helpButtonRef}
         type="button"
         onClick={() => setIsOpen(true)}
         className="w-full max-w-sm py-3 px-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-2xl shadow-sm text-center flex items-center justify-center gap-2 active:scale-[0.98] transition-transform text-base sm:text-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -245,7 +302,14 @@ export function HelpButton({ scan, _context }) {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" 
+          role="dialog" 
+          aria-modal="true" 
+          aria-labelledby="help-title"
+          tabIndex="-1"
+          onClick={handleBackdropClick}
+        >
           <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
@@ -281,11 +345,11 @@ export function HelpButton({ scan, _context }) {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{t('help.caseSummary')}</h3>
                 
-                {/* Thumbnail */}
+                {/* Thumbnail - visible preview canvas */}
                 {scan.canvas && (
                   <div className="flex items-center justify-center">
                     <canvas
-                      ref={summaryCanvasRef}
+                      ref={previewCanvasRef}
                       className="h-32 w-auto max-w-full object-contain rounded-2xl border border-gray-200 shadow-xs mx-auto"
                       aria-label={t('help.thumbnailAria')}
                     />
