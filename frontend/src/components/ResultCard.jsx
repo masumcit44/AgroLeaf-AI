@@ -3,6 +3,7 @@ import useT from '../i18n/useT.js';
 import { getConfidenceLabel } from '../lib/resultRules.js';
 import OfficialGuidance from './OfficialGuidance.jsx';
 import AudioExplain from './AudioExplain.jsx';
+import InputSafetyCard from './InputSafetyCard.jsx';
 
 export default function ResultCard({
   classKey,
@@ -143,6 +144,9 @@ export default function ResultCard({
 
       {/* Official Guidance Accordion */}
       <OfficialGuidance guidance={diseaseData?.official_guidance} />
+
+      {/* F7: fake-pesticide checks, only where a farmer may go and buy one */}
+      {!isHealthy && <InputSafetyCard />}
     </div>
   );
 }
