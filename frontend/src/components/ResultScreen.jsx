@@ -15,6 +15,9 @@ export default function ResultScreen({
   analysisResult,
   diseaseKnowledge = {},
   onRetake,
+  onRecrop = null, // user-guided crop: choose a different area (feature off = null)
+  cropUsed = false,
+  cropFallback = false,
 }) {
   const { t } = useT();
   const thumbnailMountRef = useRef(null);
@@ -71,6 +74,13 @@ export default function ResultScreen({
         />
       )}
 
+      {/* User-guided crop: say what was analysed */}
+      {(cropUsed || cropFallback) && (
+        <p className="w-full max-w-sm text-center text-[11px] text-gray-600" data-testid="crop-note">
+          {cropFallback ? t('user_guided_crop.fallback') : t('user_guided_crop.usedNote')}
+        </p>
+      )}
+
       {/* Main Result Card */}
       {isConfident ? (
         <ResultCard
@@ -108,6 +118,15 @@ export default function ResultScreen({
         diseaseData={classesData[decision.top?.key]}
         isConfident={isConfident}
       />
+
+      {/* User-guided crop: select a different area of the same photo */}
+      {onRecrop && (
+        <div className="w-full max-w-sm">
+          <BigButton variant="secondary" onClick={onRecrop} ariaLabel={t('user_guided_crop.recrop')}>
+            {t('user_guided_crop.recrop')}
+          </BigButton>
+        </div>
+      )}
 
       {/* Retake Photo Button */}
       <div className="w-full max-w-sm">

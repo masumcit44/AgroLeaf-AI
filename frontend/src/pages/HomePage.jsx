@@ -10,6 +10,8 @@ import { useScanFlow, SCAN_STEPS } from '../state/useScanFlow.js';
 import { loadModel } from '../ml/loadModel.js';
 import { getDiseaseKnowledge } from '../lib/diseaseKnowledge.js';
 import { FeatureSlot } from '../features/slots.jsx';
+import { isFeatureOn } from '../features/flags.js';
+import CropScreen from '../features/user_guided_crop/CropScreen.jsx';
 
 export default function HomePage() {
   const { lang, t } = useT();
@@ -109,6 +111,24 @@ export default function HomePage() {
     );
   }
 
+  // User-guided crop (flag user_guided_crop; off = this whole branch never runs)
+  const cropOn = isFeatureOn('user_guided_crop');
+  // The image being analysed: the farmer's selected area, or the full photo
+  const analysedCanvas = scanFlow.analysisCanvas || scanFlow.canvas;
+  const analyseAgain = () => scanFlow.runInference(scanFlow.analysisCanvas || undefined);
+
+  if (cropOn && scanFlow.step === SCAN_STEPS.CROP && scanFlow.canvas) {
+    return (
+      <CropScreen
+        canvas={scanFlow.canvas}
+        initialBox={scanFlow.cropBox}
+        onConfirm={scanFlow.confirmCrop}
+        onCancel={scanFlow.cancelCrop}
+        onAnalyseFull={() => scanFlow.runInference()}
+      />
+    );
+  }
+
   // 1. Preview / Analysing state
   if (
     (scanFlow.step === SCAN_STEPS.PREVIEW || scanFlow.step === SCAN_STEPS.ANALYSING) &&
@@ -116,14 +136,15 @@ export default function HomePage() {
   ) {
     return (
       <PreviewScreen
-        canvas={scanFlow.canvas}
+        canvas={analysedCanvas}
         quality={scanFlow.quality}
         onRetake={scanFlow.reset}
-        onAnalyze={scanFlow.runInference}
+        onAnalyze={analyseAgain}
         isAnalyzing={scanFlow.step === SCAN_STEPS.ANALYSING}
         modelProgress={scanFlow.modelProgress}
         errorKey={scanFlow.inferenceError}
-        onRetry={scanFlow.runInference}
+        onRetry={analyseAgain}
+        onFocusCrop={cropOn ? scanFlow.startCrop : null}
       />
     );
   }
@@ -132,10 +153,13 @@ export default function HomePage() {
   if (scanFlow.step === SCAN_STEPS.RESULT && scanFlow.analysisResult) {
     return (
       <ResultScreen
-        canvas={scanFlow.canvas}
+        canvas={analysedCanvas}
         analysisResult={scanFlow.analysisResult}
         diseaseKnowledge={diseaseKnowledge}
         onRetake={scanFlow.reset}
+        onRecrop={cropOn ? scanFlow.startCrop : null}
+        cropUsed={cropOn && Boolean(scanFlow.analysisCanvas)}
+        cropFallback={cropOn && scanFlow.cropFallback}
       />
     );
   }
