@@ -4,7 +4,7 @@ import PageContainer from '../components/PageContainer.jsx';
 import { CLASS_NAMES, formatMetric, formatCount } from '../lib/metricsFormatting.js';
 
 export default function AccuracyPage({
-  metricsUrl = '/data/metrics-v8.json',
+  metricsUrl = '/data/metrics-v10.json',
   initialMetrics = undefined,
 }) {
   const { lang, t } = useT();
@@ -281,7 +281,7 @@ export default function AccuracyPage({
                   {lang === 'bn' ? 'কনফিউশন ম্যাট্রিক্স (Confusion Matrix)' : 'Internal Confusion Matrix'}
                 </span>
                 <img
-                  src="/accuracy/confusion_internal_v8.png"
+                  src="/accuracy/confusion_internal_v10.png"
                   alt="Confusion Matrix"
                   className="max-h-64 mx-auto rounded-lg object-contain"
                   onError={(e) => {
@@ -294,7 +294,7 @@ export default function AccuracyPage({
                   {lang === 'bn' ? 'নির্ভরযোগ্যতা ডায়াগ্রাম (Reliability Curve)' : 'Validation Reliability Curve'}
                 </span>
                 <img
-                  src="/accuracy/reliability_val_v8.png"
+                  src="/accuracy/reliability_val_v10.png"
                   alt="Reliability Diagram"
                   className="max-h-64 mx-auto rounded-lg object-contain"
                   onError={(e) => {

@@ -5,5 +5,5 @@
     "leaf_smut"
   ],
   "healthy_threshold": 0.9,
-  "source": "V8_all_b0_320 (EfficientNet-B0, 8 outputs, input 320; Kaggle agroleaf-train-v8 v1, sha256 dda84502...0b51b04); temperature and threshold fitted on in-domain val only. Evaluation: model/experiments/run8_v8/FINAL_RESULT.md. Released by the owner's decision after a post-hoc revision of the Aman answer-rate condition: run8_v8/RELEASE_DECISION.md."
+  "source": "V10_b0_320_diuA (EfficientNet-B0, 8 outputs, input 320; v8 recipe plus DIU half-A field photos; Kaggle agroleaf-train-v10 v1, sha256 a296be9e...09936f89e); temperature and threshold fitted on in-domain val only (which now includes DIU half-A rows). Evaluation: model/experiments/run10_v10/GATE_RESULT.md and SYLHET_RESULT.md. Released by the owner's decision overriding two failed gate conditions (Aman macro-F1 -2.25 pts vs a -2 pt limit; Sylhet macro-F1 tie and lower answer rate): run10_v10/OVERRIDE_SYLHET.md and RELEASE_DECISION.md."
 }

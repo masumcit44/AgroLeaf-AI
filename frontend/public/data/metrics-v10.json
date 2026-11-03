@@ -1,0 +1,177 @@
+{
+  "model": {
+    "arch": "efficientnet_b0",
+    "onnx_mb": 15.3,
+    "trained_on": "Bangladesh: RiceLeafDiseaseBD v3 (Gazipur), BD5 (Savar), KYAU/raihan (Sirajganj-Pabna), Dhan-Shomadhan, DIU field close-ups (half A); India: Paddy Doctor, Sethy; Taiwan. Plus non-rice photos.",
+    "date": "2026-11-03"
+  },
+  "calibration": {
+    "temperature": 0.66,
+    "threshold": 0.3,
+    "target_precision": 0.92
+  },
+  "internal_test": {
+    "n": 1467,
+    "accuracy": 0.8671,
+    "macro_f1": 0.8442,
+    "coverage": 0.8862,
+    "selective_accuracy": 0.8915,
+    "ece_after": 0.0518,
+    "per_class": {
+      "healthy": {
+        "precision": 0.954,
+        "recall": 0.912,
+        "f1": 0.9325,
+        "support": 250
+      },
+      "blast": {
+        "precision": 0.7976,
+        "recall": 0.7283,
+        "f1": 0.7614,
+        "support": 184
+      },
+      "brown_spot": {
+        "precision": 0.814,
+        "recall": 0.8434,
+        "f1": 0.8284,
+        "support": 332
+      },
+      "leaf_smut": {
+        "precision": 0.6218,
+        "recall": 0.7629,
+        "f1": 0.6852,
+        "support": 97
+      },
+      "tungro": {
+        "precision": 0.9091,
+        "recall": 0.9143,
+        "f1": 0.9117,
+        "support": 350
+      },
+      "sheath_blight": {
+        "precision": 0.9633,
+        "recall": 0.9291,
+        "f1": 0.9459,
+        "support": 254
+      }
+    }
+  },
+  "external": [
+    {
+      "name": "DIU Rice Leaf Disease and Pest Dataset, Bangladesh (half B, never used for training or tuning)",
+      "doi": "10.17632/vwv3nry3wr.1",
+      "classes_tested": [
+        "blast",
+        "healthy",
+        "tungro"
+      ],
+      "n": 1375,
+      "accuracy_mapped": 0.8008,
+      "macro_f1_mapped": 0.7843,
+      "coverage": 0.8414,
+      "selective_accuracy": 0.8879,
+      "unseen_rejection_rate": 0.915,
+      "per_class": {
+        "healthy": {
+          "precision": 0.8162,
+          "recall": 0.8822,
+          "f1": 0.8479,
+          "support": 297
+        },
+        "blast": {
+          "precision": 0.8841,
+          "recall": 0.8309,
+          "f1": 0.8567,
+          "support": 349
+        },
+        "tungro": {
+          "precision": 0.9077,
+          "recall": 0.5043,
+          "f1": 0.6484,
+          "support": 117
+        }
+      },
+      "method": "3 Nov 2026, read once for v10: app preprocessing (EXIF upright, Resize 366 + CenterCrop 320) and the app's full decision rule. Close-ups of single leaves on white. Classes outside the app's six count as 'other rice problem'. Version 10 trained on the other half (A) of this dataset; near-copies of half-B photos were removed from training. See model/experiments/run10_v10/GATE_RESULT.md."
+    },
+    {
+      "name": "Rice Leaf Disease Classification BD (Aman 2025, Hugging Face Project-AgML), 422 photos with no copy in other datasets",
+      "doi": "10.5281/zenodo.21140529",
+      "classes_tested": [
+        "blast",
+        "brown_spot",
+        "healthy"
+      ],
+      "n": 422,
+      "accuracy_mapped": 0.8616,
+      "macro_f1_mapped": 0.8964,
+      "coverage": 0.9371,
+      "selective_accuracy": 0.9128,
+      "unseen_rejection_rate": 0.6844,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.9792,
+          "f1": 0.9592,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.8704,
+          "recall": 0.9038,
+          "f1": 0.8868,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.7288,
+          "f1": 0.8431,
+          "support": 59
+        }
+      },
+      "method": "3 Nov 2026, read once for v10: only images with no pHash match within 8 bits in any other dataset. Same app preprocessing and rule. See model/experiments/run10_v10/GATE_RESULT.md."
+    },
+    {
+      "name": "RiceLeafBD real-field photos, Sylhet-Dhaka (Mendeley), never used for training or tuning",
+      "doi": "10.17632/kx9rx8p2mz.1",
+      "classes_tested": [
+        "brown_spot",
+        "healthy",
+        "tungro"
+      ],
+      "n": 1446,
+      "accuracy_mapped": 0.4438,
+      "macro_f1_mapped": 0.5697,
+      "coverage": 0.7479,
+      "selective_accuracy": 0.5641,
+      "unseen_rejection_rate": 0.3561,
+      "per_class": {
+        "healthy": {
+          "precision": 0.8683,
+          "recall": 0.8373,
+          "f1": 0.8525,
+          "support": 252
+        },
+        "brown_spot": {
+          "precision": 0.533,
+          "recall": 0.3247,
+          "f1": 0.4036,
+          "support": 348
+        },
+        "tungro": {
+          "precision": 0.7364,
+          "recall": 0.3273,
+          "f1": 0.4531,
+          "support": 495
+        }
+      },
+      "method": "3 Nov 2026, read once (v10 and the live v8 together): exact duplicates removed (1,446 photos). Same app preprocessing and rule. Bacterial leaf blight counts as 'other rice problem'. See model/experiments/run10_v10/SYLHET_RESULT.md."
+    }
+  ],
+  "limitations": [
+    "No independent test covers sheath blight or leaf smut. Leaf smut is never named by the app (one field source only).",
+    "Tungro and brown spot are often missed on new photos: tungro recall 50% on the DIU test and 33% on the Sylhet test; brown spot recall 32% on Sylhet.",
+    "On the Sylhet-Dhaka test (a district never trained on) only 56% of answers are right, and bacterial leaf blight (not covered) is kept from being named as a disease only 36% of the time.",
+    "Version 10 was trained on one half of the DIU dataset and tested on the other half (near-copies removed), so the DIU result shows what happens with photos like the training ones, not with every field.",
+    "Version 10 was released by the project owner's decision although it failed two pre-written release conditions: on the Aman test its macro-F1 is 2.25 points lower than version 8 (limit 2 points), and on the Sylhet test it ties version 8 and answers fewer photos. It gives fewer wrong answers than version 8 on all three independent tests.",
+    "Disease text is preliminary and has not been reviewed by an agronomist."
+  ]
+}
