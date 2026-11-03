@@ -27,11 +27,18 @@ function Thumb({ blob, className }) {
   return <img src={url} alt="" className={className} />;
 }
 
+const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+
+function toBnDigits(value) {
+  return String(value).replace(/[0-9]/g, (digit) => '০১২৩৪৫৬৭৮৯'[digit]);
+}
+
 function formatDate(iso, lang) {
   const d = new Date(iso);
-  const s = d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
-  if (lang !== 'bn') return s;
-  return s.replace(/[0-9]/g, (digit) => '০১২৩৪৫৬৭৮৯'[digit]);
+  if (lang === 'bn') {
+    return `${toBnDigits(d.getDate())} ${BN_MONTHS[d.getMonth()]} ${toBnDigits(d.getFullYear())}`;
+  }
+  return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 function resultName(entry, lang, t) {
@@ -41,8 +48,8 @@ function resultName(entry, lang, t) {
   return diseaseDisplayName(entry.top_class, lang);
 }
 /** [result] Save this result on the phone (thumbnail, result, band, field label). */
-export function SaveToHistory({ scan, context }) {
-  const { t, lang } = useT();
+export function SaveToHistory({ scan, context: _context }) {
+  const { t } = useT();
   const [label, setLabel] = useState('');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -123,8 +130,8 @@ export function SaveToHistory({ scan, context }) {
   );
 }
 /** [home] Link to #/history when there are saved results. */
-export function HistoryLink({ scan, context }) {
-  const { t, lang } = useT();
+export function HistoryLink({ scan: _scan, context: _context }) {
+  const { t } = useT();
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -142,7 +149,7 @@ export function HistoryLink({ scan, context }) {
   );
 }
 /** [route] Page at #/history. */
-export function HistoryPage({ scan, context }) {
+export function HistoryPage({ scan: _scan, context: _context }) {
   const { t, lang } = useT();
   const [entries, setEntries] = useState([]);
   const [compare, setCompare] = useState(null);
