@@ -10,7 +10,7 @@ export default {
     'profile.seasonBoro': 'বোরো',
     'profile.seasonAman': 'আমন',
     'profile.seasonAus': 'আউশ',
-    'profile.varietyLabel': 'কিজের ভেরায়িটি (ঐচ্ছিক)',
+    'profile.varietyLabel': 'বীজের জাত (ঐচ্ছিক)',
     'profile.varietyPlaceholder': 'যেমন: BRRI dhan28',
     'profile.transplantLabel': 'রোপণের তারিখ (ঐচ্ছিক)',
     'profile.save': 'সেভ করুন',
