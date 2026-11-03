@@ -9,6 +9,7 @@ import SampleImagesStrip from '../components/SampleImagesStrip.jsx';
 import { useScanFlow, SCAN_STEPS } from '../state/useScanFlow.js';
 import { loadModel } from '../ml/loadModel.js';
 import { getDiseaseKnowledge } from '../lib/diseaseKnowledge.js';
+import { FeatureSlot } from '../features/slots.jsx';
 
 export default function HomePage() {
   const { lang, t } = useT();
@@ -182,6 +183,9 @@ export default function HomePage() {
 
       {/* First-Visit Onboarding Strip */}
       <OnboardingStrip />
+
+      {/* F8–F23 feature slots (off until enabled in features/flags.js) */}
+      <FeatureSlot slot="home" />
 
       {/* Action: Photo Picker (Camera & Gallery buttons) */}
       <div className="w-full max-w-sm mb-6">

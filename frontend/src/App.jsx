@@ -5,6 +5,7 @@ import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
 import useT from './i18n/useT.js';
+import { FeatureSlot, FeaturePage } from './features/slots.jsx';
 
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage.jsx'));
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
@@ -51,12 +52,14 @@ function AppContent() {
       }
       case ROUTES.HOME:
       default:
-        return <HomePage />;
+        // #/history, #/profile, #/map when their feature is on; otherwise home
+        return <FeaturePage route={route} fallback={<HomePage />} />;
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-paper text-ink selection:bg-leaf-50 selection:text-leaf-700">
+      <FeatureSlot slot="app" />
       <Navbar currentRoute={route} onNavigate={navigate} />
       <div className="flex-1 flex flex-col">
         {renderPage()}

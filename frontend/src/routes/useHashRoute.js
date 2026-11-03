@@ -5,6 +5,10 @@ export const ROUTES = {
   ACCURACY: '#/accuracy',
   ABOUT: '#/about',
   DEV_PARITY: '#/dev/parity',
+  // Feature pages (features/slots.jsx FEATURE_ROUTES); they show only when the feature is on
+  HISTORY: '#/history',
+  PROFILE: '#/profile',
+  MAP: '#/map',
 };
 
 function normalizeHash(hash) {

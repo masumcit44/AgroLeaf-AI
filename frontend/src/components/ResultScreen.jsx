@@ -8,6 +8,7 @@ import ShareButton from './ShareButton.jsx';
 import DisclaimerNote from './DisclaimerNote.jsx';
 import BigButton from './BigButton.jsx';
 import { stopActiveAudio } from '../lib/audioManager.js';
+import { FeatureSlot } from '../features/slots.jsx';
 
 export default function ResultScreen({
   canvas,
@@ -84,6 +85,19 @@ export default function ResultScreen({
           reason={decision.reason}
         />
       )}
+
+      {/* F8–F23 feature slots (off until enabled in features/flags.js) */}
+      <FeatureSlot
+        slot="result"
+        scan={{
+          canvas,
+          probs: analysisResult.probs,
+          decision,
+          calibration,
+          classKey: decision.top?.key ?? null,
+          isConfident: Boolean(isConfident),
+        }}
+      />
 
       {/* 16123 Helpline Button */}
       <CallHelpButton />

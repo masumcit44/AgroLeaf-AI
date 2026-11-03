@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import bn from './bn.js';
 import en from './en.js';
 import { I18nContext } from './I18nContext.js';
+import { mergeFeatureTexts } from './mergeFeatureTexts.js';
 
 const STORAGE_KEY = 'agroleaf_lang';
-const DICTIONARIES = { bn, en };
+
+// Each feature keeps its own texts in features/<name>/i18n.js (owned by that feature's agent);
+// they are merged here so no two agents edit bn.js / en.js at the same time.
+const FEATURE_TEXTS = import.meta.glob('../features/*/i18n.js', { eager: true, import: 'default' });
+const DICTIONARIES = { bn: mergeFeatureTexts(bn, FEATURE_TEXTS, 'bn'), en: mergeFeatureTexts(en, FEATURE_TEXTS, 'en') };
 
 export function I18nProvider({ children, initialLang }) {
   const [lang, setLangState] = useState(() => {

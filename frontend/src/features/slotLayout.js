@@ -1,0 +1,38 @@
+// Where each feature appears (order = order on screen). Owned by the lead.
+import * as pwa from './pwa/index.jsx';
+import * as reliability from './reliability/index.jsx';
+import * as history from './history/index.jsx';
+import * as profile from './profile/index.jsx';
+import * as weather from './weather/index.jsx';
+import * as actionPlan from './actionPlan/index.jsx';
+import * as feedback from './feedback/index.jsx';
+import * as help from './help/index.jsx';
+import * as areaMap from './areaMap/index.jsx';
+
+
+export const SLOT_LAYOUT = {
+  app: [['pwa', pwa.PwaStatus]],
+  home: [
+    ['pwa', pwa.InstallPrompt],
+    ['profile', profile.ProfilePrompt],
+    ['weather', weather.WeatherChips],
+    ['history', history.HistoryLink],
+  ],
+  result: [
+    ['reliability', reliability.ReliabilityNote],
+    ['actionPlan', actionPlan.ActionPlan],
+    ['weather', weather.WeatherChips],
+    ['history', history.SaveToHistory],
+    ['feedback', feedback.FeedbackButton],
+    ['help', help.HelpButton],
+    ['areaMap', areaMap.AreaReportPrompt],
+  ],
+};
+
+// Pages reachable only when their feature is on (otherwise the route shows the home page)
+export const FEATURE_ROUTES = {
+  '#/history': ['history', history.HistoryPage],
+  '#/profile': ['profile', profile.ProfilePage],
+  '#/map': ['areaMap', areaMap.MapPage],
+};
+
