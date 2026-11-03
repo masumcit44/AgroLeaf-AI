@@ -17,10 +17,12 @@ const result = {
 
 afterEach(() => { FEATURES.user_guided_crop = false; });
 
-describe('user-guided crop is off by default and changes nothing', () => {
-  it('flag defaults to OFF', () => {
-    expect(FEATURES.user_guided_crop).toBe(false);
+describe('with the feature off, nothing changes', () => {
+  it('the flag controls the feature', () => {
+    FEATURES.user_guided_crop = false;
     expect(isFeatureOn('user_guided_crop')).toBe(false);
+    FEATURES.user_guided_crop = true;
+    expect(isFeatureOn('user_guided_crop')).toBe(true);
   });
 
   it('preview shows no focus button when the feature is off (onFocusCrop not passed)', () => {

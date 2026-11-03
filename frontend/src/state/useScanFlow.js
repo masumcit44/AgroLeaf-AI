@@ -3,7 +3,7 @@ import { validateImageFile } from '../lib/validateImageFile.js';
 import { decodeImage } from '../lib/decodeImage.js';
 import { checkImageQuality } from '../lib/imageQuality.js';
 import { predictLeaf } from '../ml/predict.js';
-import { resetModel, isModelReady } from '../ml/loadModel.js';
+import { resetModel } from '../ml/loadModel.js';
 import { cropCanvas } from '../features/user_guided_crop/cropMath.js';
 
 // Frees a canvas's pixel buffer (user-guided crop: old crops are not kept in memory)
@@ -83,11 +83,8 @@ export function useScanFlow() {
       setAnalysisCanvas(null);
     }
 
-    if (!isModelReady() && typeof navigator !== 'undefined' && navigator.onLine === false) {
-      setInferenceError('errOfflineFirstTime');
-      return;
-    }
-
+    // Offline is no reason to refuse: after a reload the model is not in memory, but the browser /
+    // service worker may still have it cached. Try; only if loading fails offline, say so (F9).
     setInferenceError(null);
     setModelProgress(0);
     setStep(SCAN_STEPS.ANALYSING);
@@ -109,6 +106,8 @@ export function useScanFlow() {
       resetModel();
       if (err.message === 'WASM_UNSUPPORTED') {
         setInferenceError('errWasmUnsupported');
+      } else if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        setInferenceError('errOfflineFirstTime');
       } else {
         setInferenceError('errModelLoad');
       }

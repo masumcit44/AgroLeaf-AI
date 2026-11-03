@@ -14,27 +14,28 @@ import en from '../../i18n/en.js';
 const FEATURES_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const featureNames = Object.keys(FEATURES);
 
+const SHIPPED = { ...FEATURES };
 afterEach(() => {
-  for (const k of featureNames) FEATURES[k] = false;
+  Object.assign(FEATURES, SHIPPED);
   vi.unstubAllGlobals();
 });
 
 describe('feature flags', () => {
-  it('ship with every feature off', () => {
-    expect(Object.values(FEATURES).every((v) => v === false)).toBe(true);
-    expect(featureNames.every((n) => !isFeatureOn(n))).toBe(true);
+  it('only released features are on; unbuilt ones stay off', () => {
+    const released = ['pwa', 'history', 'profile', 'weather', 'user_guided_crop'];
+    expect(featureNames.filter((n) => FEATURES[n]).sort()).toEqual([...released].sort());
     expect(isFeatureOn('not_a_feature')).toBe(false);
   });
 
   it('preview testers can switch a feature on with ?features=, production cannot', () => {
     const store = {};
     vi.stubGlobal('localStorage', { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } });
-    vi.stubGlobal('window', { location: { hostname: 'feat-x.agroleaf-ai.pages.dev', search: '?features=history,weather' } });
-    expect(isFeatureOn('history')).toBe(true);
-    expect(isFeatureOn('weather')).toBe(true);
+    vi.stubGlobal('window', { location: { hostname: 'feat-x.agroleaf-ai.pages.dev', search: '?features=feedback,help' } });
+    expect(isFeatureOn('feedback')).toBe(true);
+    expect(isFeatureOn('help')).toBe(true);
+    expect(isFeatureOn('areaMap')).toBe(false);
+    vi.stubGlobal('window', { location: { hostname: PRODUCTION_HOST, search: '?features=feedback' } });
     expect(isFeatureOn('feedback')).toBe(false);
-    vi.stubGlobal('window', { location: { hostname: PRODUCTION_HOST, search: '?features=history' } });
-    expect(isFeatureOn('history')).toBe(false);
   });
 });
 
@@ -53,7 +54,8 @@ describe('feature slots', () => {
     }
   });
 
-  it('render nothing while features are off (the live site is unchanged)', () => {
+  it('render nothing while features are off', () => {
+    for (const k of featureNames) FEATURES[k] = false;
     for (const slot of Object.keys(SLOT_LAYOUT)) {
       expect(renderToString(<>{FeatureSlot({ slot, scan: null })}</>)).toBe('');
     }
@@ -61,6 +63,7 @@ describe('feature slots', () => {
   });
 
   it('render a feature once its flag is on', () => {
+    for (const k of featureNames) FEATURES[k] = false;
     FEATURES.history = true;
     const items = FeatureSlot({ slot: 'result', scan: {} });
     expect(items.map((el) => el.key)).toEqual(['result-history']);

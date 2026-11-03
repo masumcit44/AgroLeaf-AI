@@ -1,18 +1,19 @@
 // Feature flags for the F8–F23 work (documentation/feature_plan/). Owned by the lead.
-// Everything is OFF in production until the lead turns it on after review and live tests.
+// A feature is ON only after the lead's review and live tests (released 3 Nov 2026: pwa, history,
+// profile, weather, user_guided_crop). The rest stay OFF until they are built and tested.
 // Testers can switch features on in a preview with ?features=history,weather (remembered in
 // localStorage); this never works on the production host.
 export const FEATURES = {
-  pwa: false, // F9
+  pwa: true, // F9
   reliability: false, // F14
-  history: false, // F16
-  profile: false, // F21
-  weather: false, // F8
+  history: true, // F16
+  profile: true, // F21
+  weather: true, // F8
   actionPlan: false, // F10
   feedback: false, // F20
   help: false, // F22
   areaMap: false, // F23
-  user_guided_crop: false, // focus on the diseased leaf (user-guided crop)
+  user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };
 
 export const PRODUCTION_HOST = 'agroleaf-ai.pages.dev';
