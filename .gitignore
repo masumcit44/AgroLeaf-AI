@@ -34,3 +34,8 @@ frontend/public/data/disease_information_*.json
 Thumbs.db
 .vscode/
 .idea/
+
+# Cloudflare Wrangler local state and local secrets (never commit)
+.wrangler/
+.dev.vars
+.dev.vars.*
