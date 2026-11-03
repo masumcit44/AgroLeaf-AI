@@ -12,7 +12,8 @@ import bn from '../../i18n/bn.js';
 import en from '../../i18n/en.js';
 
 const FEATURES_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const featureNames = Object.keys(FEATURES);
+const SUB_FLAGS = ['weatherReport'];
+const featureNames = Object.keys(FEATURES).filter((n) => !SUB_FLAGS.includes(n));
 
 const SHIPPED = { ...FEATURES };
 afterEach(() => {
