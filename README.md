@@ -30,7 +30,7 @@
 ```mermaid
 flowchart LR
     A["📱 Farmer takes/uploads leaf photo"] --> B["⚡ Client-side quality check & EXIF resize"]
-    B --> C["🧠 In-browser MobileNetV3 inference (WASM)"]
+    B --> C["🧠 In-browser EfficientNet-B0 inference (WASM)"]
     C --> D["⚖️ Temperature-calibrated confidence"]
     D -->|Confidence &ge; Threshold| E["✅ Verified Bangla disease card + Audio guidance"]
     D -->|Low confidence / Ambiguous| F["⚠️ Honest 'Not Sure' (অনিশ্চিত) abstention"]
@@ -39,24 +39,34 @@ flowchart LR
 ```
 
 1. **Local Capture & Validation:** The farmer captures or selects a photo. The browser corrects EXIF orientation, resizes to max 1024 px, and checks for blur or darkness.
-2. **On-Device Inference:** A lightweight MobileNetV3 neural network runs completely inside the browser via WebAssembly (`onnxruntime-web/wasm`). The image is **never** uploaded to any external server.
+2. **On-Device Inference:** An EfficientNet-B0 model (v10, 8 outputs incl. "not a rice leaf" and "other rice problem", 15.3 MB ONNX) runs completely inside the browser via WebAssembly (`onnxruntime-web/wasm`). The image is **never** uploaded to any external server.
 3. **Calibrated Abstention ("Not Sure"):** Rather than blindly predicting a class when uncertain, temperature-scaled confidence thresholds route ambiguous inputs to a safe "Not Sure" (অনিশ্চিত) state.
 4. **Actionable Extension Guidance:** Displays vetted, official Bangladesh agricultural extension advice (BAMIS/DAE) in native Bangla, plays tap-to-play voice narration, and provides one-click calling to the national helpline `16123`.
 
 ---
 
 ## Key Features
-- **100% Private & Offline-Ready:** Zero cloud inference dependencies. Leaf photos stay strictly on the user's phone, safeguarding farmer privacy and ensuring instant execution even in remote fields.
+- **Private, on-device:** Zero cloud inference. Leaf photos stay on the user's phone. After the first visit the browser keeps the model cached, so gallery photos can be analysed without a connection (sample photos and a fresh first load still need the network).
 - **Calibrated Abstention (Responsible AI):** Avoids reckless overconfidence. If lighting is poor, symptoms are atypical, or model confidence falls below threshold, it abstains honestly and instructs consulting local extension officers.
-- **Native Bangla Text + Audio Narration:** High accessibility across literacy levels with clear, colloquial Bangla guidance and offline-ready audio playback (`bn-BD-NabanitaNeural`).
-- **Verbatim Official Guidance:** Management and preventive actions are strictly adapted from verified public Bangladesh government sources (BAMIS / DAE).
+- **Native Bangla Text + Audio Narration:** Bangla guidance with a pre-generated voice clip for every result screen, including each "not sure" reason (AI voice `bn-BD-NabanitaNeural`, labelled as such).
+- **Official Guidance, quoted:** where available, BAMIS/DAE advice is quoted verbatim with a link. The app's own disease text is preliminary and not yet reviewed by an agronomist (stated in the app).
+- **"Check before you buy a pesticide":** registered dealer, Bangla label and registration number, no open or expired packs, report a suspected fake. The app never names a pesticide or a dose.
 - **One-Tap Extension Helpline (16123):** Built-in direct dialer connecting farmers directly to the Upazila agricultural extension call center.
 - **Transparent In-App Accuracy Screen:** Dedicated public evaluation page showing real test dataset metrics, confusion matrices, and known model limitations.
 
 ---
 
 ## Measured Results
-> **Status:** Full measured evaluation results for deployed model v1 are published on the in-app Accuracy page (`#/accuracy`) and in `frontend/public/data/metrics-v1.json`.
+> Live model **v10** (`frontend/public/data/metrics-v10.json`, also on the in-app Accuracy page `#/accuracy`):
+>
+> | Test set | Photos | Accuracy | Macro-F1 | Answered | Right among answered |
+> |---|---|---|---|---|---|
+> | Gazipur internal test | 1,467 | 86.7% | 84.4% | 88.6% | 89.1% |
+> | Aman 2025 (unique photos) | 422 | 86.2% | 89.6% | 93.7% | 91.3% |
+> | DIU half B (other half used in training) | 1,375 | 80.1% | 78.4% | 84.1% | 88.8% |
+> | Sylhet-Dhaka (district never seen) | 1,446 | 44.4% | 57.0% | 74.8% | 56.4% |
+>
+> v10 was released by the owner's decision although it missed two pre-written release conditions; see `model/experiments/run10_v10/RELEASE_DECISION.md`.
 >
 > In accordance with project integrity standards, AgroLeaf AI presents zero invented or synthetic metrics. Real validation figures, per-class metrics, confusion matrices, and outside-district performance limits are documented on the live Accuracy page.
 
@@ -76,7 +86,7 @@ flowchart LR
 | **Frontend Framework** | React 19 + Vite | Fast mobile performance, modern component lifecycle, zero runtime bloat |
 | **Styling** | Tailwind CSS v4 | Lightweight, fully responsive mobile-first utility styling |
 | **In-Browser ML Runtime** | ONNX Runtime Web (`onnxruntime-web/wasm`) | Strict CPU WebAssembly build (14.16 MiB), avoiding 29.5 MiB JSEP overhead to stay under Cloudflare 25 MiB ceiling |
-| **Classifier Architecture** | MobileNetV3-Large | Highly efficient convolutional backbone (`1×3×224×224`), exported to single-file ONNX opset 17 |
+| **Classifier Architecture** | EfficientNet-B0 (v10) | 8 outputs, input `1×3×320×320`, 15.3 MB float32 ONNX (earlier: MobileNetV3-Large v1, kept for rollback) |
 | **Backend & Database** | None (Static Architecture) | 100% static hosting, zero server maintenance, zero API cost, infinite scalability |
 | **Voice Advisory** | Static Pre-synthesized Audio | Zero-latency tap-to-play audio guidance in standard Bangladeshi Bangla |
 | **Hosting & Edge Delivery** | Cloudflare Pages | Global edge delivery with immutable asset caching headers |
@@ -162,12 +172,12 @@ npm run check:release
 
 ### The 8 Release Guards:
 1. **Calibration:** `public/data/calibration.json` has real temperature scaling and no placeholder flag.
-2. **Production Model:** `public/models/rice-mnv3l-v1.onnx` exists, is under the Cloudflare 24 MiB asset ceiling, and begins with the ONNX protobuf magic byte (`0x08`).
-3. **Model URL Wiring:** `config.js` `MODEL_URL` points directly at `rice-mnv3l-v1.onnx`, and the placeholder model (`rice-placeholder.onnx`) is deleted.
-4. **Class Index Parity:** `class_index.json` matches the exact 6 target classes (`["healthy","blast","brown_spot","leaf_smut","tungro","sheath_blight"]`).
-5. **Real Metrics:** `public/data/metrics-v1.json` contains verified test evaluations (`internal_test.n > 0`) with zero synthetic fixture leakage (`FIXTURE_NOT_REAL`).
+2. **Production Model:** the model file(s) named in `src/ml/config.js` exist, each under the Cloudflare 24 MiB asset ceiling, and begin with the ONNX protobuf magic byte (`0x08`).
+3. **Model URL Wiring:** `config.js` `MODEL_URL` is not the placeholder model, and `rice-placeholder.onnx` is deleted.
+4. **Class Index Parity:** `class_index.json` lists the 6 target classes first, followed only by the reject outputs `other_rice` and `not_rice`.
+5. **Real Metrics:** the metrics file the Accuracy page shows (now `metrics-v10.json`) contains real evaluations (`internal_test.n > 0`) and no `FIXTURE_NOT_REAL` flag.
 6. **Sample Images:** `public/samples/manifest.json` specifies ≥ 3 sample images, and every referenced image exists on disk.
-7. **Audio Narration:** `public/audio/manifest.json` lists the 7 Bangla voice clips (generated once with edge-tts, voice bn-BD-NabanitaNeural; see `ml/tools/generate_tts_edge.py`).
+7. **Audio Narration:** `public/audio/manifest.json` lists the 10 Bangla voice clips (generated once with edge-tts, voice bn-BD-NabanitaNeural; see `ml/tools/generate_tts_edge.py`).
 8. **Competition Branding:** The official AIgnite Buildathon competition sticker is present in both `assets/brand/` and `frontend/public/brand/`.
 
 > [!NOTE]

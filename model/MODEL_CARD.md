@@ -1,5 +1,25 @@
 # AgroLeaf AI — Model Card
 
+## Deployed model: v10 (live since 3 Nov 2026)
+
+| Field | Value |
+|---|---|
+| File | `frontend/public/models/rice-effb0-v10-320.onnx` (15.3 MB float32 ONNX), sha256 `a296be9ebd54ff89e76af3650386f6842bfe4b4a471d48f8aa78ecb09936f89e` |
+| Architecture | EfficientNet-B0 (timm, ImageNet-pretrained), fine-tuned; input 1×3×320×320; 8 outputs |
+| Outputs | healthy, blast, brown_spot, leaf_smut, tungro, sheath_blight, other_rice ("other rice problem"), not_rice ("not a rice leaf") |
+| Preprocessing | EXIF upright, long side ≤ 1024, Resize 366 + CenterCrop 320, ImageNet mean/std (same in training eval and the browser; parity-tested) |
+| App rule | Temperature 0.66, answer threshold 0.30 (both fitted on validation only); Healthy needs ≥ 0.90; leaf smut is never named; reject outputs become "not sure" with a reason |
+| Training data | Bangladesh: RiceLeafDiseaseBD v3 (Gazipur), BD5 (Savar), KYAU/raihan (Sirajganj-Pabna), Dhan-Shomadhan, DIU field close-ups (half A); India: Paddy Doctor, Sethy; Taiwan; plus non-rice photos. Near-copies of every test image (pHash ≤ 4 bits) were removed from training |
+| Training | Kaggle GPU, script `model/experiments/run10_v10/kaggle_train_v10.py` (v8 recipe + DIU half A) |
+| Measured results | `frontend/public/data/metrics-v10.json`. Sylhet-Dhaka (never seen): 56.4% of answers right, macro-F1 0.570; Aman 2025: 91.3% right, macro-F1 0.896; DIU half B: 88.8% right, macro-F1 0.784; Gazipur internal: macro-F1 0.844 |
+| Release | Released by the owner's decision although two pre-written conditions failed (Aman −2.25 pts vs −2 limit; Sylhet tie). It gives fewer wrong answers than v8 on all three independent tests. See `model/experiments/run10_v10/RELEASE_DECISION.md` |
+| Known limits | Brown spot and tungro found only about a third of the time on Sylhet; rice problems the app does not cover are kept unnamed only 35.6% of the time there; no independent test for sheath blight or leaf smut; disease text not reviewed by an agronomist |
+| Rollback | v8 (`rice-effb0-v8-320.onnx`) and v1 + G1 remain in the bundle |
+
+---
+
+## Original template (v1, written before training; kept for history)
+
 **Status:** template written before training. No metric on this page has been measured yet; every number is `[[TBD after training]]` until a real run produces `metrics-v1.json`.
 
 | Field | Value |

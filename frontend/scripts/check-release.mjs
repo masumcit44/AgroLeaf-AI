@@ -17,6 +17,7 @@ const __dirname = path.dirname(__filename);
 const FRONTEND_ROOT = path.resolve(__dirname, '..');
 const REPO_ROOT = path.resolve(FRONTEND_ROOT, '..');
 
+const REJECT_CLASSES = ['other_rice', 'not_rice'];
 const EXPECTED_CLASSES = [
   'healthy',
   'blast',
@@ -65,119 +66,72 @@ if (!fs.existsSync(calPath)) {
   }
 }
 
-// Guard 2: public/models/rice-mnv3l-v1.onnx exists, < 24 MiB, starts with 0x08
-const modelPath = path.join(FRONTEND_ROOT, 'public/models/rice-mnv3l-v1.onnx');
-if (!fs.existsSync(modelPath)) {
-  fail('2. Production Model File', 'public/models/rice-mnv3l-v1.onnx is missing');
-} else {
-  try {
-    const stat = fs.statSync(modelPath);
-    const maxBytes = 24 * 1024 * 1024;
-    const fd = fs.openSync(modelPath, 'r');
-    const buf = Buffer.alloc(1);
-    fs.readSync(fd, buf, 0, 1, 0);
-    fs.closeSync(fd);
-
-    const sizeOk = stat.size < maxBytes;
-    const magicOk = buf[0] === 0x08;
-
-    if (!sizeOk) {
-      fail(
-        '2. Production Model File',
-        `File size ${(stat.size / (1024 * 1024)).toFixed(2)} MiB exceeds 24 MiB ceiling`
-      );
-    } else if (!magicOk) {
-      fail(
-        '2. Production Model File',
-        `Magic header 0x${buf[0]?.toString(16)} != 0x08 (not valid protobuf ONNX)`
-      );
-    } else {
-      pass(
-        '2. Production Model File',
-        `rice-mnv3l-v1.onnx present (${(stat.size / (1024 * 1024)).toFixed(2)} MiB), starts with byte 0x08`
-      );
-    }
-  } catch (err) {
-    fail('2. Production Model File', `Error reading model file: ${err.message}`);
-  }
-}
-
-// Guard 3: config.js MODEL_URL points at rice-mnv3l-v1.onnx, placeholder model is gone
+// The deployed model and metrics are read from the app's own config, so this check follows
+// whatever model is live (v1, v8, v10, ...) instead of a hard-coded file name.
 const configPath = path.join(FRONTEND_ROOT, 'src/ml/config.js');
-const placeholderPath = path.join(FRONTEND_ROOT, 'public/models/rice-placeholder.onnx');
-if (!fs.existsSync(configPath)) {
-  fail('3. Model URL Configuration', 'src/ml/config.js is missing');
-} else {
-  const configText = fs.readFileSync(configPath, 'utf-8');
-  const pointsToProd = configText.includes('rice-mnv3l-v1.onnx');
-  const placeholderExists = fs.existsSync(placeholderPath);
+const configText = fs.existsSync(configPath) ? fs.readFileSync(configPath, 'utf-8') : '';
+const modelUrl = (configText.match(/MODEL_URL = '([^']+)'/) || [])[1];
+const partsBlock = (configText.match(/MODEL_PARTS = \[([^\]]*)\]/) || [])[1] || '';
+const modelParts = [...partsBlock.matchAll(/'(\/models\/[^']+)'/g)].map((m) => m[1]);
+const modelFiles = (modelParts.length ? modelParts : modelUrl ? [modelUrl] : []).map((u) => path.join(FRONTEND_ROOT, 'public', u));
 
-  if (!pointsToProd && placeholderExists) {
-    fail(
-      '3. Model URL Configuration',
-      'config.js still points to placeholder and rice-placeholder.onnx still exists in public/models/'
-    );
-  } else if (!pointsToProd) {
-    fail('3. Model URL Configuration', 'config.js does not point to rice-mnv3l-v1.onnx');
-  } else if (placeholderExists) {
-    fail('3. Model URL Configuration', 'public/models/rice-placeholder.onnx must be deleted');
+// Guard 2: every deployed model file exists, each < 24 MiB, the first starts with 0x08 (ONNX protobuf)
+if (!modelFiles.length) {
+  fail('2. Production Model File', 'could not read MODEL_URL / MODEL_PARTS from src/ml/config.js');
+} else {
+  const missing = modelFiles.filter((f) => !fs.existsSync(f));
+  if (missing.length) {
+    fail('2. Production Model File', `missing: ${missing.map((f) => path.relative(FRONTEND_ROOT, f)).join(', ')}`);
   } else {
-    pass(
-      '3. Model URL Configuration',
-      'config.js points to rice-mnv3l-v1.onnx and placeholder model is deleted'
-    );
+    const big = modelFiles.filter((f) => fs.statSync(f).size >= 24 * 1024 * 1024);
+    const head = Buffer.alloc(1);
+    const fd = fs.openSync(modelFiles[0], 'r');
+    fs.readSync(fd, head, 0, 1, 0);
+    fs.closeSync(fd);
+    const total = modelFiles.reduce((n, f) => n + fs.statSync(f).size, 0);
+    if (big.length) fail('2. Production Model File', `over the 24 MiB per-file ceiling: ${big.map((f) => path.basename(f)).join(', ')}`);
+    else if (head[0] !== 0x08) fail('2. Production Model File', `first byte 0x${head[0].toString(16)} != 0x08 (not ONNX protobuf)`);
+    else pass('2. Production Model File', `${modelUrl} present (${(total / (1024 * 1024)).toFixed(2)} MiB in ${modelFiles.length} file(s)), starts with 0x08`);
   }
 }
 
-// Guard 4: class_index.json classes equal exact 6 classes
+// Guard 3: the placeholder model is not deployed
+const placeholderPath = path.join(FRONTEND_ROOT, 'public/models/rice-placeholder.onnx');
+if (!modelUrl) fail('3. Model URL Configuration', 'src/ml/config.js has no MODEL_URL');
+else if (modelUrl.includes('placeholder')) fail('3. Model URL Configuration', 'config.js points to the placeholder model');
+else if (fs.existsSync(placeholderPath)) fail('3. Model URL Configuration', 'public/models/rice-placeholder.onnx must be deleted');
+else pass('3. Model URL Configuration', `config.js points to ${modelUrl}; no placeholder model`);
+
+// Guard 4: class_index.json lists the 6 diagnosable classes first, then only the known reject outputs
 const classIndexPath = path.join(FRONTEND_ROOT, 'public/data/class_index.json');
 if (!fs.existsSync(classIndexPath)) {
   fail('4. Class Index', 'public/data/class_index.json is missing');
 } else {
   try {
-    const ci = JSON.parse(fs.readFileSync(classIndexPath, 'utf-8'));
-    const classes = ci.classes || [];
-    const match =
-      classes.length === EXPECTED_CLASSES.length &&
-      EXPECTED_CLASSES.every((c, i) => classes[i] === c);
-    if (!match) {
-      fail(
-        '4. Class Index',
-        `Classes mismatch. Expected: ${JSON.stringify(EXPECTED_CLASSES)}, found: ${JSON.stringify(classes)}`
-      );
-    } else {
-      pass(
-        '4. Class Index',
-        `Exact 6 classes match [${EXPECTED_CLASSES.join(', ')}]`
-      );
-    }
+    const classes = JSON.parse(fs.readFileSync(classIndexPath, 'utf-8')).classes || [];
+    const extra = classes.slice(EXPECTED_CLASSES.length);
+    const ok = EXPECTED_CLASSES.every((c, i) => classes[i] === c) && extra.every((c) => REJECT_CLASSES.includes(c));
+    if (!ok) fail('4. Class Index', `Expected ${JSON.stringify(EXPECTED_CLASSES)} + optional ${JSON.stringify(REJECT_CLASSES)}, found ${JSON.stringify(classes)}`);
+    else pass('4. Class Index', `${classes.length} outputs: [${classes.join(', ')}]`);
   } catch (err) {
     fail('4. Class Index', `Failed to parse class_index.json: ${err.message}`);
   }
 }
 
-// Guard 5: metrics-v1.json exists, no FIXTURE_NOT_REAL, internal_test.n > 0
-const metricsPath = path.join(FRONTEND_ROOT, 'public/data/metrics-v1.json');
-if (!fs.existsSync(metricsPath)) {
-  fail('5. Validation Metrics', 'public/data/metrics-v1.json is missing');
+// Guard 5: the metrics file the Accuracy page shows is real (no fixture), internal_test.n > 0
+const accuracyPage = path.join(FRONTEND_ROOT, 'src/pages/AccuracyPage.jsx');
+const metricsUrl = ((fs.existsSync(accuracyPage) ? fs.readFileSync(accuracyPage, 'utf-8') : '').match(/metricsUrl = '([^']+)'/) || [])[1];
+const metricsPath = metricsUrl ? path.join(FRONTEND_ROOT, 'public', metricsUrl) : null;
+if (!metricsPath || !fs.existsSync(metricsPath)) {
+  fail('5. Validation Metrics', `metrics file used by the Accuracy page is missing (${metricsUrl})`);
 } else {
   try {
     const metrics = JSON.parse(fs.readFileSync(metricsPath, 'utf-8'));
-    if (metrics.FIXTURE_NOT_REAL) {
-      fail('5. Validation Metrics', 'metrics-v1.json contains FIXTURE_NOT_REAL: true');
-    } else if (!metrics.internal_test || !(metrics.internal_test.n > 0)) {
-      fail(
-        '5. Validation Metrics',
-        `internal_test.n is not > 0 (found ${metrics.internal_test?.n})`
-      );
-    } else {
-      pass(
-        '5. Validation Metrics',
-        `metrics-v1.json real data present (n=${metrics.internal_test.n}, macro-F1=${metrics.internal_test.macro_f1})`
-      );
-    }
+    if (metrics.FIXTURE_NOT_REAL) fail('5. Validation Metrics', `${metricsUrl} contains FIXTURE_NOT_REAL: true`);
+    else if (!(metrics.internal_test?.n > 0)) fail('5. Validation Metrics', `internal_test.n is not > 0 in ${metricsUrl}`);
+    else pass('5. Validation Metrics', `${metricsUrl} real data (n=${metrics.internal_test.n}, macro-F1=${metrics.internal_test.macro_f1})`);
   } catch (err) {
-    fail('5. Validation Metrics', `Failed to parse metrics-v1.json: ${err.message}`);
+    fail('5. Validation Metrics', `Failed to parse ${metricsUrl}: ${err.message}`);
   }
 }
 
@@ -241,7 +195,7 @@ if (!fs.existsSync(audioManifestPath)) {
         `Audio files incomplete (${items.length - missingAudio.length}/7 present, missing: ${missingAudio.join(', ') || 'manifest lists fewer than 7'}). Pending Azure Speech key.`
       );
     } else {
-      pass('7. Voice Audio Manifest', 'All 7 audio files present on disk');
+      pass('7. Voice Audio Manifest', `All ${items.length} audio files present on disk`);
     }
   } catch (err) {
     warn('7. Voice Audio Manifest', `Failed to parse audio manifest: ${err.message}`);

@@ -59,15 +59,17 @@ NOTES = [
     "possibilities, how to retake the photo, and the 16123 hand-off. It does not force an "
     "answer.\n\n"
     "This is preliminary screening, not a diagnosis.",
-    "The model is MobileNetV3-Large, fine-tuned in PyTorch and exported to ONNX. It runs in the "
-    "browser with ONNX Runtime Web's CPU/WASM build. The photo never leaves the phone.\n\n"
+    "The model is EfficientNet-B0 (live version v10) with 8 outputs, including 'not a rice leaf' and "
+    "'other rice problem', fine-tuned in PyTorch on free Kaggle GPUs and exported to a 15 MB ONNX "
+    "file. It runs in the browser with ONNX Runtime Web's WASM build. The photo never leaves the phone.\n\n"
     "The confidence is calibrated on validation data with temperature scaling, and the threshold "
     "is chosen there to target a precision level. There is no hard-coded threshold.\n\n"
     "The split is grouped by perceptual hash, so burst photos cannot leak between train and test. "
     "I checked that no group is shared.\n\n"
-    "The headline number is external, not internal: photos from other districts. Leaf Smut has "
-    "no external test, and the accuracy page says so.\n\n"
-    "Fill in the numbers from metrics-v1.json, with the sample sizes in the speaker notes. If "
+    "The headline number is external, not internal: Sylhet-Dhaka, a district the model never saw. "
+    "There, 56% of its answers are right; I show that on purpose. Leaf Smut has no external test "
+    "and is never named, and the accuracy page says so.\n\n"
+    "Fill in the numbers from metrics-v10.json, with the sample sizes in the speaker notes. If "
     "training is not finished, say \"evaluation in progress\" and do not estimate.",
     "I am [[Your name]], a [[Year]] student at [[University]]. My skills are [[Skills]].\n\n"
     "Be transparent: the idea and early research began in a team idea competition. The web app, "
@@ -217,7 +219,7 @@ def value_or_tbd(value):
 
 
 def load_metrics(repo):
-    path = repo / "frontend/public/data/metrics-v1.json"
+    path = repo / "frontend/public/data/metrics-v10.json"
     if not path.exists():
         return None
     try:
@@ -275,7 +277,7 @@ def metrics_notes(metrics):
                     entry.get("n", "[[TBD]]"),
                 )
             )
-    return ("\n\nMeasured values from metrics-v1.json: " + " ".join(lines)) if lines else ""
+    return ("\n\nMeasured values from metrics-v10.json: " + " ".join(lines)) if lines else ""
 
 
 def slide_problem(prs, repo):
@@ -401,7 +403,7 @@ def slide_how(prs, metrics):
     title(slide, "On the phone. Not in the cloud.", wide=True)
 
     add_rect(slide, 0.68, 1.55, 8.95, 1.55, PAPER, GREEN, rounded=True, line_width=1.25)
-    labels = ["Photo", "MobileNetV3", "Threshold", "Bangla card + audio"]
+    labels = ["Photo", "EfficientNet-B0", "Threshold", "Bangla card + audio"]
     box_width = 2.45
     gap = 0.55
     start = (SLIDE_W - (4 * box_width + 3 * gap)) / 2
@@ -435,8 +437,8 @@ def slide_how(prs, metrics):
 
     internal_value, internal_cov, internal_ok = metric_pair(metrics, "internal_test", "macro_f1")
     external_value, external_cov, external_ok = external_pair(metrics)
-    internal_label = "Measured internal macro-F1: " if internal_ok else "Internal macro-F1: "
-    external_label = "Measured external macro-F1: " if external_ok else "External macro-F1: "
+    internal_label = "Internal test macro-F1: " if internal_ok else "Internal macro-F1: "
+    external_label = "Unseen district (Sylhet) macro-F1: " if external_ok else "External macro-F1: "
     add_text(
         slide,
         0.9,
@@ -448,7 +450,7 @@ def slide_how(prs, metrics):
                 "runs": [
                     {"text": internal_label, "size": 17, "color": INK},
                     {"text": internal_value, "size": 17, "bold": True, "color": GREEN},
-                    {"text": " · coverage: ", "size": 17, "color": INK},
+                    {"text": " · answered: ", "size": 17, "color": INK},
                     {"text": internal_cov, "size": 17, "bold": True, "color": GREEN},
                 ],
                 "space_after": 8,
@@ -457,7 +459,7 @@ def slide_how(prs, metrics):
                 "runs": [
                     {"text": external_label, "size": 17, "color": INK},
                     {"text": external_value, "size": 17, "bold": True, "color": GREEN},
-                    {"text": " · coverage: ", "size": 17, "color": INK},
+                    {"text": " · answered: ", "size": 17, "color": INK},
                     {"text": external_cov, "size": 17, "bold": True, "color": GREEN},
                 ],
             },
@@ -473,8 +475,8 @@ def slide_how(prs, metrics):
             {
                 "runs": [
                     {
-                        "text": "Train: RiceLeafDiseaseBD v3 · CC BY 4.0 · DOI "
-                        "10.17632/86s4jzj2m4.3",
+                        "text": "Train: Bangladeshi field photos (Gazipur, Savar, Sirajganj-Pabna, Dhan-Shomadhan, "
+                        "DIU half A) + India/Taiwan + non-rice photos",
                         "size": 12.5,
                         "color": MUTED,
                     }
@@ -484,7 +486,7 @@ def slide_how(prs, metrics):
             {
                 "runs": [
                     {
-                        "text": "Test: RiceLeafDisease-BD5 · RiceLeafBD",
+                        "text": "Independent tests: Sylhet-Dhaka (never seen) · Aman 2025 · DIU half B",
                         "size": 12.5,
                         "color": MUTED,
                     }

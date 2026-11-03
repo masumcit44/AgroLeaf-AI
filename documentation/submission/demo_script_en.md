@@ -1,7 +1,7 @@
 # AgroLeaf AI — 2-minute demo video script (English)
 
 **Format:** English voiceover, phone-screen footage with light text overlays. Total 2:30 (under 3:00 ceiling).
-**Rule:** every number below is copied from `frontend/public/data/metrics-v1.json` (model v1 plus the safety gate, 2 Nov 2026). If that file changes, update this script before recording. Never read an estimate aloud.
+**Rule:** every number below is copied from `frontend/public/data/metrics-v10.json` (live model v10, 3 Nov 2026). If that file changes, update this script before recording. Never read an estimate aloud.
 
 ---
 
@@ -35,14 +35,14 @@
 **Visual:** Upload a deliberately blurry leaf photo. The app shows "নিশ্চিত নই / not sure", the two closest possibilities, retake tips and 16123. Then upload a photo that is not a leaf (a hand, a wall, a screenshot). The app says "This does not look like a rice leaf" and shows **no** disease names.
 
 **Voiceover:**
-> "Now the harder case. This photo is blurry. Instead of guessing, the app says 'not sure', shows the two closest possibilities, tells me how to retake the photo, and still offers 16123. And this one is not a leaf at all. A colour check runs before the model, so the app flags non-leaves instead of inventing a disease. It requires high confidence for 'healthy', because wrongly telling a farmer to do nothing is the most harmful mistake."
+> "Now the harder case. This photo is blurry. Instead of guessing, the app says 'not sure', shows the two closest possibilities, tells me how to retake the photo, and still offers 16123. And this one is not a leaf at all. The model has its own 'not a rice leaf' answer, so the app says so instead of inventing a disease, and the voice explains why. It also has an 'other rice problem' answer for diseases it does not cover. It requires high confidence for 'healthy', because wrongly telling a farmer to do nothing is the most harmful mistake."
 
 ### 1:15–1:40 — Accuracy page & outside-district limits
 
-**Visual:** Open the accuracy page (📊). Show the plain-language summary, internal-test cards, the outside-district validation cards (Sylhet, Savar, Sirajganj/Pabna, Gujarat), the Safety Gate table, and the limitations list.
+**Visual:** Open the accuracy page (📊). Show the plain-language summary (Sylhet first), the internal-test cards, the three outside test cards (Sylhet-Dhaka, Aman 2025, DIU half B), the charts, and the limitations list.
 
 **Voiceover:**
-> "I do not want a number I cannot check. On 1,499 internal test photos, macro-F1 is 84.3 percent and accuracy is 86.9 percent. But on outside districts it struggles: on 1,423 Sylhet photos the app answers 62.2 percent of the time with 53.7 percent right, on raihan phone photos 9.8 percent are right, and on Gujarat photos just 5 percent. The page states plainly that outside the training district answers are often wrong, brown spot is rarely recognised, and the disease information is preliminary and not reviewed by an agronomist. The safety gate rejects 95.7 percent of everyday photos."
+> "I do not want a number I cannot check. On 1,467 internal test photos, macro-F1 is 84.4 percent. On 422 photos from the Aman 2025 dataset, 91 percent of the app's answers are right. But on Sylhet-Dhaka, a district the model never saw, it answers 75 percent of the time and only 56 percent of those answers are right; brown spot and tungro are found only about a third of the time. The page says this plainly, says the disease text is preliminary and not reviewed by an agronomist, and says this version was released by my own decision even though it missed two of my pre-written release rules."
 
 ### 1:40–1:55 — Privacy & offline inference
 
@@ -76,7 +76,7 @@
 | 8 | 0:46–0:55 | Audio | Tap ▶, show transcript and "AI voice" label | Audio starts on tap |
 | 9 | 0:55–1:05 | Blurry photo | "not sure", top-2 possibilities, retake tips | Make the blur obvious |
 | 10 | 1:05–1:15 | Non-leaf photo | "does not look like a rice leaf", no disease names, 16123 | Show it does not force a class |
-| 11 | 1:15–1:28 | Accuracy page top | Summary, internal cards, outside districts (Sylhet, raihan, Gujarat), Safety Gate | Numbers readable |
+| 11 | 1:15–1:28 | Accuracy page top | Summary, internal cards, outside tests (Sylhet-Dhaka, Aman 2025, DIU half B) | Numbers readable |
 | 12 | 1:28–1:40 | Accuracy page limits | Limitations section with outside-district error rates, Leaf Smut gap, credits | Scroll slowly |
 | 13 | 1:40–1:48 | Airplane/Wi-Fi off | Gallery photo after the initial result | Proves on-device inference; sample buttons need the network |
 | 14 | 1:48–1:55 | Privacy diagram | Photo → phone → result; crossed-out cloud | Simple motion graphic |
@@ -87,7 +87,7 @@
 
 - Record the phone at 1080p or higher; keep the status bar clean.
 - Use the **live** production URL, not a local build, so judges see what they will open.
-- Re-check every number against `frontend/public/data/metrics-v1.json` on the day you record.
+- Re-check every number against `frontend/public/data/metrics-v10.json` on the day you record.
 - Verify pre-generated Bangla MP3s are loaded from `/audio/*.mp3`.
 - Keep the sticker in frame whenever the app is on screen.
 - Do not claim a partnership, "first", "only", "100%", or "free call". Do not show a pesticide dose or claim diagnosis.
