@@ -12,6 +12,7 @@ export const FEATURES = {
   feedback: false, // F20
   help: false, // F22
   areaMap: false, // F23
+  user_guided_crop: false, // focus on the diseased leaf (user-guided crop)
 };
 
 export const PRODUCTION_HOST = 'agroleaf-ai.pages.dev';

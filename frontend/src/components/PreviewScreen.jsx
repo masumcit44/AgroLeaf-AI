@@ -12,6 +12,7 @@ export default function PreviewScreen({
   modelProgress = null,
   errorKey = null,
   onRetry = null,
+  onFocusCrop = null, // user-guided crop; null = button not shown (feature off)
 }) {
   const { t } = useT();
   const canvasMountRef = useRef(null);
@@ -120,6 +121,20 @@ export default function PreviewScreen({
         >
           {isAnalyzing ? t('analysingText') : t('btnCheck')}
         </BigButton>
+
+        {onFocusCrop && (
+          <div>
+            <BigButton
+              variant="secondary"
+              onClick={onFocusCrop}
+              disabled={isAnalyzing}
+              ariaLabel={t('user_guided_crop.focusButton')}
+            >
+              {t('user_guided_crop.focusButton')}
+            </BigButton>
+            <p className="text-[11px] text-gray-500 text-center mt-1">{t('user_guided_crop.focusHint')}</p>
+          </div>
+        )}
 
         <BigButton
           variant="secondary"
