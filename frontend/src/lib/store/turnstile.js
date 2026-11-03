@@ -1,11 +1,18 @@
 // Turnstile widget loader: loads the script only when needed, renders a managed widget in a modal.
+// Test helper: __setSiteKey(key) allows tests to override the site key.
 let turnstilePromise = null;
 let widgetId = null;
 let widgetContainer = null;
+let testSiteKey = null;
+
+function getEffectiveSiteKey() {
+  if (testSiteKey !== null) return testSiteKey;
+  return import.meta.env.VITE_TURNSTILE_SITE_KEY;
+}
 
 function loadTurnstileScript() {
   if (turnstilePromise) return turnstilePromise;
-  const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+  const siteKey = getEffectiveSiteKey();
   if (!siteKey) return Promise.resolve(null);
   turnstilePromise = new Promise((resolve) => {
     if (window.turnstile) return resolve(window.turnstile);
@@ -51,7 +58,7 @@ function removeWidgetContainer() {
  * Opens a Turnstile challenge modal and returns the token, or null if no site key / cancelled.
  */
 export async function getTurnstileToken() {
-  const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+  const siteKey = getEffectiveSiteKey();
   if (!siteKey) return null;
 
   const turnstile = await loadTurnstileScript();
@@ -130,4 +137,9 @@ export function resetTurnstile() {
     widgetContainer.remove();
     widgetContainer = null;
   }
+}
+
+/** Test helper: override the site key. */
+export function __setSiteKey(key) {
+  testSiteKey = key;
 }

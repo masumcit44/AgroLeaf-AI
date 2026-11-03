@@ -1,6 +1,7 @@
 // Sync client: device registration + outbox flush with signed requests.
+// Uses the outbox.js flushOutbox(send) for the actual sending loop.
 import { getOrCreateDevice, signingKey, signRequest } from './device.js';
-import { listOutbox, enqueue } from './outbox.js';
+import { listOutbox, enqueue, flushOutbox as outboxFlush } from './outbox.js';
 import { getTurnstileToken } from './turnstile.js';
 import { getDb, STORES } from './db.js';
 
@@ -26,6 +27,15 @@ async function isRegistered() {
   return device?.registered === true;
 }
 
+/** Clear registered mark (e.g., on 401 unknown_device). */
+async function clearRegistered() {
+  const db = await getDb();
+  const device = await db.get(STORES.DEVICE, 'self');
+  if (device) {
+    await db.put(STORES.DEVICE, { ...device, registered: false }, 'self');
+  }
+}
+
 /** Register the device with the server (once). */
 async function registerDevice() {
   const device = await getOrCreateDevice();
@@ -48,9 +58,10 @@ async function registerDevice() {
   await markRegistered(device.device_id);
   return device;
 }
-
+  
 /** Send a single outbox item with signed request. */
-async function sendItem(item, device) {
+async function sendItem(item) {
+  const device = await getOrCreateDevice();
   const endpoint = ENDPOINTS[item.kind];
   if (!endpoint) throw new Error(`unknown kind: ${item.kind}`);
 
@@ -60,22 +71,27 @@ async function sendItem(item, device) {
   headers['Idempotency-Key'] = item.id;
 
   const res = await fetch(endpoint, { method: 'POST', headers, body });
+
+  // Check for 401 unknown_device - clear registered mark so we re-register
+  if (res.status === 401) {
+    await clearRegistered();
+    throw new Error('unauthorized');
+  }
+
   if (res.status >= 200 && res.status < 300) return 'sent';
   if (res.status === 409) return 'sent'; // duplicate, already accepted
   if (res.status === 422 || res.status === 400) return 'reject'; // bad request, don't retry
-  if (res.status === 401) throw new Error('unauthorized'); // will retry
   if (res.status === 503) throw new Error('not_configured'); // will retry with backoff
   if (res.status >= 500) throw new Error('server_error'); // will retry
   throw new Error(`unexpected: ${res.status}`);
 }
 
-/** Flush the outbox in sequence order. Single-flight. */
+/** Flush the outbox using the shared outbox.js flushOutbox(send). Single-flight. */
 export async function flushOutbox() {
   if (flushPromise) return flushPromise;
   if (!isOnline) return { sent: 0, retry: 0, rejected: 0, skipped: 0 };
 
   flushPromise = (async () => {
-    const device = await getOrCreateDevice();
     const result = { sent: 0, retry: 0, rejected: 0, skipped: 0 };
 
     try {
@@ -84,36 +100,14 @@ export async function flushOutbox() {
         await registerDevice();
       }
 
-      for (const item of await listOutbox()) {
-        if (item.attempts >= 8) { result.skipped++; continue; }
+      // Use the shared outbox flush with our sendItem
+      const outboxResult = await outboxFlush(sendItem);
 
-        let outcome;
-        try {
-          outcome = await sendItem(item, device);
-        } catch (err) {
-          const msg = err.message;
-          if (msg === 'not_configured' || msg === 'server_error' || msg === 'unauthorized' || msg.includes('network')) {
-            outcome = 'retry';
-            item.last_error = msg;
-          } else if (msg === 'turnstile_cancelled') {
-            // User cancelled registration, stop flush
-            return result;
-          } else {
-            outcome = 'reject';
-            item.last_error = msg;
-          }
-        }
-
-        if (outcome === 'sent' || outcome === 'reject') {
-          const db = await getDb();
-          await db.delete(STORES.OUTBOX, item.id);
-          result[outcome === 'sent' ? 'sent' : 'rejected']++;
-        } else {
-          const db = await getDb();
-          await db.put(STORES.OUTBOX, { ...item, attempts: item.attempts + 1 });
-          result.retry++;
-        }
-      }
+      // Map outbox result to our result format
+      result.sent = outboxResult.sent;
+      result.retry = outboxResult.retry;
+      result.rejected = outboxResult.rejected;
+      result.skipped = outboxResult.skipped;
     } finally {
       flushPromise = null;
     }
@@ -175,5 +169,6 @@ export async function getOutboxStatus() {
     attempts: i.attempts,
     last_error: i.last_error,
     created_at: i.created_at,
+    next_attempt_at: i.next_attempt_at,
   }));
 }

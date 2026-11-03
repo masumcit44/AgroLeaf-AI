@@ -52,7 +52,7 @@ describe('offline outbox', () => {
     await expect(enqueue('nonsense', {})).rejects.toThrow();
   });
 
-  it('removes sent and rejected items, keeps retries, oldest first', async () => {
+  it('removes sent items, keeps retries and rejected items (marked failed), oldest first', async () => {
     const a = await enqueue('feedback', { n: 1 });
     const b = await enqueue('help', { n: 2 });
     const c = await enqueue('area_report', { n: 3 });
@@ -64,7 +64,12 @@ describe('offline outbox', () => {
     expect(order).toEqual([a.id, b.id, c.id]);
     expect(res).toEqual({ sent: 1, retry: 1, rejected: 1, skipped: 0 });
     const left = await listOutbox();
-    expect(left.map((i) => [i.id, i.attempts])).toEqual([[b.id, 1]]);
+    // Rejected items are kept but marked failed (attempts = MAX_ATTEMPTS)
+    // Retry items are kept with attempts incremented
+    expect(left.length).toBe(2);
+    const leftMap = new Map(left.map(i => [i.id, i.attempts]));
+    expect(leftMap.get(b.id)).toBe(1); // retry item has attempts = 1
+    expect(leftMap.get(c.id)).toBe(8); // rejected item has MAX_ATTEMPTS
   });
 
   it('a thrown network error counts as retry; after MAX_ATTEMPTS the item is skipped', async () => {

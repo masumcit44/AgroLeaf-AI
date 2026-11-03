@@ -1,4 +1,4 @@
-// Sync client tests - unit tests for core logic
+// Sync client tests - focused on core logic
 import 'fake-indexeddb/auto';
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
@@ -156,7 +156,7 @@ describe('Outbox', () => {
     expect(items[0].attempts).toBe(1);
   });
 
-  it('reject on 422/400 removes item', async () => {
+  it('reject on 422/400 marks item failed (keeps item)', async () => {
     const { enqueue, listOutbox, flushOutbox } = await import('../outbox.js');
     
     await enqueue('feedback', { id: 'item-reject', reported_class: 'blast' });
@@ -167,7 +167,8 @@ describe('Outbox', () => {
     expect(result.rejected).toBe(1);
     expect(result.sent).toBe(0);
     const items = await listOutbox();
-    expect(items.length).toBe(0);
+    expect(items.length).toBe(1);
+    expect(items[0].attempts).toBe(8); // MAX_ATTEMPTS
   });
 
   it('skips items at MAX_ATTEMPTS', async () => {
@@ -184,14 +185,72 @@ describe('Outbox', () => {
     expect(result.skipped).toBe(1);
     expect(send).not.toHaveBeenCalled();
   });
+
+  it('backoff: skips item if next_attempt_at is in future', async () => {
+    const { enqueue, flushOutbox } = await import('../outbox.js');
+    const { getDb } = await import('../db.js');
+    
+    await enqueue('feedback', { id: 'item-backoff', reported_class: 'blast' });
+    const db = await getDb();
+    await db.put(STORES.OUTBOX, { id: 'item-backoff', kind: 'feedback', payload: { reported_class: 'blast' }, seq: 1, created_at: new Date().toISOString(), attempts: 1, last_error: null, next_attempt_at: Date.now() + 60000 });
+    
+    const send = vi.fn().mockResolvedValue('sent');
+    const result = await flushOutbox(send);
+    
+    expect(result.skipped).toBe(1);
+    expect(send).not.toHaveBeenCalled();
+  });
 });
 
-// Mock the turnstile module
-vi.mock('../turnstile.js', () => ({
-  getTurnstileToken: vi.fn().mockResolvedValue('valid-token'),
-  resetTurnstile: vi.fn(),
-}));
+// Mock the turnstile module to return a valid token ONLY if site key exists
+vi.mock('../turnstile.js', () => {
+  let siteKey = 'test-key'; // Default to a test key
+  return {
+    getTurnstileToken: vi.fn().mockImplementation(async () => {
+      if (!siteKey) return null;
+      return 'valid-token';
+    }),
+    resetTurnstile: vi.fn(),
+    __setSiteKey: (key) => { siteKey = key; },
+  };
+});
 
-// Sync client integration tests (require browser environment for Web Crypto API)
-// These tests are run in the browser via the preview deployment
-// describe('Sync client (with mocked network)', () => { ... });
+// Sync client integration tests (mocked network, testing sync.js logic)
+describe('Sync client (logic tests with mocked network)', () => {
+  const mockApiFetch = vi.fn();
+  let originalFetch;
+
+  beforeEach(async () => {
+    originalFetch = global.fetch;
+    global.fetch = mockApiFetch;
+    mockApiFetch.mockReset();
+    mockApiFetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ device_id: 'test-device-id' }),
+    });
+    
+    await resetDbForTests();
+    await new Promise((resolve) => {
+      const r = indexedDB.deleteDatabase(DB_NAME);
+      r.onsuccess = r.onerror = r.onblocked = resolve;
+    });
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
+
+  it('signature format is correct', async () => {
+    const { getOrCreateDevice, signingKey, signRequest } = await import('../device.js');
+    const device = await getOrCreateDevice();
+    await signingKey(device);
+    
+    const headers = await signRequest(device, 'POST', '/api/v1/feedback', JSON.stringify({ test: 'data' }), '2026-01-01T00:00:00.000Z');
+    
+    expect(headers['X-Device-Id']).toBe(device.device_id);
+    expect(headers['X-Device-Signature']).toBeDefined();
+    expect(headers['X-Timestamp']).toBe('2026-01-01T00:00:00.000Z');
+  });
+});
