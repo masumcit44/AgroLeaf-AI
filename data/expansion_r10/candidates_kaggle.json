@@ -1,0 +1,875 @@
+[
+  {
+    "ref": "tedisetiady/leaf-rice-disease-indonesia",
+    "title": "Leaf Rice Disease",
+    "size": 22700941,
+    "lastUpdated": "2021-05-04 04:39:22.893000",
+    "downloadCount": 3604,
+    "voteCount": 47,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "nirmalsankalana/rice-leaf-disease-image",
+    "title": "Rice Leaf Disease Images",
+    "size": 204777417,
+    "lastUpdated": "2024-01-01 05:33:50.993000",
+    "downloadCount": 7461,
+    "voteCount": 48,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "vbookshelf/rice-leaf-diseases",
+    "title": "Rice Leaf Diseases Dataset",
+    "size": 38456279,
+    "lastUpdated": "2020-02-21 01:35:02.610000",
+    "downloadCount": 31048,
+    "voteCount": 288,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "loki4514/rice-leaf-diseases-detection",
+    "title": "Rice Leaf Diseases Detection",
+    "size": 8620835900,
+    "lastUpdated": "2023-12-11 11:49:59.057000",
+    "downloadCount": 8517,
+    "voteCount": 75,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "maimunulkjisan/rice-leaf-dataset-from-mendeley-data",
+    "title": "Rice Leafs Disease Dataset",
+    "size": 205074017,
+    "lastUpdated": "2023-10-18 13:02:26.150000",
+    "downloadCount": 3025,
+    "voteCount": 34,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "nirmalsankalana/plant-diseases-training-dataset",
+    "title": "Plant Leaf Diseases Training Dataset",
+    "size": 1932522639,
+    "lastUpdated": "2025-02-16 07:45:17.733000",
+    "downloadCount": 5730,
+    "voteCount": 102,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "yusufmurtaza01/rice-leaf-diseases",
+    "title": "RICE Leaf Diseases",
+    "size": 485693087,
+    "lastUpdated": "2026-04-15 11:21:08.440000",
+    "downloadCount": 2211,
+    "voteCount": 23,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "nafishamoin/new-bangladeshi-crop-disease",
+    "title": "New Bangladeshi Crop Disease",
+    "size": 2520068131,
+    "lastUpdated": "2022-09-27 08:35:14.790000",
+    "downloadCount": 5002,
+    "voteCount": 71,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "soni535/rice-leaf-bacterial-and-fungal-disease",
+    "title": "Rice Leaf Disease Dataset",
+    "size": 3684879588,
+    "lastUpdated": "2024-04-22 09:46:13.880000",
+    "downloadCount": 977,
+    "voteCount": 10,
+    "usabilityRating": 0.4375
+  },
+  {
+    "ref": "anshulm257/rice-disease-dataset",
+    "title": "Rice Disease Dataset",
+    "size": 1063925948,
+    "lastUpdated": "2024-07-29 08:44:53.493000",
+    "downloadCount": 7795,
+    "voteCount": 58,
+    "usabilityRating": 0.6875
+  },
+  {
+    "ref": "shayanriyaz/riceleafs",
+    "title": "Rice Leafs",
+    "size": 15978875144,
+    "lastUpdated": "2019-07-18 11:31:17.970000",
+    "downloadCount": 13197,
+    "voteCount": 139,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "asheniranga/leaf-disease-dataset-combination",
+    "title": "Leaf Disease Dataset (combination)",
+    "size": 798477293,
+    "lastUpdated": "2022-01-09 14:23:28.590000",
+    "downloadCount": 5540,
+    "voteCount": 59,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "jay7080dev/rice-plant-diseases-dataset",
+    "title": "Rice Plant diseases dataset",
+    "size": 184522498,
+    "lastUpdated": "2024-05-02 15:51:38.803000",
+    "downloadCount": 4007,
+    "voteCount": 43,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "chaitanyakamble69/rice-leaf-disease-riceguard-19k-cleaned",
+    "title": "rice-leaf-disease-riceguard-19k-cleaned",
+    "size": 2093279953,
+    "lastUpdated": "2026-01-01 18:19:39.950000",
+    "downloadCount": 540,
+    "voteCount": 11,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "shubham2703/five-crop-diseases-dataset",
+    "title": "Five Crop Diseases Dataset",
+    "size": 4651502464,
+    "lastUpdated": "2023-09-23 06:41:04.220000",
+    "downloadCount": 4225,
+    "voteCount": 38,
+    "usabilityRating": 0.9375
+  },
+  {
+    "ref": "dedeikhsandwisaputra/rice-leafs-disease-dataset",
+    "title": "Rice Leafs Disease Dataset",
+    "size": 308802277,
+    "lastUpdated": "2022-06-09 13:19:59.323000",
+    "downloadCount": 5650,
+    "voteCount": 29,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "raihan150146/rice-leaf-diseases-dataset",
+    "title": "Rice Leaf Diseases Dataset",
+    "size": 1915747384,
+    "lastUpdated": "2023-12-06 05:53:56.040000",
+    "downloadCount": 1748,
+    "voteCount": 24,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "alamshihab075/rice-leaf-disease-an-images-dataset",
+    "title": "Rice Leaf Disease: An Images Dataset",
+    "size": 10344949159,
+    "lastUpdated": "2025-10-25 05:39:41.150000",
+    "downloadCount": 1674,
+    "voteCount": 16,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "alinedobrovsky/plant-disease-classification-merged-dataset",
+    "title": "Plant Disease Classification Merged Dataset",
+    "size": 18611874922,
+    "lastUpdated": "2023-01-03 15:11:19.200000",
+    "downloadCount": 12420,
+    "voteCount": 98,
+    "usabilityRating": 0.6875
+  },
+  {
+    "ref": "thegoanpanda/rice-crop-diseases",
+    "title": "RICE CROP DISEASES",
+    "size": 4751659,
+    "lastUpdated": "2024-06-19 02:59:22.350000",
+    "downloadCount": 1903,
+    "voteCount": 37,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "imbikramsaha/paddy-doctor",
+    "title": "Paddy Disease Classification all 480*640 px image",
+    "size": 1094204760,
+    "lastUpdated": "2022-08-22 11:31:09.817000",
+    "downloadCount": 4397,
+    "voteCount": 34,
+    "usabilityRating": 0.8235294
+  },
+  {
+    "ref": "sujaradha/thermal-images-diseased-healthy-leaves-paddy",
+    "title": "Thermal images - diseased & healthy leaves - paddy",
+    "size": 46450364,
+    "lastUpdated": "2020-04-18 10:34:27.797000",
+    "downloadCount": 1679,
+    "voteCount": 25,
+    "usabilityRating": 0.5
+  },
+  {
+    "ref": "badhon7432/paddyleafdiseaseuci",
+    "title": "paddy-leaf-disease-UCI",
+    "size": 168999934,
+    "lastUpdated": "2020-08-06 23:27:46.070000",
+    "downloadCount": 1192,
+    "voteCount": 12,
+    "usabilityRating": 0.3125
+  },
+  {
+    "ref": "shivas86/paddy-leaf-disease",
+    "title": "Paddy leaf disease",
+    "size": 410209636,
+    "lastUpdated": "2024-02-16 06:28:46.520000",
+    "downloadCount": 67,
+    "voteCount": 4,
+    "usabilityRating": 0.5625
+  },
+  {
+    "ref": "shankarpriya2913/crop-and-soil-dataset",
+    "title": "Crop and Soil DataSet",
+    "size": 110073,
+    "lastUpdated": "2025-01-28 08:32:23.420000",
+    "downloadCount": 12286,
+    "voteCount": 105,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "dasa7753912/new-paddy-doctor-paddy-disease-classification",
+    "title": "New Paddy Doctor: Paddy Disease Classification",
+    "size": 2331834459,
+    "lastUpdated": "2024-05-05 17:36:57.253000",
+    "downloadCount": 451,
+    "voteCount": 1,
+    "usabilityRating": 0.5294118
+  },
+  {
+    "ref": "manabendrarout/paddy-disease-folds",
+    "title": "Paddy Disease Folds",
+    "size": 120655,
+    "lastUpdated": "2022-05-16 16:14:09.960000",
+    "downloadCount": 93,
+    "voteCount": 3,
+    "usabilityRating": 0.1764706
+  },
+  {
+    "ref": "shuvokumarbasak4004/paddy-algae-monitoring-dataset-bd",
+    "title": "Paddy Algae Monitoring Dataset BD",
+    "size": 209830055,
+    "lastUpdated": "2026-02-28 09:15:17.227000",
+    "downloadCount": 25,
+    "voteCount": 14,
+    "usabilityRating": 0.6875
+  },
+  {
+    "ref": "acharyakamal/paddy-leaf-disease-detection-project-report",
+    "title": "Paddy leaf disease detection project report.",
+    "size": 1284294,
+    "lastUpdated": "2026-02-12 05:33:09.470000",
+    "downloadCount": 13,
+    "voteCount": 3,
+    "usabilityRating": 0.4375
+  },
+  {
+    "ref": "sonyannem/paddy-disease-dataset",
+    "title": "PADDY DISEASE DATASET",
+    "size": 14915,
+    "lastUpdated": "2019-12-20 00:30:35.637000",
+    "downloadCount": 221,
+    "voteCount": 3,
+    "usabilityRating": 0.0
+  },
+  {
+    "ref": "thegeeksam/paddy-disease-effected-pictures",
+    "title": "Paddy Disease Effected Images",
+    "size": 28364898,
+    "lastUpdated": "2022-06-12 16:34:58.487000",
+    "downloadCount": 62,
+    "voteCount": 1,
+    "usabilityRating": 0.5
+  },
+  {
+    "ref": "prabhan78/paddy-diseases-classification",
+    "title": "paddy diseases classification",
+    "size": 819666984,
+    "lastUpdated": "2023-01-07 16:21:40.157000",
+    "downloadCount": 150,
+    "voteCount": 2,
+    "usabilityRating": 0.3125
+  },
+  {
+    "ref": "iashiqul/paddy-leaf-disease",
+    "title": "paddy Leaf Disease",
+    "size": 1086642039,
+    "lastUpdated": "2022-01-31 05:11:30.520000",
+    "downloadCount": 407,
+    "voteCount": 4,
+    "usabilityRating": 0.0
+  },
+  {
+    "ref": "kkkkkumar/paddy-disease",
+    "title": "Paddy disease",
+    "size": 4524565424,
+    "lastUpdated": "2023-05-09 12:56:46.027000",
+    "downloadCount": 58,
+    "voteCount": 1,
+    "usabilityRating": 0.125
+  },
+  {
+    "ref": "deepikabantu22/paddy-disease-dataset",
+    "title": "paddy-disease-dataset",
+    "size": 1093378623,
+    "lastUpdated": "2026-07-16 17:02:06.440000",
+    "downloadCount": 10,
+    "voteCount": 1,
+    "usabilityRating": 0.23529412
+  },
+  {
+    "ref": "deepikabantu22/paddy-disease-classification",
+    "title": "paddy-disease-classification",
+    "size": 1093378623,
+    "lastUpdated": "2026-07-16 16:46:37.660000",
+    "downloadCount": 78,
+    "voteCount": 1,
+    "usabilityRating": 0.23529412
+  },
+  {
+    "ref": "luanhan/paddy-disease-v1",
+    "title": "paddy-disease-v1",
+    "size": 909677089,
+    "lastUpdated": "2024-12-17 12:56:56.017000",
+    "downloadCount": 14,
+    "voteCount": 0,
+    "usabilityRating": 0.4375
+  },
+  {
+    "ref": "douaairaq/rice-disease-dataset-labelled-to-train-yolov5",
+    "title": "rice-disease-dataset-labelled-to-train-yolov5",
+    "size": 3050992038,
+    "lastUpdated": "2023-07-14 16:26:01.233000",
+    "downloadCount": 614,
+    "voteCount": 11,
+    "usabilityRating": 0.5
+  },
+  {
+    "ref": "harisri2005/plant-disease-processed",
+    "title": "Master Plant Disease Dataset",
+    "size": 4648445619,
+    "lastUpdated": "2025-10-31 13:56:19.670000",
+    "downloadCount": 748,
+    "voteCount": 4,
+    "usabilityRating": 0.9411765
+  },
+  {
+    "ref": "nafishamoin/bangladeshi-crops-disease-dataset",
+    "title": "Bangladeshi Crops Disease Dataset",
+    "size": 6920397004,
+    "lastUpdated": "2022-03-17 14:48:09.470000",
+    "downloadCount": 1828,
+    "voteCount": 32,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "firozemaliha/rice-disease-environmental-dataset-bangladesh",
+    "title": "Rice Disease Environmental Dataset (Bangladesh)",
+    "size": 4242,
+    "lastUpdated": "2026-02-18 17:41:43.510000",
+    "downloadCount": 140,
+    "voteCount": 6,
+    "usabilityRating": 0.7647059
+  },
+  {
+    "ref": "rifat963/annotated-rice-panicle-image-from-bangladesh",
+    "title": "Annotated Rice Panicle Image from Bangladesh",
+    "size": 998409569,
+    "lastUpdated": "2025-10-27 17:58:45.493000",
+    "downloadCount": 303,
+    "voteCount": 3,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "rashidthihan/plant-disease-dataset",
+    "title": "Plant Disease Dataset",
+    "size": 6842960258,
+    "lastUpdated": "2025-11-24 20:10:04.933000",
+    "downloadCount": 1944,
+    "voteCount": 20,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "musfiqurtuhin/bangladeshi-crops-disease-dataset-bcdd",
+    "title": "Bangladeshi Crops Disease Dataset (BCDD)",
+    "size": 39431359,
+    "lastUpdated": "2025-11-30 10:47:33.663000",
+    "downloadCount": 161,
+    "voteCount": 1,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "salmaneunus/wheat-blast-new-dataset-train-val-test",
+    "title": "wheat_blast_new_dataset_train_val_test",
+    "size": 2109777432,
+    "lastUpdated": "2022-04-20 04:03:24.953000",
+    "downloadCount": 89,
+    "voteCount": 1,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "shahiismyname/riceleafdiseasebd-dataset",
+    "title": "RiceLeafDiseaseBD Dataset",
+    "size": 5648019978,
+    "lastUpdated": "2026-10-05 10:53:10.153000",
+    "downloadCount": 98,
+    "voteCount": 0,
+    "usabilityRating": 0.47058824
+  },
+  {
+    "ref": "under167/rice-leaf-disease-detection-health-classification",
+    "title": "Rice Leaf Disease Detection, Health Classification",
+    "size": 494196583,
+    "lastUpdated": "2026-08-07 06:09:13.357000",
+    "downloadCount": 6,
+    "voteCount": 0,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "hasibulhasanrifat/bd-multi-crop-disease",
+    "title": "BD_Multi-Crop_Disease",
+    "size": 18704964872,
+    "lastUpdated": "2026-05-18 10:45:12.433000",
+    "downloadCount": 24,
+    "voteCount": 0,
+    "usabilityRating": 0.5294118
+  },
+  {
+    "ref": "adarsh2626/santaliconnect-tribal-agri-and-health-qa",
+    "title": "SantaliConnect: Tribal Agri & Health QA",
+    "size": 14587922,
+    "lastUpdated": "2026-04-28 08:26:59.410000",
+    "downloadCount": 47,
+    "voteCount": 3,
+    "usabilityRating": 0.9411765
+  },
+  {
+    "ref": "mdershadulhaque/rice-leaf-disease-detection-and-classification",
+    "title": "Rice_leaf_disease_detection_and_Classification",
+    "size": 41727833,
+    "lastUpdated": "2025-05-29 23:22:42.070000",
+    "downloadCount": 21,
+    "voteCount": 0,
+    "usabilityRating": 0.4375
+  },
+  {
+    "ref": "zsinghrahulk/rice-pest-and-diseases",
+    "title": "Rice - Pest and Diseases",
+    "size": 319548,
+    "lastUpdated": "2023-06-01 08:57:29.470000",
+    "downloadCount": 3539,
+    "voteCount": 84,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "mathumithram/rice-pest-detection",
+    "title": "rice-pest-detection",
+    "size": 372998374,
+    "lastUpdated": "2023-07-14 01:57:06.317000",
+    "downloadCount": 1480,
+    "voteCount": 14,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "rtlmhjbn/ip02-dataset",
+    "title": "IP102-Dataset",
+    "size": 3158499040,
+    "lastUpdated": "2022-02-03 07:58:39.020000",
+    "downloadCount": 22031,
+    "voteCount": 117,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "sadmansakibmahi/plant-disease-expert",
+    "title": "Plant Disease Expert",
+    "size": 10019383772,
+    "lastUpdated": "2024-08-31 11:09:18.720000",
+    "downloadCount": 8960,
+    "voteCount": 141,
+    "usabilityRating": 0.7058824
+  },
+  {
+    "ref": "pialghosh/crop-pest-dataset",
+    "title": "Crop pest dataset",
+    "size": 24200347,
+    "lastUpdated": "2024-09-27 07:10:59.333000",
+    "downloadCount": 859,
+    "voteCount": 11,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "dingbiao11/rp11-a-dataset-focus-on-adult-rice-pest",
+    "title": "RP11: A Dataset Focus on Adult Rice Pest",
+    "size": 1369159276,
+    "lastUpdated": "2025-05-24 18:34:36.230000",
+    "downloadCount": 532,
+    "voteCount": 4,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "nashehannafii/datasetleafblast",
+    "title": "Dataset",
+    "size": 439828013,
+    "lastUpdated": "2022-07-14 19:15:04.153000",
+    "downloadCount": 88,
+    "voteCount": 5,
+    "usabilityRating": 0.4117647
+  },
+  {
+    "ref": "parserpixy/ip102-dataset",
+    "title": "IP102-Dataset_Annotated",
+    "size": 807750864,
+    "lastUpdated": "2024-06-21 12:24:37.690000",
+    "downloadCount": 900,
+    "voteCount": 6,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "datasetengineer/crop-health-and-environmental-stress-dataset",
+    "title": "Crop Health and Environmental Stress Dataset",
+    "size": 35898611,
+    "lastUpdated": "2025-01-29 03:03:51.243000",
+    "downloadCount": 2661,
+    "voteCount": 13,
+    "usabilityRating": 0.47058824
+  },
+  {
+    "ref": "alfonsojelai/rice-pest-dataset",
+    "title": "Rice Pest Dataset",
+    "size": 43636183848,
+    "lastUpdated": "2025-04-18 05:06:18.423000",
+    "downloadCount": 98,
+    "voteCount": 1,
+    "usabilityRating": 0.375
+  },
+  {
+    "ref": "nafayunnoor/rice-pest-datasets-for-detection",
+    "title": "Rice Pest Datasets for detection",
+    "size": 1420419706,
+    "lastUpdated": "2025-12-22 08:24:15.353000",
+    "downloadCount": 58,
+    "voteCount": 3,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "vlus06/rice-pest",
+    "title": "rice-pest",
+    "size": 105249394,
+    "lastUpdated": "2026-06-14 04:01:01.980000",
+    "downloadCount": 14,
+    "voteCount": 0,
+    "usabilityRating": 0.1875
+  },
+  {
+    "ref": "kennysoftdennis/enhanced-bird-dataset-for-rice-field-protection",
+    "title": "Enhanced Bird Dataset for Rice Field Protection",
+    "size": 126716668,
+    "lastUpdated": "2025-08-18 12:08:05.400000",
+    "downloadCount": 47,
+    "voteCount": 3,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "datasetengineer/smart-farming-data-2024-sf24",
+    "title": "Smart Farming Data 2024 (SF24)",
+    "size": 291818,
+    "lastUpdated": "2024-08-24 15:10:41.937000",
+    "downloadCount": 4774,
+    "voteCount": 27,
+    "usabilityRating": 0.47058824
+  },
+  {
+    "ref": "mrhouv/stored-grain-pests",
+    "title": "Stored grain pests",
+    "size": 4867414362,
+    "lastUpdated": "2026-01-20 07:21:30.117000",
+    "downloadCount": 132,
+    "voteCount": 3,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "xuzhangliu/ricepest-6-rice-pest-and-disease-dataset",
+    "title": "RicePest-6: Rice Pest and Disease Dataset",
+    "size": 352074194,
+    "lastUpdated": "2026-09-18 14:51:28.210000",
+    "downloadCount": 11,
+    "voteCount": 1,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "xiaojingjiang/rice-pest-dataset",
+    "title": "Rice Pest Dataset",
+    "size": 20447399,
+    "lastUpdated": "2025-06-15 02:44:45.250000",
+    "downloadCount": 12,
+    "voteCount": 0,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "nizorogbezuode/rice-leaf-images",
+    "title": "rice_leaf_images",
+    "size": 18515698,
+    "lastUpdated": "2021-11-16 13:42:35.513000",
+    "downloadCount": 3331,
+    "voteCount": 30,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "rajkumar898/rice-plant-dataset",
+    "title": "Rice Plant Dataset",
+    "size": 1316656105,
+    "lastUpdated": "2020-11-29 07:12:08.820000",
+    "downloadCount": 3188,
+    "voteCount": 38,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "farukalam/tomato-leaf-diseases-detection-computer-vision",
+    "title": "Tomato Leaf Diseases Detection Computer Vision",
+    "size": 25063478,
+    "lastUpdated": "2024-03-17 05:57:49.830000",
+    "downloadCount": 7018,
+    "voteCount": 88,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "vasantharank/tomato-leaf-disease-detection-yolov8-dataset",
+    "title": "Tomato Leaf Disease Detection - YOLOv8 Dataset",
+    "size": 767683859,
+    "lastUpdated": "2025-03-04 03:39:30.153000",
+    "downloadCount": 4535,
+    "voteCount": 42,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "myominhtet/nitrogen-deficiency-for-rice-crop",
+    "title": "Nitrogen deficiency for rice crop",
+    "size": 30572934,
+    "lastUpdated": "2022-11-26 02:51:46.923000",
+    "downloadCount": 794,
+    "voteCount": 26,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "torikul140129/paddy-leaf-images-aman",
+    "title": "Paddy Leaf Images (Aman)",
+    "size": 49983910,
+    "lastUpdated": "2020-04-06 06:50:36.583000",
+    "downloadCount": 336,
+    "voteCount": 11,
+    "usabilityRating": 0.8235294
+  },
+  {
+    "ref": "rusiri/leaf-color-dataset-for-paddy",
+    "title": "Leaf color dataset for paddy",
+    "size": 6185069574,
+    "lastUpdated": "2023-01-14 21:45:12.720000",
+    "downloadCount": 283,
+    "voteCount": 13,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "ritikbompilwar/plantstressidentification",
+    "title": "Plant Stress Identification (Paddy Leaves)",
+    "size": 19760543,
+    "lastUpdated": "2022-09-06 15:09:00.530000",
+    "downloadCount": 593,
+    "voteCount": 16,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "eon541/paddy-leaf",
+    "title": "Paddy Leaf",
+    "size": 99987903,
+    "lastUpdated": "2026-05-14 17:36:06.010000",
+    "downloadCount": 6,
+    "voteCount": 0,
+    "usabilityRating": 0.3125
+  },
+  {
+    "ref": "udayraman/weed-detection-and-panicle-segmentation",
+    "title": "weed detection, and panicle segmentation",
+    "size": 21835,
+    "lastUpdated": "2026-03-02 03:20:59.277000",
+    "downloadCount": 32,
+    "voteCount": 1,
+    "usabilityRating": 0.8235294
+  },
+  {
+    "ref": "bharath4504/paddy-leaf-disease",
+    "title": "paddy leaf disease",
+    "size": 17545601,
+    "lastUpdated": "2024-11-09 19:23:25.817000",
+    "downloadCount": 21,
+    "voteCount": 0,
+    "usabilityRating": 0.25
+  },
+  {
+    "ref": "reyhanaguspriyatna/paddy-leaf-disease-3-class",
+    "title": "Paddy Leaf Disease 3 Class",
+    "size": 167876656,
+    "lastUpdated": "2024-02-25 18:21:22.217000",
+    "downloadCount": 40,
+    "voteCount": 0,
+    "usabilityRating": 0.375
+  },
+  {
+    "ref": "yogeshkn/paddy-leaf-disease-classification11",
+    "title": "Paddy Leaf Disease Classification11",
+    "size": 1093378623,
+    "lastUpdated": "2026-08-05 09:47:19.210000",
+    "downloadCount": 65,
+    "voteCount": 0,
+    "usabilityRating": 0.23529412
+  },
+  {
+    "ref": "anusreekamini/paddy-leaf-diseases-for-classification",
+    "title": "Paddy Leaf Diseases For Classification",
+    "size": 19236244,
+    "lastUpdated": "2025-03-04 01:18:33.127000",
+    "downloadCount": 20,
+    "voteCount": 0,
+    "usabilityRating": 0.125
+  },
+  {
+    "ref": "maimunulkjisan/rice-leaf-datasettrain-test-and-valid",
+    "title": "Rice Leaf Dataset(Train, Test & Valid)",
+    "size": 204845043,
+    "lastUpdated": "2023-11-25 17:17:57.433000",
+    "downloadCount": 478,
+    "voteCount": 7,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "bahribahri/riceleaf",
+    "title": "rice-leaf",
+    "size": 22999386,
+    "lastUpdated": "2020-06-23 01:55:12.370000",
+    "downloadCount": 718,
+    "voteCount": 13,
+    "usabilityRating": 0.1875
+  },
+  {
+    "ref": "asadullahgalib/guava-disease-dataset",
+    "title": "Guava Fruit Disease Dataset",
+    "size": 1630250426,
+    "lastUpdated": "2024-11-03 19:26:30.973000",
+    "downloadCount": 6899,
+    "voteCount": 72,
+    "usabilityRating": 1.0
+  },
+  {
+    "ref": "tahmidmir/pumpkin-leaf-diseases-dataset-from-bangladesh",
+    "title": "Pumpkin Leaf Diseases Dataset",
+    "size": 282893462,
+    "lastUpdated": "2024-07-08 23:10:59.880000",
+    "downloadCount": 1536,
+    "voteCount": 154,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "sujaykapadnis/eggplant-disease-recognition-dataset",
+    "title": "Eggplant Disease Recognition Dataset",
+    "size": 525389822,
+    "lastUpdated": "2023-12-12 11:21:44.640000",
+    "downloadCount": 2495,
+    "voteCount": 26,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "shifatearman/sugarcaneld-bd-dataset",
+    "title": "SugarcaneLD-BD Dataset",
+    "size": 5373171,
+    "lastUpdated": "2025-08-03 15:21:12.910000",
+    "downloadCount": 130,
+    "voteCount": 2,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "nguynphancminh/cotton-leaf-diseases-dataset",
+    "title": "Cotton leaf image dataset (Shamim Ripon..,2025)",
+    "size": 422194867,
+    "lastUpdated": "2025-12-03 06:46:58.007000",
+    "downloadCount": 468,
+    "voteCount": 10,
+    "usabilityRating": 0.75
+  },
+  {
+    "ref": "sujaykapadnis/watermelon-disease-recognition-dataset",
+    "title": "Watermelon Disease Recognition Dataset",
+    "size": 6678364132,
+    "lastUpdated": "2023-12-12 11:04:01.607000",
+    "downloadCount": 1527,
+    "voteCount": 12,
+    "usabilityRating": 0.625
+  },
+  {
+    "ref": "drtawfikrrahman/automated-disease-detection-in-malabar-spinach",
+    "title": "Automated Disease Detection in Malabar Spinach",
+    "size": 1631018592,
+    "lastUpdated": "2025-12-11 07:57:57.627000",
+    "downloadCount": 109,
+    "voteCount": 3,
+    "usabilityRating": 0.5
+  },
+  {
+    "ref": "atkiyamaisha/multi-crop-leaf-disease-dataset",
+    "title": "Multi-Crop Leaf Disease Dataset",
+    "size": 7470132024,
+    "lastUpdated": "2026-06-22 13:24:29.460000",
+    "downloadCount": 140,
+    "voteCount": 1,
+    "usabilityRating": 0.6875
+  },
+  {
+    "ref": "raiaone/olid-i",
+    "title": "OLID I",
+    "size": 14469116130,
+    "lastUpdated": "2023-07-02 13:15:15.993000",
+    "downloadCount": 3977,
+    "voteCount": 33,
+    "usabilityRating": 0.875
+  },
+  {
+    "ref": "mdmasudulislam/jutefolio-bd-bangladeshi-jute-leaf-image-dataset",
+    "title": "JuteFolio-BD",
+    "size": 1855817458,
+    "lastUpdated": "2026-09-24 09:10:41.423000",
+    "downloadCount": 63,
+    "voteCount": 0,
+    "usabilityRating": 0.6875
+  },
+  {
+    "ref": "rymonin/agri-vision4",
+    "title": "Agri-vision4",
+    "size": 7467732754,
+    "lastUpdated": "2026-10-03 18:25:27.760000",
+    "downloadCount": 994,
+    "voteCount": 0,
+    "usabilityRating": 0.8125
+  },
+  {
+    "ref": "drtawfikrrahman/agrovision-tomato",
+    "title": "AgroVision-Tomato",
+    "size": 841933312,
+    "lastUpdated": "2026-10-07 10:48:33.603000",
+    "downloadCount": 533,
+    "voteCount": 0,
+    "usabilityRating": 0.5
+  },
+  {
+    "ref": "sakhawatdev5/bangladesh-jute-disease-dataset",
+    "title": "Bangladesh Jute Disease Dataset",
+    "size": 3601816178,
+    "lastUpdated": "2026-10-31 05:54:44.727000",
+    "downloadCount": 0,
+    "voteCount": 1,
+    "usabilityRating": 0.4375
+  },
+  {
+    "ref": "shoyondeb/hog-plum-dataset",
+    "title": "Hog_Plum_Dataset",
+    "size": 52565724,
+    "lastUpdated": "2025-10-25 06:54:56.107000",
+    "downloadCount": 49,
+    "voteCount": 0,
+    "usabilityRating": 0.375
+  }
+]

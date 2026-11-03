@@ -1,0 +1,17 @@
+{
+  "thegoanpanda_karnataka": {
+    "slug": "thegoanpanda_karnataka",
+    "name": "RICE CROP DISEASES (thegoanpanda)",
+    "archives": [
+      {
+        "archive": "rice-crop-diseases.zip",
+        "size": 4751659,
+        "sha256": "834815b6effaddd53998df5649f7828b8e7e23606a641cfba6cd2b2b6ffda1e8"
+      }
+    ],
+    "image_count": 200,
+    "breakdown": {
+      ".jpg": 200
+    }
+  }
+}

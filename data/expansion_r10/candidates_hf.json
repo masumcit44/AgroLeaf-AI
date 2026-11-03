@@ -1,0 +1,525 @@
+[
+  {
+    "id": "wilsondt/rice-disease-02",
+    "author": "wilsondt",
+    "description": null,
+    "downloads": 1,
+    "tags": [
+      "region:us"
+    ]
+  },
+  {
+    "id": "sharmin3/Rice-Leaf-Disease",
+    "author": "sharmin3",
+    "description": "\nannotations_creators:\n\nfound\nlanguage: []\nlanguage_creators:\nother\nlicense: []\nmultilinguality: []\npretty_name: Rice-Leaf-Disease\nsize_categories:\n1K<n<10K\nsource_datasets:\noriginal\ntags:\n'''Rice'', ''Leaf'', ''Disease'''\ntask_categories:\nimage-classification\ntask_ids:\nmulti-class-image-classification\n\n",
+    "downloads": 69,
+    "tags": [
+      "size_categories:1K<n<10K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "LeafNet75/Rice-Disease-Classification-Dataset",
+    "author": "LeafNet75",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\t\ud83c\udf3e Rice Disease Detection Dataset\n\t\n\n\n\t\n\t\t\n\t\n\t\n\t\tOverview\n\t\n\nThe Rice Disease Detection Dataset is a curated collection of high-resolution images showcasing the health conditions of rice crops. It includes images across four distinct classes, enabling the development of machine learning models for detecting and diagnosing rice diseases effectively. This dataset is intended for agricultural researchers, machine learning enthusiasts, and AI practitioners working towards precision\u2026 See the full description on the dataset page: https://huggingface.co/datasets/LeafNet75/Rice-Disease-Classification-Dataset.",
+    "downloads": 61,
+    "tags": [
+      "task_categories:image-classification",
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:1K<n<10K",
+      "region:us",
+      "biology"
+    ]
+  },
+  {
+    "id": "diegod666/Paddy_Disease_w_Non_Rice_Feature",
+    "author": "diegod666",
+    "description": null,
+    "downloads": 73,
+    "tags": [
+      "license:mit",
+      "modality:image",
+      "region:us",
+      "paddy",
+      "plants",
+      "disease",
+      "rice",
+      "machinelearning",
+      "ML"
+    ]
+  },
+  {
+    "id": "amdmqd/rice_leaf_disease_dataset",
+    "author": "amdmqd",
+    "description": null,
+    "downloads": 27,
+    "tags": [
+      "size_categories:1K<n<10K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "hatxwgah/Rice-Disease-Augmented",
+    "author": "hatxwgah",
+    "description": "This dataset is the augmented version of the original dataset: Subh775/Rice-Disease-Classification-Dataset\n\n  \n    Dataset\n    Original\n    This\n  \n  \n    changes\n    \n    \n  \n",
+    "downloads": 6,
+    "tags": [
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ]
+  },
+  {
+    "id": "S-a-r-a/rice_leaf_disease_dataset",
+    "author": "S-a-r-a",
+    "description": null,
+    "downloads": 8,
+    "tags": [
+      "region:us"
+    ]
+  },
+  {
+    "id": "minhhungg/rice-disease-dataset",
+    "author": "minhhungg",
+    "description": "This is the dataset for my project of Plant Diagnosis Suite at here. You can check out to see a Disease Detector trained on this dataset\n\n\t\n\t\t\n\t\n\t\n\t\tVietnamese Rice Disease & Crop Recommendation Dataset\n\t\n\nAn agricultural AI dataset collected in Vietnam, containing 37,978 rice plant images across 21 classes (diseases, pests, nutrient deficiencies, healthy) \u2014 for image classification.\n\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Summary\n\t\n\n\n\t\n\t\t\nComponent\nType\nSamples\nClasses\nTask\n\n\n\t\t\nRice Disease Images\nImage (JPG)\u2026 See the full description on the dataset page: https://huggingface.co/datasets/minhhungg/rice-disease-dataset.",
+    "downloads": 464,
+    "tags": [
+      "task_categories:zero-shot-classification",
+      "language:vi",
+      "license:apache-2.0",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "doi:10.57967/hf/8245",
+      "region:us"
+    ]
+  },
+  {
+    "id": "12Qi89/rice-disease-02",
+    "author": "12Qi89",
+    "description": null,
+    "downloads": 2,
+    "tags": [
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_disease_classification_bangladesh",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Disease Classification\n\t\n\nA dataset for image classification of Rice Disease. The dataset contains raw and augmented versions.The raw dataset contains 2,769 images.Images per class:\n\nHealthy: 603\nInsect: 281\nLeaf Scald: 421\nRice: 16\nRice Blast: 696\nRice Leaffolder: 247\nRice Stripes: 266\nRice Tungro: 239\n\nThe augmented dataset contains 18,536 images.Images per class:\n\nHealthy: 3,995\nInsect: 2,084\nLeaf scald: 2,619\nRice: 128\nRice Blast: 4,450\nRice Leaffolder: 1,658\nRice Stripes:\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_disease_classification_bangladesh.",
+    "downloads": 333,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_leaf_disease_classification",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Leaf Disease Classification\n\t\n\nA dataset for image classification of Rice Leaf Disease Classification. The dataset contains 3,829 images across 6 classes: Bacterial_Leaf_Blight, Brown_Spot, Healthy_Rice_Leaf, Leaf_Blast, Leaf_Scald, Sheath_Blight.Images per class:\n\nBacterial_Leaf_Blight: 636\nBrown_Spot: 646\nHealthy_Rice_Leaf: 653\nLeaf_Blast: 634\nLeaf_Scald: 628\nSheath_Blight: 632\n\nThis dataset is indexed on https://project-agml.github.io/ as part of the AgML python library.\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_leaf_disease_classification.",
+    "downloads": 274,
+    "tags": [
+      "task_categories:image-classification",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_leaf_disease_classification_india",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Leaf Disease Classification India\n\t\n\nA dataset for disease classification of rice leaves. The dataset contains 5,932 images across 4 classes: Bacterialblight, Blast, Brownspot, Tungro.Images per class:\n\nBacterialblight: 1,584\nBlast: 1,440\nBrownspot: 1,600\nTungro: 1,308\n\nThis dataset is indexed on https://project-agml.github.io/ as part of the AgML python library.\n\n\t\n\t\t\n\t\n\t\n\t\tCitation\n\t\n\n@article{sethy2020deep,\n  title={Deep feature based rice leaf disease identification using\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_leaf_disease_classification_india.",
+    "downloads": 301,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/Dhan-Shomadhan_rice_leaf_disease_classification",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tDhan Shomadhan Rice Leaf Disease Classification\n\t\n\nThis dataset provides real-world RGB images of rice leaves affected by multiple disease symptoms, captured under natural agricultural conditions. It offers a practical resource for developing and evaluating computer vision models in agricultural disease detection and monitoring applications. The dataset contains 1,106 images across 8 classes: Brown Spot, Browon Spot, Leaf Scaled, Rice Blast, Rice Tungro, Rice Turgro, Shath Blight\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/Dhan-Shomadhan_rice_leaf_disease_classification.",
+    "downloads": 142,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "modality:image",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2309.07515",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_leaf_disease_classification_2",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Leaf Disease Classification 2\n\t\n\nThis dataset provides real RGB images of rice leaves affected by various diseases, captured in typical agricultural field environments. The images reflect natural farming conditions and disease manifestations, offering a practical resource for developing computer vision models in crop health monitoring. The dataset contains 1,914 images across 3 classes: Bacterial leaf blight, Brown spot, Leaf Blast.Images per class:\n\nBacterial leaf blight: 638\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_leaf_disease_classification_2.",
+    "downloads": 106,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "modality:image",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_leaf_disease_classification_bd",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Leaf Disease Classification Bd\n\t\n\nThis dataset features real RGB images of rice leaves collected in field environments across Bangladesh during the Aman 2025 rice season. Captured using a handheld iPhone 12 Pro, the images depict various disease conditions on rice leaves under natural agricultural settings. The collection provides a practical resource for developing and evaluating computer vision models focused on rice disease detection. The dataset contains 773 images across\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_leaf_disease_classification_bd.",
+    "downloads": 114,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:n<1K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Debasis123/paddy-potato-tomato-rice-disease",
+    "author": "Debasis123",
+    "description": null,
+    "downloads": 10,
+    "tags": [
+      "license:mit",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/uci_rice_leaf_diseases_classification",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tUci Rice Leaf Diseases Classification\n\t\n\nUCI Rice Leaf Diseases: 120 RGB photographs of infected rice leaves, 40 for each of three diseases (bacterial leaf blight, brown spot, leaf smut). Prajapati, Shah and Dabhi (Dharmsinh Desai University, Gujarat, India) sorted the leaves into disease classes with farmers, who named the diseases in Gujarati; the English names were verified with agricultural experts. Each leaf was photographed against a white background in direct sunlight. The\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/uci_rice_leaf_diseases_classification.",
+    "downloads": 138,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:n<1K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "jatyan/Rice-Disease-Classification-Dataset",
+    "author": "jatyan",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\t\ud83c\udf3e Rice Disease Detection Dataset\n\t\n\n\n\t\n\t\t\n\t\n\t\n\t\tOverview\n\t\n\nThe Rice Disease Detection Dataset is a curated collection of high-resolution images showcasing the health conditions of rice crops. It includes images across four distinct classes, enabling the development of machine learning models for detecting and diagnosing rice diseases effectively. This dataset is intended for agricultural researchers, machine learning enthusiasts, and AI practitioners working towards precision\u2026 See the full description on the dataset page: https://huggingface.co/datasets/jatyan/Rice-Disease-Classification-Dataset.",
+    "downloads": 41,
+    "tags": [
+      "task_categories:image-classification",
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:1K<n<10K",
+      "region:us",
+      "biology"
+    ]
+  },
+  {
+    "id": "Solshine/Rice_Diagnosis_Leaf_Images_FromKaggle",
+    "author": "Solshine",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tAutoTrain Dataset for project: rice_diagnosis\n\t\n\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Description\n\t\n\nThis dataset has been automatically processed by AutoTrain for project rice_diagnosis.\nOriginally from Kaggle, this shows rice leaves (leaf) up close pictures labeled with the disease of which they show symptoms.\n\n\t\n\t\t\n\t\n\t\n\t\tLanguages\n\t\n\nThe BCP-47 code for the dataset's language is unk.\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Structure\n\t\n\n\n\t\n\t\t\n\t\n\t\n\t\tData Instances\n\t\n\nA sample from this dataset looks as follows:\n[\n  {\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Solshine/Rice_Diagnosis_Leaf_Images_FromKaggle.",
+    "downloads": 171,
+    "tags": [
+      "task_categories:image-classification",
+      "modality:image",
+      "region:us"
+    ]
+  },
+  {
+    "id": "girish787/riceLeafDataset",
+    "author": "girish787",
+    "description": null,
+    "downloads": 51,
+    "tags": [
+      "license:unknown",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ]
+  },
+  {
+    "id": "nancyalarabawy/RiceLeaf150",
+    "author": "nancyalarabawy",
+    "description": null,
+    "downloads": 6,
+    "tags": [
+      "size_categories:n<1K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ]
+  },
+  {
+    "id": "dianeq/AniMonitor_False_NDVI_Dataset_Multispectral_Rice_Leaf_Images_RPi",
+    "author": "dianeq",
+    "description": null,
+    "downloads": 5,
+    "tags": [
+      "license:cc-by-nc-4.0",
+      "size_categories:n<1K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "notnova/Rice_Leaf_Dataset",
+    "author": "notnova",
+    "description": null,
+    "downloads": 32,
+    "tags": [
+      "license:mit",
+      "size_categories:1K<n<10K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Project-AgML/rice_leaf_bacterial_fungal",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRice Leaf Bacterial Fungal\n\t\n\nThis dataset provides real-world RGB images of rice leaves affected by various bacterial and fungal diseases, captured in field conditions across Chapulia, Gazipur, Bangladesh during the Aman 2025 crop season. Images were collected using a handheld iPhone 12 Pro under natural agricultural settings, offering diverse visual samples for disease classification research in rice cultivation.  The dataset contains raw and augmented versions.The raw dataset\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/rice_leaf_bacterial_fungal.",
+    "downloads": 92,
+    "tags": [
+      "task_categories:image-classification",
+      "license:cc-by-4.0",
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "henrydz/paddy_disease",
+    "author": "henrydz",
+    "description": null,
+    "downloads": 12,
+    "tags": [
+      "license:apache-2.0",
+      "size_categories:10K<n<100K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "anthony2261/paddy-disease-classification",
+    "author": "anthony2261",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tDataset Card for \"paddy-disease-classification\"\n\t\n\nTaken from the Paddy Doctor Kaggle Competition\nMore Information needed\n",
+    "downloads": 99,
+    "tags": [
+      "task_categories:image-classification",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us",
+      "biology",
+      "medical"
+    ]
+  },
+  {
+    "id": "hiutempura/paddy-disease-classification",
+    "author": "hiutempura",
+    "description": null,
+    "downloads": 14,
+    "tags": [
+      "size_categories:1K<n<10K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "hello-wald/paddy-disease-classification",
+    "author": "hello-wald",
+    "description": null,
+    "downloads": 20,
+    "tags": [
+      "license:apache-2.0",
+      "size_categories:1K<n<10K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "sudoth/paddy-disease-dvc",
+    "author": "sudoth",
+    "description": null,
+    "downloads": 3,
+    "tags": [
+      "region:us"
+    ]
+  },
+  {
+    "id": "PawanKapakayala/paddy-disease-classification",
+    "author": "PawanKapakayala",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tDataset Card for \"paddy-disease-classification\"\n\t\n\nTaken from the Paddy Doctor Kaggle Competition\nMore Information needed\n",
+    "downloads": 36,
+    "tags": [
+      "task_categories:image-classification",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "biology",
+      "medical"
+    ]
+  },
+  {
+    "id": "Project-AgML/paddy_disease_classification",
+    "author": "Project-AgML",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPaddy Disease Classification\n\t\n\nA dataset for disease classification of rice paddies. The dataset contains 10,407 images across 10 classes: bacterial_leaf_blight, bacterial_leaf_streak, bacterial_panicle_blight, blast, brown_spot, dead_heart, downy_mildew, hispa, normal, tungro.Images per class:\n\nbacterial_leaf_blight: 479\nbacterial_leaf_streak: 380\nbacterial_panicle_blight: 337\nblast: 1,738\nbrown_spot: 965\ndead_heart: 1,442\ndowny_mildew: 620\nhispa: 1,594\nnormal: 1,764\ntungro: 1\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Project-AgML/paddy_disease_classification.",
+    "downloads": 383,
+    "tags": [
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "techharry/paddy_disease_classification",
+    "author": "techharry",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPaddy Disease Classification\n\t\n\nA dataset for disease classification of rice paddies. The dataset contains 10,407 images across 10 classes: bacterial_leaf_blight, bacterial_leaf_streak, bacterial_panicle_blight, blast, brown_spot, dead_heart, downy_mildew, hispa, normal, tungro.Images per class:\n\nbacterial_leaf_blight: 479\nbacterial_leaf_streak: 380\nbacterial_panicle_blight: 337\nblast: 1,738\nbrown_spot: 965\ndead_heart: 1,442\ndowny_mildew: 620\nhispa: 1,594\nnormal: 1,764\ntungro: 1\u2026 See the full description on the dataset page: https://huggingface.co/datasets/techharry/paddy_disease_classification.",
+    "downloads": 11,
+    "tags": [
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:image",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  },
+  {
+    "id": "Debasis123/paddy-potato-tomato-disease",
+    "author": "Debasis123",
+    "description": null,
+    "downloads": 8,
+    "tags": [
+      "license:mit",
+      "region:us"
+    ]
+  },
+  {
+    "id": "little-king/RiceBlast-Lesion-Segmentation",
+    "author": "little-king",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tRiceBlast Lesion Segmentation Dataset(Preview)\n\t\n\nThis repository provides a preview subset of a rice leaf dataset, including instance-level leaf segmentation and semantic annotation of blast lesions. It is part of our ongoing research paper RBNet.\n\n\t\n\t\t\n\t\n\t\n\t\tStatus\n\t\n\n\nThe associated manuscript is currently under peer review.\nThe full dataset (including the complete image set, full annotations, and additional metadata) will be released upon paper acceptance.\n\n\n\t\n\t\t\n\t\n\t\n\t\tFile\u2026 See the full description on the dataset page: https://huggingface.co/datasets/little-king/RiceBlast-Lesion-Segmentation.",
+    "downloads": 113,
+    "tags": [
+      "license:cc-by-4.0",
+      "size_categories:n<1K",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ]
+  }
+]
