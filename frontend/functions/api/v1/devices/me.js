@@ -1,6 +1,6 @@
 // DELETE /api/v1/devices/me: "delete my data" on the server. Rows go by ON DELETE CASCADE;
 // photos in R2 are removed first. Anonymous area reports carry no device id and are kept.
-import { json, requireDb } from '../../../../server/http.js';
+import { requireDb } from '../../../../server/http.js';
 import { verifyDevice } from '../../../../server/auth.js';
 
 export async function onRequestDelete({ request, env }) {
