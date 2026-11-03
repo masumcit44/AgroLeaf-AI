@@ -1,0 +1,24 @@
+{
+  "id": "mdmasumakondha/agroleaf-eda-v9",
+  "title": "agroleaf-eda-v9",
+  "code_file": "kaggle_eda_v9.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "shahiismyname/riceleafdiseasebd-dataset",
+    "sohagdewan/riceleafdisease-bd5",
+    "raihan150146/rice-leaf-diseases-dataset",
+    "nirmalsankalana/dhan-shomadhan",
+    "imbikramsaha/paddy-doctor",
+    "nirmalsankalana/rice-leaf-disease-image",
+    "raingel/rice-leaf-disease",
+    "sikanderk/riceleafbd-mendeley",
+    "vbookshelf/rice-leaf-diseases"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

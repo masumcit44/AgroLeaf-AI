@@ -1,0 +1,47 @@
+# Live UI test, 2 Nov 2026 ~13:20 BST (e2e upload through the real UI, headless Chrome, 390x844)
+
+## production https://agroleaf-ai.pages.dev (v1 + G1)
+Paddy-Leaf-Blast-medium.webp             -> DISEASE: ব্লাস্ট রোগ
+blast_01.jpg                             -> NOT_SURE
+blast_02.jpg                             -> DISEASE: ব্লাস্ট রোগ
+brown_spot_01.jpg                        -> DISEASE: বাদামী দাগ রোগ
+brown_spot_02.jpg                        -> DISEASE: বাদামী দাগ রোগ
+healthy_01.jpg                           -> HEALTHY
+healthy_02.jpg                           -> NOT_SURE
+leaf_smut_01.jpg                         -> NOT_SURE
+leaf_smut_02.jpg                         -> NOT_SURE
+leaf_smut_download_version.jpg           -> DISEASE: খোল পোড়া রোগ
+not_rice_01_sticker.png                  -> NOT_SURE: not a rice leaf
+not_rice_02_app_screenshot.png           -> NOT_SURE: not a rice leaf
+sheath_blight_01.jpg                     -> DISEASE: খোল পোড়া রোগ
+sheath_blight_02.jpg                     -> DISEASE: খোল পোড়া রোগ
+tungro_01.jpg                            -> DISEASE: টুংরো রোগ
+tungro_02.jpg                            -> DISEASE: টুংরো রোগ
+unclear_01_closeup.jpg                   -> NOT_SURE
+bacterial_leaf_blight_01.jpg             -> NOT_SURE: healthy caution
+bacterial_leaf_blight_02.jpg             -> NOT_SURE: healthy caution
+AI_Battle__Joining_the_Podcast_1.png     -> NOT_SURE: not a rice leaf
+no console or page errors
+
+## preview https://deploy-candidate-ready.agroleaf-ai.pages.dev (V8_all_b0_320, sha256 dda84502...)
+Paddy-Leaf-Blast-medium.webp             -> DISEASE: ব্লাস্ট রোগ
+blast_01.jpg                             -> NOT_SURE
+blast_02.jpg                             -> DISEASE: ব্লাস্ট রোগ
+brown_spot_01.jpg                        -> DISEASE: বাদামী দাগ রোগ
+brown_spot_02.jpg                        -> DISEASE: বাদামী দাগ রোগ
+healthy_01.jpg                           -> HEALTHY
+healthy_02.jpg                           -> NOT_SURE: healthy caution
+leaf_smut_01.jpg                         -> NOT_SURE
+leaf_smut_02.jpg                         -> NOT_SURE
+leaf_smut_download_version.jpg           -> DISEASE: ব্লাস্ট রোগ
+not_rice_01_sticker.png                  -> NOT_SURE: not a rice leaf
+not_rice_02_app_screenshot.png           -> NOT_SURE: not a rice leaf
+sheath_blight_01.jpg                     -> DISEASE: খোল পোড়া রোগ
+sheath_blight_02.jpg                     -> DISEASE: খোল পোড়া রোগ
+tungro_01.jpg                            -> DISEASE: টুংরো রোগ
+tungro_02.jpg                            -> DISEASE: টুংরো রোগ
+unclear_01_closeup.jpg                   -> DISEASE: বাদামী দাগ রোগ
+bacterial_leaf_blight_01.jpg             -> NOT_SURE: other rice problem
+bacterial_leaf_blight_02.jpg             -> NOT_SURE: other rice problem
+AI_Battle__Joining_the_Podcast_1.png     -> NOT_SURE: not a rice leaf
+no console or page errors

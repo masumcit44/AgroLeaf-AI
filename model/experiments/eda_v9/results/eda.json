@@ -1,0 +1,453 @@
+{
+ "per_source": {
+  "gazipur": {
+   "n": 9415,
+   "median_w": 1024.0,
+   "median_h": 1024.0,
+   "brightness": 104.1,
+   "saturation": 116.7,
+   "sharpness_lapvar_median": 547.0,
+   "green_fraction": 0.589,
+   "white_border_mean": 0.026,
+   "classes": {
+    "blast": 1234,
+    "brown_spot": 2045,
+    "healthy": 1566,
+    "leaf_smut": 709,
+    "tungro": 2187,
+    "sheath_blight": 1674
+   }
+  },
+  "savar": {
+   "n": 3042,
+   "median_w": 300.0,
+   "median_h": 300.0,
+   "brightness": 209.8,
+   "saturation": 32.0,
+   "sharpness_lapvar_median": 141.1,
+   "green_fraction": 0.126,
+   "white_border_mean": 0.839,
+   "classes": {
+    "blast": 698,
+    "other_rice": 462,
+    "healthy": 804,
+    "sheath_blight": 600,
+    "tungro": 478
+   }
+  },
+  "raihan_bd": {
+   "n": 1785,
+   "median_w": 1600.0,
+   "median_h": 1200.0,
+   "brightness": 98.1,
+   "saturation": 132.4,
+   "sharpness_lapvar_median": 402.6,
+   "green_fraction": 0.775,
+   "white_border_mean": 0.021,
+   "classes": {
+    "other_rice": 809,
+    "brown_spot": 246,
+    "healthy": 180,
+    "blast": 268,
+    "sheath_blight": 282
+   }
+  },
+  "dhan_shomadhan_bd": {
+   "n": 763,
+   "median_w": 1080.0,
+   "median_h": 2301.0,
+   "brightness": 156.4,
+   "saturation": 26.8,
+   "sharpness_lapvar_median": 64.9,
+   "green_fraction": 0.075,
+   "white_border_mean": 0.357,
+   "classes": {
+    "sheath_blight": 218,
+    "blast": 195,
+    "brown_spot": 89,
+    "other_rice": 142,
+    "tungro": 119
+   }
+  },
+  "paddy_doctor_in": {
+   "n": 10126,
+   "median_w": 480.0,
+   "median_h": 640.0,
+   "brightness": 112.0,
+   "saturation": 160.4,
+   "sharpness_lapvar_median": 2228.8,
+   "green_fraction": 0.837,
+   "white_border_mean": 0.036,
+   "classes": {
+    "other_rice": 4738,
+    "blast": 1703,
+    "brown_spot": 934,
+    "healthy": 1683,
+    "tungro": 1068
+   }
+  },
+  "sethy_in": {
+   "n": 2866,
+   "median_w": 300.0,
+   "median_h": 300.0,
+   "brightness": 110.6,
+   "saturation": 110.5,
+   "sharpness_lapvar_median": 164.4,
+   "green_fraction": 0.636,
+   "white_border_mean": 0.049,
+   "classes": {
+    "other_rice": 553,
+    "blast": 526,
+    "brown_spot": 727,
+    "tungro": 1060
+   }
+  },
+  "taiwan_tw": {
+   "n": 890,
+   "median_w": 4000.0,
+   "median_h": 3000.0,
+   "brightness": 116.1,
+   "saturation": 118.9,
+   "sharpness_lapvar_median": 1562.8,
+   "green_fraction": 0.544,
+   "white_border_mean": 0.134,
+   "classes": {
+    "brown_spot": 76,
+    "blast": 501,
+    "healthy": 313
+   }
+  },
+  "sylhet_bd": {
+   "n": 1424,
+   "median_w": 1120.0,
+   "median_h": 1560.0,
+   "brightness": 92.0,
+   "saturation": 141.3,
+   "sharpness_lapvar_median": 700.8,
+   "green_fraction": 0.504,
+   "white_border_mean": 0.033,
+   "classes": {
+    "other_rice": 330,
+    "brown_spot": 347,
+    "healthy": 252,
+    "tungro": 495
+   }
+  },
+  "gujarat_in": {
+   "n": 120,
+   "median_w": 3081.0,
+   "median_h": 897.0,
+   "brightness": 171.5,
+   "saturation": 90.8,
+   "sharpness_lapvar_median": 69.5,
+   "green_fraction": 0.296,
+   "white_border_mean": 0.698,
+   "classes": {
+    "other_rice": 40,
+    "brown_spot": 40,
+    "leaf_smut": 40
+   }
+  },
+  "diu_bd": {
+   "n": 2704,
+   "median_w": 1944.0,
+   "median_h": 1944.0,
+   "brightness": 220.6,
+   "saturation": 26.5,
+   "sharpness_lapvar_median": 131.0,
+   "green_fraction": 0.114,
+   "white_border_mean": 0.883,
+   "classes": {
+    "other_rice": 1207,
+    "healthy": 591,
+    "blast": 669,
+    "tungro": 237
+   }
+  },
+  "aman_bd": {
+   "n": 741,
+   "median_w": 480.0,
+   "median_h": 640.0,
+   "brightness": 103.2,
+   "saturation": 144.9,
+   "sharpness_lapvar_median": 498.1,
+   "green_fraction": 0.774,
+   "white_border_mean": 0.016,
+   "classes": {
+    "other_rice": 328,
+    "blast": 133,
+    "brown_spot": 179,
+    "healthy": 101
+   }
+  }
+ },
+ "source_separability_balanced_acc": 0.9521,
+ "source_separability_within_class": {
+  "healthy": {
+   "sources": [
+    "gazipur",
+    "savar",
+    "raihan_bd",
+    "paddy_doctor_in",
+    "taiwan_tw"
+   ],
+   "balanced_acc": 0.9205
+  },
+  "blast": {
+   "sources": [
+    "gazipur",
+    "savar",
+    "raihan_bd",
+    "dhan_shomadhan_bd",
+    "paddy_doctor_in",
+    "sethy_in",
+    "taiwan_tw"
+   ],
+   "balanced_acc": 0.9603
+  },
+  "brown_spot": {
+   "sources": [
+    "gazipur",
+    "raihan_bd",
+    "dhan_shomadhan_bd",
+    "paddy_doctor_in",
+    "sethy_in",
+    "taiwan_tw"
+   ],
+   "balanced_acc": 0.9445
+  },
+  "tungro": {
+   "sources": [
+    "gazipur",
+    "savar",
+    "dhan_shomadhan_bd",
+    "paddy_doctor_in",
+    "sethy_in"
+   ],
+   "balanced_acc": 0.9892
+  },
+  "sheath_blight": {
+   "sources": [
+    "gazipur",
+    "savar",
+    "raihan_bd",
+    "dhan_shomadhan_bd"
+   ],
+   "balanced_acc": 0.9717
+  },
+  "other_rice": {
+   "sources": [
+    "savar",
+    "raihan_bd",
+    "dhan_shomadhan_bd",
+    "paddy_doctor_in",
+    "sethy_in"
+   ],
+   "balanced_acc": 0.9806
+  }
+ },
+ "probe_oof_macro_f1_pool": 0.6614,
+ "label_noise_suspects": {
+  "total": 109,
+  "by_source_class": {
+   "savar|other_rice": 19,
+   "paddy_doctor_in|blast": 9,
+   "gazipur|blast": 8,
+   "raihan_bd|sheath_blight": 7,
+   "dhan_shomadhan_bd|other_rice": 7,
+   "paddy_doctor_in|healthy": 6,
+   "gazipur|sheath_blight": 5,
+   "raihan_bd|other_rice": 5,
+   "raihan_bd|blast": 5,
+   "dhan_shomadhan_bd|brown_spot": 5,
+   "gazipur|brown_spot": 4,
+   "gazipur|leaf_smut": 4,
+   "savar|healthy": 4,
+   "paddy_doctor_in|brown_spot": 4,
+   "savar|sheath_blight": 2,
+   "dhan_shomadhan_bd|sheath_blight": 2,
+   "sethy_in|tungro": 2,
+   "taiwan_tw|blast": 2,
+   "gazipur|healthy": 1,
+   "gazipur|tungro": 1,
+   "savar|blast": 1,
+   "raihan_bd|brown_spot": 1,
+   "dhan_shomadhan_bd|blast": 1,
+   "paddy_doctor_in|tungro": 1,
+   "sethy_in|brown_spot": 1,
+   "taiwan_tw|brown_spot": 1,
+   "taiwan_tw|healthy": 1
+  },
+  "suggested_label": {
+   "other_rice->healthy": 19,
+   "blast->other_rice": 13,
+   "blast->tungro": 9,
+   "other_rice->tungro": 8,
+   "sheath_blight->other_rice": 7,
+   "healthy->other_rice": 6,
+   "healthy->blast": 5,
+   "brown_spot->other_rice": 5,
+   "brown_spot->sheath_blight": 4,
+   "leaf_smut->healthy": 4,
+   "brown_spot->tungro": 3,
+   "sheath_blight->tungro": 3,
+   "sheath_blight->healthy": 3,
+   "blast->healthy": 3,
+   "sheath_blight->blast": 3
+  }
+ },
+ "leave_one_source_out_probe": {
+  "dhan_shomadhan_bd": {
+   "n": 763,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "other_rice",
+    "sheath_blight",
+    "tungro"
+   ],
+   "macro_f1": 0.313,
+   "per_class_recall": {
+    "blast": 0.708,
+    "brown_spot": 0.022,
+    "other_rice": 0.317,
+    "sheath_blight": 0.161,
+    "tungro": 0.479
+   }
+  },
+  "gazipur": {
+   "n": 8706,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "healthy",
+    "sheath_blight",
+    "tungro"
+   ],
+   "macro_f1": 0.2234,
+   "per_class_recall": {
+    "blast": 0.266,
+    "brown_spot": 0.525,
+    "healthy": 0.089,
+    "sheath_blight": 0.173,
+    "tungro": 0.0
+   }
+  },
+  "paddy_doctor_in": {
+   "n": 10126,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "healthy",
+    "other_rice",
+    "tungro"
+   ],
+   "macro_f1": 0.1715,
+   "per_class_recall": {
+    "blast": 0.636,
+    "brown_spot": 0.013,
+    "healthy": 0.705,
+    "other_rice": 0.035,
+    "tungro": 0.037
+   }
+  },
+  "raihan_bd": {
+   "n": 1785,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "healthy",
+    "other_rice",
+    "sheath_blight"
+   ],
+   "macro_f1": 0.284,
+   "per_class_recall": {
+    "blast": 0.108,
+    "brown_spot": 0.114,
+    "healthy": 0.639,
+    "other_rice": 0.051,
+    "sheath_blight": 0.312
+   }
+  },
+  "savar": {
+   "n": 3042,
+   "classes": [
+    "blast",
+    "healthy",
+    "other_rice",
+    "sheath_blight",
+    "tungro"
+   ],
+   "macro_f1": 0.3579,
+   "per_class_recall": {
+    "blast": 0.05,
+    "healthy": 0.744,
+    "other_rice": 0.236,
+    "sheath_blight": 0.312,
+    "tungro": 0.295
+   }
+  },
+  "sethy_in": {
+   "n": 2866,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "other_rice",
+    "tungro"
+   ],
+   "macro_f1": 0.2427,
+   "per_class_recall": {
+    "blast": 0.481,
+    "brown_spot": 0.198,
+    "other_rice": 0.099,
+    "tungro": 0.152
+   }
+  },
+  "taiwan_tw": {
+   "n": 890,
+   "classes": [
+    "blast",
+    "brown_spot",
+    "healthy"
+   ],
+   "macro_f1": 0.1151,
+   "per_class_recall": {
+    "blast": 0.132,
+    "brown_spot": 0.013,
+    "healthy": 0.064
+   }
+  }
+ },
+ "nearest_train_similarity_percentiles": {
+  "train_pool_self": {
+   "10": 0.918,
+   "25": 0.9507,
+   "50": 0.9727,
+   "75": 0.9839
+  },
+  "aman_bd": {
+   "10": 0.8433,
+   "25": 0.8955,
+   "50": 0.9375,
+   "75": 0.9634
+  },
+  "diu_bd": {
+   "10": 0.7124,
+   "25": 0.7612,
+   "50": 0.7998,
+   "75": 0.8262
+  },
+  "gujarat_in": {
+   "10": 0.7557,
+   "25": 0.8184,
+   "50": 0.8601,
+   "75": 0.8862
+  },
+  "sylhet_bd": {
+   "10": 0.7573,
+   "25": 0.8094,
+   "50": 0.8569,
+   "75": 0.8906
+  }
+ }
+}

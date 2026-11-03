@@ -1,0 +1,26 @@
+{
+  "id": "mdmasumakondha/agroleaf-train-v8",
+  "title": "agroleaf-train-v8",
+  "code_file": "kaggle_train_v8.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "shahiismyname/riceleafdiseasebd-dataset",
+    "sohagdewan/riceleafdisease-bd5",
+    "prasunroy/natural-images",
+    "emmarex/plantdisease",
+    "neha1703/movie-genre-from-its-poster",
+    "williamscott701/memotion-dataset-7k",
+    "raihan150146/rice-leaf-diseases-dataset",
+    "nirmalsankalana/dhan-shomadhan",
+    "imbikramsaha/paddy-doctor",
+    "nirmalsankalana/rice-leaf-disease-image",
+    "raingel/rice-leaf-disease"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

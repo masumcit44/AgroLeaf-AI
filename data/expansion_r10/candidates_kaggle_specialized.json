@@ -1,0 +1,422 @@
+[
+  {
+    "ref": "vbookshelf/rice-leaf-diseases",
+    "title": "Rice Leaf Diseases Dataset",
+    "size": 38456279,
+    "lastUpdated": "2020-02-21 01:35:02.610000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "loki4514/rice-leaf-diseases-detection",
+    "title": "Rice Leaf Diseases Detection",
+    "size": 8620835900,
+    "lastUpdated": "2023-12-11 11:49:59.057000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "yusufmurtaza01/rice-leaf-diseases",
+    "title": "RICE Leaf Diseases",
+    "size": 485693087,
+    "lastUpdated": "2026-04-15 11:21:08.440000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "jay7080dev/rice-plant-diseases-dataset",
+    "title": "Rice Plant diseases dataset",
+    "size": 184522498,
+    "lastUpdated": "2024-05-02 15:51:38.803000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "raihan150146/rice-leaf-diseases-dataset",
+    "title": "Rice Leaf Diseases Dataset",
+    "size": 1915747384,
+    "lastUpdated": "2023-12-06 05:53:56.040000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "nirmalsankalana/rice-leaf-disease-image",
+    "title": "Rice Leaf Disease Images",
+    "size": 204777417,
+    "lastUpdated": "2024-01-01 05:33:50.993000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "anshulm257/rice-disease-dataset",
+    "title": "Rice Disease Dataset",
+    "size": 1063925948,
+    "lastUpdated": "2024-07-29 08:44:53.493000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "shayanriyaz/riceleafs",
+    "title": "Rice Leafs",
+    "size": 15978875144,
+    "lastUpdated": "2019-07-18 11:31:17.970000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "thegoanpanda/rice-crop-diseases",
+    "title": "RICE CROP DISEASES",
+    "size": 4751659,
+    "lastUpdated": "2024-06-19 02:59:22.350000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "shubham2703/five-crop-diseases-dataset",
+    "title": "Five Crop Diseases Dataset",
+    "size": 4651502464,
+    "lastUpdated": "2023-09-23 06:41:04.220000",
+    "query": "rice leaf diseases"
+  },
+  {
+    "ref": "maimunulkjisan/rice-leaf-dataset-from-mendeley-data",
+    "title": "Rice Leafs Disease Dataset",
+    "size": 205074017,
+    "lastUpdated": "2023-10-18 13:02:26.150000",
+    "query": "rice blast"
+  },
+  {
+    "ref": "nafishamoin/new-bangladeshi-crop-disease",
+    "title": "New Bangladeshi Crop Disease",
+    "size": 2520068131,
+    "lastUpdated": "2022-09-27 08:35:14.790000",
+    "query": "rice blast"
+  },
+  {
+    "ref": "nizorogbezuode/rice-leaf-images",
+    "title": "rice_leaf_images",
+    "size": 18515698,
+    "lastUpdated": "2021-11-16 13:42:35.513000",
+    "query": "rice blast"
+  },
+  {
+    "ref": "rajkumar898/rice-plant-dataset",
+    "title": "Rice Plant Dataset",
+    "size": 1316656105,
+    "lastUpdated": "2020-11-29 07:12:08.820000",
+    "query": "rice blast"
+  },
+  {
+    "ref": "ritikbompilwar/plantstressidentification",
+    "title": "Plant Stress Identification (Paddy Leaves)",
+    "size": 19760543,
+    "lastUpdated": "2022-09-06 15:09:00.530000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "douaairaq/rice-disease-dataset-labelled-to-train-yolov5",
+    "title": "rice-disease-dataset-labelled-to-train-yolov5",
+    "size": 3050992038,
+    "lastUpdated": "2023-07-14 16:26:01.233000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "sujaradha/thermal-images-diseased-healthy-leaves-paddy",
+    "title": "Thermal images - diseased & healthy leaves - paddy",
+    "size": 46450364,
+    "lastUpdated": "2020-04-18 10:34:27.797000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "shivas86/paddy-leaf-disease",
+    "title": "Paddy leaf disease",
+    "size": 410209636,
+    "lastUpdated": "2024-02-16 06:28:46.520000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "amnandeesh/rice-diseases-real-world-data-set",
+    "title": "Rice Diseases real world data set",
+    "size": 11683663,
+    "lastUpdated": "2023-04-12 07:23:07.180000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "eon541/paddy-leaf",
+    "title": "Paddy Leaf",
+    "size": 99987903,
+    "lastUpdated": "2026-05-14 17:36:06.010000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "nhngtrng/full-data-paddy-original",
+    "title": "full_Data_rice_leaf_disease",
+    "size": 3336432090,
+    "lastUpdated": "2025-10-06 07:17:04.333000",
+    "query": "paddy leaf blast"
+  },
+  {
+    "ref": "zeeniye/paddy-pests-dataset",
+    "title": "Paddy Pests Dataset",
+    "size": 170721173,
+    "lastUpdated": "2020-09-09 05:36:58.513000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "mathumithram/rice-pest-detection",
+    "title": "rice-pest-detection",
+    "size": 372998374,
+    "lastUpdated": "2023-07-14 01:57:06.317000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "mdnaimislam165436/paddy-dataset",
+    "title": "Paddy Dataset",
+    "size": 21835,
+    "lastUpdated": "2026-04-17 17:53:50.997000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "itachixx/paddy-pest-combined-dataset",
+    "title": "Paddy_pest_combined_dataset",
+    "size": 814243159,
+    "lastUpdated": "2026-06-28 17:13:09.790000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "kanishkasalgude/p57india",
+    "title": "P57India",
+    "size": 379400500,
+    "lastUpdated": "2026-04-05 10:42:56.280000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "hrishabhnayal/crop-data",
+    "title": "Crop+Data",
+    "size": 2157240991,
+    "lastUpdated": "2024-04-11 15:53:53.800000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "rajchoudhari07/vaanisetu",
+    "title": "VaaniSetu",
+    "size": 8225,
+    "lastUpdated": "2026-06-14 17:05:07.277000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "shivrajrajasekaran/advanced-tamil-instruction-dataset-v2",
+    "title": "Advanced Tamil Instruction Dataset v2",
+    "size": 10583315,
+    "lastUpdated": "2026-04-23 11:09:18.873000",
+    "query": "paddy pest"
+  },
+  {
+    "ref": "zsinghrahulk/rice-pest-and-diseases",
+    "title": "Rice - Pest and Diseases",
+    "size": 319548,
+    "lastUpdated": "2023-06-01 08:57:29.470000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "rtlmhjbn/ip02-dataset",
+    "title": "IP102-Dataset",
+    "size": 3158499040,
+    "lastUpdated": "2022-02-03 07:58:39.020000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "sadmansakibmahi/plant-disease-expert",
+    "title": "Plant Disease Expert",
+    "size": 10019383772,
+    "lastUpdated": "2024-08-31 11:09:18.720000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "chaitanyakamble69/rice-leaf-disease-riceguard-19k-cleaned",
+    "title": "rice-leaf-disease-riceguard-19k-cleaned",
+    "size": 2093279953,
+    "lastUpdated": "2026-01-01 18:19:39.950000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "pialghosh/crop-pest-dataset",
+    "title": "Crop pest dataset",
+    "size": 24200347,
+    "lastUpdated": "2024-09-27 07:10:59.333000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "dingbiao11/rp11-a-dataset-focus-on-adult-rice-pest",
+    "title": "RP11: A Dataset Focus on Adult Rice Pest",
+    "size": 1369159276,
+    "lastUpdated": "2025-05-24 18:34:36.230000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "nashehannafii/datasetleafblast",
+    "title": "Dataset",
+    "size": 439828013,
+    "lastUpdated": "2022-07-14 19:15:04.153000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "alamshihab075/rice-leaf-disease-an-images-dataset",
+    "title": "Rice Leaf Disease: An Images Dataset",
+    "size": 10344949159,
+    "lastUpdated": "2025-10-25 05:39:41.150000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "parserpixy/ip102-dataset",
+    "title": "IP102-Dataset_Annotated",
+    "size": 807750864,
+    "lastUpdated": "2024-06-21 12:24:37.690000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "datasetengineer/crop-health-and-environmental-stress-dataset",
+    "title": "Crop Health and Environmental Stress Dataset",
+    "size": 35898611,
+    "lastUpdated": "2025-01-29 03:03:51.243000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "rashidthihan/plant-disease-dataset",
+    "title": "Plant Disease Dataset",
+    "size": 6842960258,
+    "lastUpdated": "2025-11-24 20:10:04.933000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "alfonsojelai/rice-pest-dataset",
+    "title": "Rice Pest Dataset",
+    "size": 43636183848,
+    "lastUpdated": "2025-04-18 05:06:18.423000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "nafayunnoor/rice-pest-datasets-for-detection",
+    "title": "Rice Pest Datasets for detection",
+    "size": 1420419706,
+    "lastUpdated": "2025-12-22 08:24:15.353000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "vlus06/rice-pest",
+    "title": "rice-pest",
+    "size": 105249394,
+    "lastUpdated": "2026-06-14 04:01:01.980000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "kennysoftdennis/enhanced-bird-dataset-for-rice-field-protection",
+    "title": "Enhanced Bird Dataset for Rice Field Protection",
+    "size": 126716668,
+    "lastUpdated": "2025-08-18 12:08:05.400000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "datasetengineer/smart-farming-data-2024-sf24",
+    "title": "Smart Farming Data 2024 (SF24)",
+    "size": 291818,
+    "lastUpdated": "2024-08-24 15:10:41.937000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "mrhouv/stored-grain-pests",
+    "title": "Stored grain pests",
+    "size": 4867414362,
+    "lastUpdated": "2026-01-20 07:21:30.117000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "xuzhangliu/ricepest-6-rice-pest-and-disease-dataset",
+    "title": "RicePest-6: Rice Pest and Disease Dataset",
+    "size": 352074194,
+    "lastUpdated": "2026-09-18 14:51:28.210000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "xiaojingjiang/rice-pest-dataset",
+    "title": "Rice Pest Dataset",
+    "size": 20447399,
+    "lastUpdated": "2025-06-15 02:44:45.250000",
+    "query": "rice pest"
+  },
+  {
+    "ref": "soni535/rice-leaf-bacterial-and-fungal-disease",
+    "title": "Rice Leaf Disease Dataset",
+    "size": 3684879588,
+    "lastUpdated": "2024-04-22 09:46:13.880000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "hadiurrahmannabil/rice-leaf-spot-disease-annotated-dataset",
+    "title": "Rice Leaf Spot Disease Annotated Dataset",
+    "size": 167112337,
+    "lastUpdated": "2024-10-15 04:36:31.170000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "shivas86/rice-leaf-disease-dataset",
+    "title": "rice leaf disease dataset",
+    "size": 2028332870,
+    "lastUpdated": "2026-02-26 05:51:03.377000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "jonathanrjpereira/rice-disease",
+    "title": "Rice Disease",
+    "size": 4885336468,
+    "lastUpdated": "2019-11-24 04:14:25.060000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "abuabdurrahman1101/rice-disease-leaves",
+    "title": "Rice Disease Leaves",
+    "size": 1044789897,
+    "lastUpdated": "2024-01-22 09:49:17.513000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "tairoooo/rice-leaf-disease-dataset",
+    "title": "Rice Leaf Disease Dataset",
+    "size": 966719758,
+    "lastUpdated": "2025-01-06 15:32:01.490000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "prajwal2922/riceleafdataset",
+    "title": "RiceLeafDataset",
+    "size": 7989336925,
+    "lastUpdated": "2023-10-12 11:51:55.213000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "srideviklef/rice-leaf-disease-image-dataset",
+    "title": "Rice Leaf Disease Image Dataset",
+    "size": 22999386,
+    "lastUpdated": "2026-07-13 09:32:08.153000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "shuvokumarbasak2030/rice-leaf-diseases-augmented-new-dataset",
+    "title": "Rice Leaf Diseases Augmented New Dataset",
+    "size": 742976327,
+    "lastUpdated": "2025-04-28 09:46:13.703000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "busyal/rice-leaf-dataset00",
+    "title": "Rice_Leaf_dataset00",
+    "size": 5058694227,
+    "lastUpdated": "2026-08-13 09:40:36.540000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "nashehannafii/dataset-ai",
+    "title": "Dataset_ai",
+    "size": 18593128,
+    "lastUpdated": "2022-03-07 09:37:54.110000",
+    "query": "rice hispa"
+  },
+  {
+    "ref": "ayyappaswamythati/leafy-plant-pathology",
+    "title": "Leafy - plant pathology",
+    "size": 13184935116,
+    "lastUpdated": "2026-05-01 04:11:22.130000",
+    "query": "rice hispa"
+  }
+]

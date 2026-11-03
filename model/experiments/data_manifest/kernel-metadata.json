@@ -1,0 +1,29 @@
+{
+  "id": "mdmasumakondha/agroleaf-data-manifest",
+  "title": "agroleaf-data-manifest",
+  "code_file": "kaggle_data_manifest.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "shahiismyname/riceleafdiseasebd-dataset",
+    "sohagdewan/riceleafdisease-bd5",
+    "sikanderk/riceleafbd-mendeley",
+    "sikanderk/hasanmojumdar-rice",
+    "soni535/rice-leaf-bacterial-and-fungal-disease",
+    "raihan150146/rice-leaf-diseases-dataset",
+    "aksharpujara/dhan-shomadhan-rice-leaf-diseases-dataset",
+    "imbikramsaha/paddy-doctor",
+    "nirmalsankalana/rice-leaf-disease-image",
+    "vbookshelf/rice-leaf-diseases",
+    "thegoanpanda/rice-crop-diseases",
+    "raingel/rice-leaf-disease",
+    "shivas86/rice-blast-dataset",
+    "iqbalassidiki/rice-leaf-blast"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

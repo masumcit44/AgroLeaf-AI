@@ -1,0 +1,3 @@
+{"id": "mdmasumakondha/agroleaf-vn-diu-overlap", "title": "agroleaf-vn-diu-overlap", "code_file": "kaggle_vn_diu_overlap.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false, "enable_internet": true,
+ "dataset_sources": ["minhhuy2810/rice-diseases-image-dataset", "sikanderk/hasanmojumdar-rice"], "competition_sources": [], "kernel_sources": []}
