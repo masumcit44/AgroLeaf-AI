@@ -64,9 +64,9 @@ Search all of these with terms such as:
 - Hugging Face Hub (datasets).
 - Zenodo, Figshare, Harvard Dataverse, OSF, IEEE DataPort (**free files only**), Data in Brief articles (each links its dataset).
 - Google Dataset Search and Papers with Code.
-- Roboflow Universe: object-detection sets can be cropped to leaves with their boxes. Check each project's licence.
+- Roboflow Universe: object-detection sets can be cropped to leaves with their boxes.
 - GitHub repos of rice-disease papers (look for linked data, not just code).
-- iNaturalist, GBIF and PlantNet, only photos with **CC0 / CC BY / CC BY-SA** licences (useful for `not_rice` and rare diseases).
+- iNaturalist, GBIF and PlantNet (useful for `not_rice` and rare diseases).
 - Bangladeshi institutions with public galleries: BRRI, DAE, Krishi Tottho Sarbaraho (AIS), Krishi Batayon, and Bangla agriculture blogs and news sites.
 - Web image search (Google, Bing, Baidu) in English, Bangla, Hindi and Vietnamese.
   - Web images are often lab photos, diagrams or copies of dataset images. Run the label audit and dedup on them like any other source.
