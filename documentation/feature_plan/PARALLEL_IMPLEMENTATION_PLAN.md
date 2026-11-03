@@ -29,7 +29,7 @@ Companion to `FEATURE_ARCHITECTURE_RESEARCH.md`, `DATABASE_API_DESIGN.md` and `I
 ## 3. Shared foundation first (Batch 0, lead only, about 1 day)
 Nothing parallel starts until T0.1–T0.4 are merged into `deploy/candidate-ready`.
 - **T0.1** Freeze contracts: this plan, the IndexedDB schema and the API v1 (`DATABASE_API_DESIGN.md`), owner approval.
-- **T0.2** Prove Pages Functions deploy on the preview: `functions/api/v1/health.js` returns `{ok:true}`. Verify the root-directory setting. If it fails, stop and re-plan (fallback: a separate Worker).
+- **T0.2** Prove Pages Functions deploy on the preview: `frontend/functions/api/v1/health.js` returns `{ok:true}`. Verify the root-directory setting. If it fails, stop and re-plan (fallback: a separate Worker).
 - **T0.3** Frontend foundation PR:
   - dependencies added once by the lead (avoids lockfile conflicts): `vite-plugin-pwa`, `idb`, `leaflet` (licences: MIT / ISC / BSD-2; to be verified at install);
   - `frontend/src/lib/store/` (IndexedDB wrapper + outbox with idempotency keys);
@@ -37,14 +37,14 @@ Nothing parallel starts until T0.1–T0.4 are merged into `deploy/candidate-read
   - per-feature i18n files `frontend/src/i18n/features/<f>.{bn,en}.js`, merged by the provider.
 
   Agents then fill their own folders without touching shared files.
-- **T0.4** API foundation: `functions/api/v1/_middleware.js` (errors, device auth, rate limit, Turnstile verify), `migrations/0001_init.sql`, `wrangler.toml` bindings (no secrets), test harness (vitest + Miniflare or plain unit tests of handlers).
+- **T0.4** API foundation: `frontend/functions/api/v1/_middleware.js` (errors, device auth, rate limit, Turnstile verify), `migrations/0001_init.sql`, `wrangler.toml` bindings (no secrets), test harness (vitest + Miniflare or plain unit tests of handlers).
 
 ## 4. File ownership (no two agents share a file)
 
 | Owner | Files and folders |
 |---|---|
-| Lead (Claude) | `App.jsx`, `routes/**`, `components/ResultCard.jsx`, `NotSureCard.jsx`, `ResultScreen.jsx`, `pages/HomePage.jsx`, `i18n/I18nProvider.jsx`, `i18n/bn.js`, `i18n/en.js`, `lib/store/**`, `functions/api/v1/_middleware.js`, `migrations/**`, `wrangler.toml`, `package.json` / lockfile, `public/data/calibration.json`, `frontend/src/features/reliability/**` (F14), `frontend/src/features/actionPlan/**` (F10), `functions/api/v1/area-*.js` and `model/**` |
-| OpenCode | `vite.config.js` (PWA block only, as marked by the lead), `frontend/src/features/pwa/**`, `public/manifest.webmanifest`, `public/icons/**` (F9); then `frontend/src/features/feedback/**`, `functions/api/v1/feedback*.js`, `functions/api/v1/images.js`, `functions/api/v1/review/feedback*.js` (F20) |
+| Lead (Claude) | `App.jsx`, `routes/**`, `components/ResultCard.jsx`, `NotSureCard.jsx`, `ResultScreen.jsx`, `pages/HomePage.jsx`, `i18n/I18nProvider.jsx`, `i18n/bn.js`, `i18n/en.js`, `lib/store/**`, `frontend/functions/api/v1/_middleware.js`, `migrations/**`, `wrangler.toml`, `package.json` / lockfile, `public/data/calibration.json`, `frontend/src/features/reliability/**` (F14), `frontend/src/features/actionPlan/**` (F10), `frontend/functions/api/v1/area-*.js` and `model/**` |
+| OpenCode | `vite.config.js` (PWA block only, as marked by the lead), `frontend/src/features/pwa/**`, `public/manifest.webmanifest`, `public/icons/**` (F9); then `frontend/src/features/feedback/**`, `frontend/functions/api/v1/feedback*.js`, `frontend/functions/api/v1/images.js`, `frontend/functions/api/v1/review/feedback*.js` (F20) |
 | Cline | `frontend/src/features/history/**`, `frontend/src/pages/HistoryPage.jsx` (F16); then `frontend/src/features/weather/**`, `disease_knowledge/weather_rules.json` (draft; lead reviews sources) (F8) |
 | Kilo | `frontend/src/features/profile/**`, `frontend/src/pages/ProfilePage.jsx`, `frontend/src/data/upazilas.json` (F21); then `frontend/src/features/help/**` (F22 v1) |
 | Antigravity | `data/expansion_r10/**`, `ml/preprocessing/**`, R11 docs (F13 data, R11); later `frontend/src/features/areaMap/**`, `frontend/src/pages/MapPage.jsx`, `frontend/public/geo/**` (F23 UI) |
@@ -66,7 +66,7 @@ Nothing parallel starts until T0.1–T0.4 are merged into `deploy/candidate-read
 | T20 | F20 feedback | OpenCode | "Was this wrong?" UI, consent, outbox; feedback / images / review endpoints | §4 OpenCode (F20) | T0.4, T9 | Feedback flow + reviewer page | Idempotent; rate limit; Turnstile; reviewer only via Access; offline queue works |
 | T22 | F22 v1 | Kilo | Help sheet: 16123, case summary (image + result + band), share; v2 flag off | §4 Kilo (F22) | T0.3, T14 (band) | Help sheet | Summary shows only what the farmer saw; share is user-initiated |
 | T10 | F10 plan | Claude | Rule-based plan from disease JSON + band + weather + profile | `features/actionPlan/**` | T14, T8, T21 | Plan card | Every step cites a source key; no dose units; snapshot tests |
-| T23.a | F23 API | Claude | `area-reports`, `area-summary` (distinct devices, k-anon, alert rule) | `functions/api/v1/area-*.js` | T0.4 | Endpoints | One device cannot create an alert; duplicates collapsed; counts < 3 hidden |
+| T23.a | F23 API | Claude | `area-reports`, `area-summary` (distinct devices, k-anon, alert rule) | `frontend/functions/api/v1/area-*.js` | T0.4 | Endpoints | One device cannot create an alert; duplicates collapsed; counts < 3 hidden |
 | T23.b | F23 UI | Antigravity | Leaflet + upazila polygons; consented reporting; offline cached GeoJSON | §4 Antigravity (F23) | T23.a, T21, licence check | Map page | Renders offline; no exact coordinates sent; "reports" vs "alert" labels |
 | T-INT | Integration | Claude | Merge order, conflict checks, full regression, live E2E, deploy | — | each feature | Release | All E2E scripts pass on preview; production only after the AIgnite rules check |
 
@@ -111,3 +111,15 @@ Estimated total: **2–3 weeks** of calendar time [E], within the AI Battle buil
    - runs the live checks `e2e_upload_live`, `e2e_audio_live`, `e2e_f7_card_live` and the feature's own E2E.
 3. **Production:** one release after the batch passes on the preview, **only after** confirming that AIgnite allows post-deadline changes. Keep the previous build for rollback.
 4. **Failures:** a failing feature stays behind its stub (renders nothing). The release goes ahead without it.
+
+## 9. Batch 0 result (3 Nov 2026)
+- Done and merged into `deploy/candidate-ready` @ `ec855c4`:
+  - **T0.2:** Pages Functions verified on a branch preview. The Pages root directory is `frontend`, so API code lives in `frontend/functions/`.
+  - **T0.3:** store, outbox, flags, slots, routes, per-feature i18n.
+  - **T0.4:** API middleware, device auth, Turnstile, D1 migration.
+- Tests 119/119, lint clean, build OK. Live upload, voice and F7 checks on the preview are identical to production.
+- Paths changed from this plan:
+  - API under `frontend/functions/`, helpers in `frontend/server/`, migrations in `frontend/migrations/`;
+  - feature pages live inside their feature folder (e.g. `features/history/index.jsx` exports `HistoryPage`).
+- No `wrangler.toml` (it would override the Pages dashboard settings). The D1/R2/Turnstile bindings are set by the owner in the dashboard.
+- Batch 1 briefs: `handoff/batch1/`.
