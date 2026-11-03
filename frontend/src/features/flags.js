@@ -9,6 +9,7 @@ export const FEATURES = {
   history: true, // F16
   profile: true, // F21
   weather: true, // F8
+  weatherReport: false, // F8 v2 dedicated weather & crop report
   actionPlan: false, // F10
   feedback: false, // F20
   help: false, // F22
