@@ -1,0 +1,244 @@
+{
+  "n": 422,
+  "labels": {
+    "other_rice": 263,
+    "blast": 52,
+    "brown_spot": 59,
+    "healthy": 48
+  },
+  "isolation": {
+    "full": 421,
+    "ok": 1
+  },
+  "mask_ms_median": 14.11595000536181,
+  "strategies": {
+    "A": {
+      "macro_f1": 0.8963711270671791,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.87,
+          "recall": 0.904,
+          "f1": 0.887,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.5497630331753555,
+      "right_among_answered": 0.5862068965517241,
+      "wrong_rate": 0.22748815165876776,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.0,
+      "predicted_class_counts": {
+        "blast": 91,
+        "other_rice": 184,
+        "brown_spot": 71,
+        "tungro": 16,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    },
+    "B": {
+      "macro_f1": 0.8963711270671791,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.87,
+          "recall": 0.904,
+          "f1": 0.887,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.54739336492891,
+      "right_among_answered": 0.5887445887445888,
+      "wrong_rate": 0.22511848341232227,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.002369668246445498,
+      "predicted_class_counts": {
+        "blast": 91,
+        "other_rice": 185,
+        "brown_spot": 71,
+        "tungro": 15,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    },
+    "C": {
+      "macro_f1": 0.8963711270671791,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.87,
+          "recall": 0.904,
+          "f1": 0.887,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.5497630331753555,
+      "right_among_answered": 0.5862068965517241,
+      "wrong_rate": 0.22748815165876776,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.0,
+      "predicted_class_counts": {
+        "blast": 91,
+        "other_rice": 184,
+        "brown_spot": 71,
+        "tungro": 16,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    },
+    "D": {
+      "macro_f1": 0.8963711270671791,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.87,
+          "recall": 0.904,
+          "f1": 0.887,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.5497630331753555,
+      "right_among_answered": 0.5862068965517241,
+      "wrong_rate": 0.22748815165876776,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.0,
+      "predicted_class_counts": {
+        "blast": 91,
+        "other_rice": 184,
+        "brown_spot": 71,
+        "tungro": 16,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    },
+    "E": {
+      "macro_f1": 0.8936085337561815,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.855,
+          "recall": 0.904,
+          "f1": 0.879,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.5497630331753555,
+      "right_among_answered": 0.5862068965517241,
+      "wrong_rate": 0.22748815165876776,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.002369668246445498,
+      "predicted_class_counts": {
+        "blast": 92,
+        "other_rice": 184,
+        "brown_spot": 71,
+        "tungro": 15,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    },
+    "F": {
+      "macro_f1": 0.8963711270671791,
+      "accuracy": 0.8616352201257862,
+      "per_class": {
+        "healthy": {
+          "precision": 0.94,
+          "recall": 0.979,
+          "f1": 0.959,
+          "support": 48
+        },
+        "blast": {
+          "precision": 0.87,
+          "recall": 0.904,
+          "f1": 0.887,
+          "support": 52
+        },
+        "brown_spot": {
+          "precision": 1.0,
+          "recall": 0.729,
+          "f1": 0.843,
+          "support": 59
+        }
+      },
+      "answered": 0.5497630331753555,
+      "right_among_answered": 0.5862068965517241,
+      "wrong_rate": 0.22748815165876776,
+      "correct_outcome": 0.7488151658767772,
+      "top_changed_vs_A": 0.0,
+      "predicted_class_counts": {
+        "blast": 91,
+        "other_rice": 184,
+        "brown_spot": 71,
+        "tungro": 16,
+        "leaf_smut": 3,
+        "healthy": 50,
+        "sheath_blight": 7
+      }
+    }
+  }
+}
