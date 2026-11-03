@@ -41,7 +41,7 @@ export function groupHourlyByDay(hourly) {
     d.hours.push(hour);
     if (temp != null) {
       d.temps.push(temp);
-      // Daytime: 07:00 to 18:00; Nighttime: 19:00 to 06:00
+      // Daytime: 07:00 to 18:00 (12 h); Nighttime: 19:00 to 06:00 (12 h)
       if (hour >= 7 && hour <= 18) {
         d.dayTemps.push(temp);
       } else {
@@ -54,24 +54,48 @@ export function groupHourlyByDay(hourly) {
   }
 
   const result = [];
-  for (const [date, val] of daysMap.entries()) {
+  for (const [, val] of daysMap.entries()) {
     if (val.temps.length === 0) continue;
     const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
     const max = (arr) => (arr.length ? Math.max(...arr) : null);
     const min = (arr) => (arr.length ? Math.min(...arr) : null);
 
+    let nightRangeHours = 0;
+    let dayRangeHours = 0;
+    for (let i = 0; i < val.hours.length; i++) {
+      const h = val.hours[i];
+      const t = val.temps[i];
+      if (t != null) {
+        // Night 16-20°C (hours 19-23 and 0-6)
+        if ((h >= 19 || h <= 6) && t >= 16 && t <= 20) {
+          nightRangeHours++;
+        }
+        // Day 25-30°C (hours 7-18)
+        if (h >= 7 && h <= 18 && t >= 25 && t <= 30) {
+          dayRangeHours++;
+        }
+      }
+    }
+
+    const dayMax = max(val.dayTemps) ?? max(val.temps);
+    const nightMin = min(val.nightTemps) ?? min(val.temps);
+    const diurnalRange = (dayMax != null && nightMin != null) ? dayMax - nightMin : null;
+
     result.push({
-      date,
+      date: val.date,
       minTemp: min(val.temps),
       maxTemp: max(val.temps),
-      nightMinTemp: min(val.nightTemps) ?? min(val.temps),
+      nightMinTemp: nightMin,
       nightMaxTemp: max(val.nightTemps) ?? max(val.temps),
       dayMinTemp: min(val.dayTemps) ?? min(val.temps),
-      dayMaxTemp: max(val.dayTemps) ?? max(val.temps),
+      dayMaxTemp: dayMax,
+      nightRangeHours,
+      dayRangeHours,
+      diurnalRange,
       maxRh: max(val.rhs),
       meanRh: avg(val.rhs),
       meanCloud: avg(val.clouds),
-      totalPrecip: val.precips.reduce((a, b) => a + b, 0),
+      totalPrecip: val.precips.length ? val.precips.reduce((a, b) => a + b, 0) : 0,
     });
   }
 
@@ -86,27 +110,49 @@ export function isDayFavourable(day, ruleId) {
 
   if (ruleId === 'blast') {
     // BAMIS quote: "Blast Night temperature 16-20oC, for 7.30 hours day temperature 25-30oC, for 7.30 hours day night temperature >10oC Relative Humidity >90%, cloudy weather"
-    const nightOk = day.nightMinTemp <= 20 && day.nightMaxTemp >= 16;
-    const dayOk = day.dayMaxTemp >= 25 && day.dayMinTemp <= 30;
-    const rhOk = day.maxRh >= 90;
-    const cloudOk = day.meanCloud >= 50;
-    return Boolean(nightOk && dayOk && rhOk && cloudOk);
+    // Hourly durations: checks discrete hours inside each range (app assumption: >= 7 hours inside each window)
+    let durationOk = false;
+    if (day.nightRangeHours !== undefined && day.dayRangeHours !== undefined) {
+      durationOk = day.nightRangeHours >= 7 && day.dayRangeHours >= 7;
+    } else {
+      // Fallback for summary day objects without hourly counts
+      durationOk = day.nightMinTemp <= 20 && day.nightMaxTemp >= 16 && day.dayMaxTemp >= 25 && day.dayMinTemp <= 30;
+    }
+
+    const diurnalDiff = day.diurnalRange ?? ((day.dayMaxTemp ?? day.maxTemp) - (day.nightMinTemp ?? day.minTemp));
+    const diurnalOk = diurnalDiff != null && diurnalDiff > 10;
+    const rh = day.maxRh ?? day.meanRh;
+    const rhOk = rh != null && rh >= 90;
+    const cloudOk = day.meanCloud != null && day.meanCloud >= 50;
+
+    return Boolean(durationOk && diurnalOk && rhOk && cloudOk);
   }
 
   if (ruleId === 'sheath_blight') {
     // BAMIS quote: "Sheath Blight Temperature 28-32o C, high Relative Humidity, Cloudy weather"
-    const tempOk = day.dayMaxTemp >= 28 && day.dayMaxTemp <= 35 && day.nightMinTemp >= 22;
-    const rhOk = day.maxRh >= 80;
-    const cloudOk = day.meanCloud >= 50;
-    return Boolean(tempOk && rhOk && cloudOk);
+    // App assumptions: high RH is >= 80%, cloudy is >= 50%, night minimum >= 22°C to prevent cool night false alarms
+    const temp = day.dayMaxTemp ?? day.maxTemp;
+    const tempOk = temp != null && temp >= 28 && temp <= 32;
+    const nightOk = day.nightMinTemp != null ? day.nightMinTemp >= 22 : true;
+    const rh = day.maxRh ?? day.meanRh;
+    const rhOk = rh != null && rh >= 80;
+    const cloudOk = day.meanCloud != null && day.meanCloud >= 50;
+
+    return Boolean(tempOk && nightOk && rhOk && cloudOk);
   }
 
   if (ruleId === 'bacterial_leaf_blight') {
     // BAMIS quote: "Blight Temperature 28-30o C, Relative Humidity 80-90%, Cloudiness, Rainfall >30mm"
-    const tempOk = day.dayMaxTemp >= 28 && day.dayMaxTemp <= 34 && day.nightMinTemp >= 22;
-    const rhOk = day.maxRh >= 80;
-    const cloudOk = day.meanCloud >= 50;
-    return Boolean(tempOk && rhOk && cloudOk);
+    // App assumptions: 24h rainfall sum >= 30mm, cloudiness >= 50%, night minimum >= 22°C
+    const temp = day.dayMaxTemp ?? day.maxTemp;
+    const tempOk = temp != null && temp >= 28 && temp <= 30;
+    const nightOk = day.nightMinTemp != null ? day.nightMinTemp >= 22 : true;
+    const rh = day.maxRh ?? day.meanRh;
+    const rhOk = rh != null && rh >= 80 && rh <= 90;
+    const rainOk = day.totalPrecip != null && day.totalPrecip >= 30;
+    const cloudOk = day.meanCloud != null && day.meanCloud >= 50;
+
+    return Boolean(tempOk && nightOk && rhOk && rainOk && cloudOk);
   }
 
   return false;
@@ -138,6 +184,7 @@ export function evaluateWeatherRules(hourly) {
         source: rule.source,
         sourceUrl: rule.source_url,
         sourceQuote: rule.source_quote,
+        assumptions: rule.assumptions ?? [],
         matchingDays,
       });
     }

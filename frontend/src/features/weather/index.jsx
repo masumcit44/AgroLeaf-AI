@@ -8,9 +8,6 @@ import useT from '../../i18n/useT.js';
 import { getProfileLocation, getWeatherData } from './weatherStore.js';
 import { evaluateWeatherRules } from './weatherRules.js';
 
-export * from './weatherStore.js';
-export * from './weatherRules.js';
-
 function getChipText(ruleId, _lang, t) {
   if (ruleId === 'blast') return t('weather.blastFavourable');
   if (ruleId === 'sheath_blight') return t('weather.sheathBlightFavourable');
@@ -19,7 +16,7 @@ function getChipText(ruleId, _lang, t) {
 }
 
 /**
- * [home|result] 'Weather favourable for X' chips; props.context tells where it is shown.
+ * [home|result] 'favourable conditions — check your field' chips; props.context tells where it is shown.
  */
 export function WeatherChips({ scan, context, initialLocation, initialWeather }) {
   const { t, lang } = useT();
@@ -102,13 +99,25 @@ export function WeatherChips({ scan, context, initialLocation, initialWeather })
         {favourable.map((r) => (
           <div
             key={r.ruleId}
-            className="flex items-start gap-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950 shadow-sm"
+            className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950 shadow-sm space-y-1.5"
           >
-            <span className="text-base leading-none select-none" aria-hidden="true">
-              ⚠️
-            </span>
-            <div className="flex-1 min-w-0">
-              <span className="font-semibold block">{getChipText(r.ruleId, lang, t)}</span>
+            <div className="flex items-start gap-2.5">
+              <span className="text-base leading-none select-none" aria-hidden="true">
+                ⚠️
+              </span>
+              <div className="flex-1 min-w-0">
+                <span className="font-semibold block">{getChipText(r.ruleId, lang, t)}</span>
+                {r.sourceUrl && (
+                  <a
+                    href={r.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-leaf-700 hover:text-leaf-800 underline font-medium inline-flex items-center gap-1 mt-1"
+                  >
+                    {t('weather.howItWorks')} ↗
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -149,6 +158,16 @@ export function WeatherChips({ scan, context, initialLocation, initialWeather })
           </span>
           <div className="flex-1 min-w-0">
             <span className="font-semibold block">{getChipText(matchedRule.ruleId, lang, t)}</span>
+            {matchedRule.sourceUrl && (
+              <a
+                href={matchedRule.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-leaf-700 hover:text-leaf-800 underline font-medium inline-flex items-center gap-1 mt-1"
+              >
+                {t('weather.howItWorks')} ↗
+              </a>
+            )}
           </div>
         </div>
         <div className="flex items-center justify-between text-[10px] text-gray-500 pt-1.5 border-t border-amber-200">
