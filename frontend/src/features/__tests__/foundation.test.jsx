@@ -83,8 +83,10 @@ describe('per-feature texts', () => {
   });
 
   it('keys start with the feature name, exist in both languages, and never shadow app texts', async () => {
+    // the same glob the I18nProvider uses (a template-string import cannot resolve every folder name)
+    const all = import.meta.glob('../*/i18n.js', { eager: true, import: 'default' });
     for (const name of featureNames) {
-      const texts = (await import(`../${name}/i18n.js`)).default;
+      const texts = all[`../${name}/i18n.js`];
       const bnKeys = Object.keys(texts.bn).sort();
       expect(Object.keys(texts.en).sort(), name).toEqual(bnKeys);
       for (const key of bnKeys) {
