@@ -16,7 +16,8 @@
     "smoke": "node scripts/smoke.mjs",
     "check:release": "node scripts/check-release.mjs",
     "audit:lighthouse": "node scripts/run-lighthouse.mjs",
-    "audit:perf": "node scripts/run-performance-audit.mjs"
+    "audit:perf": "node scripts/run-performance-audit.mjs",
+    "e2e:live": "node scripts/e2e_all.mjs https://deploy-candidate-ready.agroleaf-ai.pages.dev"
   },
   "dependencies": {
     "idb": "8.0.4",

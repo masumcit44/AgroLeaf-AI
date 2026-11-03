@@ -39,3 +39,4 @@ Thumbs.db
 .wrangler/
 .dev.vars
 .dev.vars.*
+frontend/e2e-logs/

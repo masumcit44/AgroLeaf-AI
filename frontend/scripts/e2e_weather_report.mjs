@@ -35,6 +35,9 @@ for (let i = 0; i < args.length; i++) {
     i++;
   }
 }
+if (!targetUrl && args[0] && !args[0].startsWith('--')) {
+  targetUrl = args[0].replace(/\/+$/, '');
+}
 
 // 2. Find browser
 function findBrowser() {

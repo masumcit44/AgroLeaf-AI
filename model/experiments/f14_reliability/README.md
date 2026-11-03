@@ -65,3 +65,6 @@ python ml/tools/fit_reliability_bands.py
 Outputs are written directly to:
 - `model/experiments/f14_reliability/results/bands_v10.json`
 - `frontend/src/features/reliability/bands_v10.json`
+
+## Limitation (lead review, 4 Nov)
+The cut points (0.98 / 0.53) were chosen on DIU half A and the band accuracies above are measured on the same 1,378 photos, so they are in-sample and likely a little optimistic. They have not been checked on an independent set yet; the next clean test set (Harvard BanglaRiceLeaf) should be used once to confirm them.
