@@ -1,0 +1,51 @@
+{
+  "model": "rice-effb0-v10-320",
+  "dataset": "DIU Bangladesh (Project-AgML) Half A",
+  "dataset_n": 1378,
+  "cut_points": {
+    "high": 0.98,
+    "medium": 0.53
+  },
+  "bands": {
+    "high": {
+      "condition": "top_prob >= 0.98",
+      "n": 345,
+      "correct": 341,
+      "accuracy": 0.9884,
+      "ci_low": 0.9706,
+      "ci_high": 0.9955,
+      "per_class": {
+        "healthy": 159,
+        "blast": 168,
+        "tungro": 18
+      }
+    },
+    "medium": {
+      "condition": "0.53 <= top_prob < 0.98",
+      "n": 350,
+      "correct": 280,
+      "accuracy": 0.8,
+      "ci_low": 0.7549,
+      "ci_high": 0.8385,
+      "per_class": {
+        "blast": 168,
+        "healthy": 109,
+        "tungro": 73
+      }
+    },
+    "not_sure": {
+      "condition": "top_prob < 0.53 or abstained by decide.js",
+      "n": 683,
+      "correct": 594,
+      "accuracy": 0.8697,
+      "ci_low": 0.8424,
+      "ci_high": 0.8929,
+      "reasons": {
+        "other_problem": 578,
+        "healthy_needs_high_confidence": 73,
+        "below_medium_cut": 31,
+        "low_confidence": 1
+      }
+    }
+  }
+}
