@@ -61,6 +61,10 @@ export default function AudioExplain({
     } else {
       stopActiveAudio();
       setActiveAudio(audioRef.current);
+      // After a failed load (e.g. a dropped connection) the element stays in its error
+      // state; load() starts a fresh request so a second tap can work.
+      if (hasError || audioRef.current.error) audioRef.current.load();
+      setHasError(false);
       audioRef.current.play().catch((err) => {
         if (!warnedRef.current) {
           console.warn(`[AudioExplain] Audio playback unavailable for ${classKey}:`, err.message);
@@ -78,7 +82,7 @@ export default function AudioExplain({
     audioRef.current.currentTime = 0;
     stopActiveAudio();
     setActiveAudio(audioRef.current);
-    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setHasError(true));
+    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => { setHasError(true); setIsPlaying(false); });
   };
 
   const handleTimeUpdate = () => {
@@ -96,14 +100,16 @@ export default function AudioExplain({
 
   const handleError = () => {
     if (!warnedRef.current) {
-      console.warn(`[AudioExplain] Audio file missing or failed to load for ${classKey}. Hiding player silently.`);
+      console.warn(`[AudioExplain] Audio failed to load for ${classKey}; the Listen button retries.`);
       warnedRef.current = true;
     }
     setHasError(true);
+    setIsPlaying(false);
   };
 
-  // Graceful degradation: If audio fails to load or is missing, render nothing
-  if (hasError || !audioUrl) {
+  // Only a class with no generated clip has no player. A load or playback error keeps
+  // the player, so the farmer can tap Listen again (hiding it made the voice vanish).
+  if (!audioUrl) {
     return null;
   }
 

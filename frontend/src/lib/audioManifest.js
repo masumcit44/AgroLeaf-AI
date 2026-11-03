@@ -1,9 +1,20 @@
 let cachedManifest = null;
 let manifestFetchPromise = null;
+const RETRY_DELAYS_MS = [800, 2500];
+
+async function fetchManifestOnce() {
+  const res = await fetch('/audio/manifest.json', { cache: 'no-cache' });
+  if (res.status === 404) return {}; // no clips generated: a real answer, cached
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) || {};
+}
 
 /**
- * Fetch and cache the audio manifest if available.
- * Returns null or empty object if manifest is missing (audio not generated yet).
+ * Fetch and cache the audio manifest.
+ * Only a real answer is cached. A network error or server error is retried, and
+ * if it still fails the next call tries again. Caching that failure made every
+ * class lose its voice for the rest of the visit (slow connections while the
+ * model downloads).
  *
  * @returns {Promise<Record<string, { file: string, voice: string, chars: number, generated_at: string }>>}
  */
@@ -18,23 +29,27 @@ export async function getAudioManifest() {
 
   manifestFetchPromise = (async () => {
     try {
-      const res = await fetch('/audio/manifest.json');
-      if (!res.ok) {
-        cachedManifest = {};
-        return cachedManifest;
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          cachedManifest = await fetchManifestOnce();
+          return cachedManifest;
+        } catch {
+          if (attempt >= RETRY_DELAYS_MS.length) return {};
+          await new Promise((r) => setTimeout(r, RETRY_DELAYS_MS[attempt]));
+        }
       }
-      const data = await res.json();
-      cachedManifest = data || {};
-      return cachedManifest;
-    } catch {
-      cachedManifest = {};
-      return cachedManifest;
     } finally {
       manifestFetchPromise = null;
     }
   })();
 
   return manifestFetchPromise;
+}
+
+/** Test hook: forget the cached manifest. */
+export function resetAudioManifestCache() {
+  cachedManifest = null;
+  manifestFetchPromise = null;
 }
 
 /**

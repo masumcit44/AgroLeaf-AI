@@ -34,3 +34,46 @@ describe('resolveAudioEntry (QA E3)', () => {
     expect(resolveAudioEntry({ healthy: { file: '/audio/healthy-v1.mp3', voice: 'human' } }, 'healthy')).toEqual({ url: '/audio/healthy-v1.mp3', isHuman: true });
   });
 });
+
+describe('getAudioManifest retries instead of caching a failure', () => {
+  it('a network failure is not cached: the next call loads the voice list', async () => {
+    vi.useFakeTimers();
+    const { getAudioManifest: get, resetAudioManifestCache } = await import('../audioManifest.js');
+    resetAudioManifestCache();
+    const originalFetch = globalThis.fetch;
+    const good = { blast: { file: '/audio/blast-v1.mp3', voice: 'ai' } };
+    globalThis.fetch = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
+    try {
+      const first = get();
+      await vi.runAllTimersAsync();
+      expect(await first).toEqual({});
+      expect(globalThis.fetch).toHaveBeenCalledTimes(3); // one try + two retries
+      globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => good });
+      expect(await get()).toEqual(good);
+    } finally {
+      globalThis.fetch = originalFetch;
+      vi.useRealTimers();
+      resetAudioManifestCache();
+    }
+  });
+
+  it('recovers within one call when a retry succeeds', async () => {
+    vi.useFakeTimers();
+    const { getAudioManifest: get, resetAudioManifestCache } = await import('../audioManifest.js');
+    resetAudioManifestCache();
+    const originalFetch = globalThis.fetch;
+    const good = { healthy: { file: '/audio/healthy-v1.mp3', voice: 'ai' } };
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      .mockResolvedValue({ ok: true, status: 200, json: async () => good });
+    try {
+      const p = get();
+      await vi.runAllTimersAsync();
+      expect(await p).toEqual(good);
+    } finally {
+      globalThis.fetch = originalFetch;
+      vi.useRealTimers();
+      resetAudioManifestCache();
+    }
+  });
+});
