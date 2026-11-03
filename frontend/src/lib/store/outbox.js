@@ -31,27 +31,48 @@ export async function listOutbox() {
 /**
  * Try to send every queued item, oldest first. `send(item)` resolves to:
  *   'sent'   – accepted (or already accepted: the server answered 2xx or 409 duplicate) → removed
- *   'retry'  – network or 5xx/429 → kept, attempts + 1
- *   'reject' – permanent 4xx (bad request) → removed, so it cannot block the queue
+ *   'retry'  – network or 5xx/429 → kept, attempts + 1, next_attempt_at set to 1 min from now
+ *   'reject' – permanent 4xx (bad request) → kept but marked failed (attempts = MAX_ATTEMPTS), so it can be inspected
  * Items that failed MAX_ATTEMPTS times are kept but skipped, for the UI to show.
  */
 export async function flushOutbox(send) {
   const db = await getDb();
   const result = { sent: 0, retry: 0, rejected: 0, skipped: 0 };
+  const now = Date.now();
+
   for (const item of await listOutbox()) {
     if (item.attempts >= MAX_ATTEMPTS) { result.skipped++; continue; }
+    // Backoff: skip if next_attempt_at is in the future
+    if (item.next_attempt_at && item.next_attempt_at > now) { result.skipped++; continue; }
+
     let outcome;
     try {
       outcome = await send(item);
     } catch (err) {
-      outcome = 'retry';
+      // Network errors (TypeError, AbortError, offline) should retry, not reject
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        outcome = 'retry';
+      } else if (err instanceof DOMException && err.name === 'AbortError') {
+        outcome = 'retry';
+      } else if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        outcome = 'retry';
+      } else {
+        outcome = 'retry';
+      }
       item.last_error = String(err?.message || err);
     }
-    if (outcome === 'sent' || outcome === 'reject') {
+
+    if (outcome === 'sent') {
       await db.delete(STORES.OUTBOX, item.id);
-      result[outcome === 'sent' ? 'sent' : 'rejected']++;
+      result.sent++;
+    } else if (outcome === 'reject') {
+      // Keep the item but mark as failed (attempts = MAX_ATTEMPTS) for inspection
+      await db.put(STORES.OUTBOX, { ...item, attempts: MAX_ATTEMPTS });
+      result.rejected++;
     } else {
-      await db.put(STORES.OUTBOX, { ...item, attempts: item.attempts + 1 });
+      // retry: increment attempts, set next_attempt_at to 1 minute from now
+      const nextAttemptAt = Date.now() + 60 * 1000;
+      await db.put(STORES.OUTBOX, { ...item, attempts: item.attempts + 1, last_error: item.last_error, next_attempt_at: nextAttemptAt });
       result.retry++;
     }
   }
