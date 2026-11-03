@@ -1,0 +1,66 @@
+{
+  "rules": [
+    {
+      "id": "blast",
+      "disease_key": "blast",
+      "disease_name_en": "Rice Blast",
+      "disease_name_bn": "ব্লাস্ট রোগ",
+      "source": "BAMIS Boro Crop Calendar, Faridpur District (Department of Agricultural Extension, Bangladesh)",
+      "source_url": "https://bamis.gov.bd/res/public/calendars/2019/08/23/5102.pdf",
+      "source_quote": "Blast Night temperature 16-20oC, for 7.30 hours day temperature 25-30oC, for 7.30 hours day night temperature >10oC Relative Humidity >90%, cloudy weather",
+      "conditions": {
+        "night_temp_min": 16,
+        "night_temp_max": 20,
+        "day_temp_min": 25,
+        "day_temp_max": 30,
+        "min_rh": 90,
+        "cloud_cover_min": 50
+      }
+    },
+    {
+      "id": "sheath_blight",
+      "disease_key": "sheath_blight",
+      "disease_name_en": "Sheath Blight",
+      "disease_name_bn": "খোল পোড়া রোগ (শীথ ব্লাইট)",
+      "source": "BAMIS Boro Crop Calendar, Sylhet District (Department of Agricultural Extension, Bangladesh)",
+      "source_url": "https://www.bamis.gov.bd/res/public/calendars/2019/08/23/5108.pdf",
+      "source_quote": "Sheath Blight Temperature 28-32o C, high Relative Humidity, Cloudy weather",
+      "conditions": {
+        "temp_min": 28,
+        "temp_max": 32,
+        "min_rh": 80,
+        "cloud_cover_min": 50
+      }
+    },
+    {
+      "id": "bacterial_leaf_blight",
+      "disease_key": "other_rice",
+      "sub_label": "bacterial_blight",
+      "disease_name_en": "Bacterial Leaf Blight",
+      "disease_name_bn": "ব্যাকটেরিয়াজনিত পাতা পোড়া",
+      "source": "BAMIS Boro Crop Calendar, Sylhet District (Department of Agricultural Extension, Bangladesh)",
+      "source_url": "https://www.bamis.gov.bd/res/public/calendars/2019/08/23/5108.pdf",
+      "source_quote": "Blight Temperature 28-30o C, Relative Humidity 80-90%, Cloudiness, Rainfall >30mm",
+      "conditions": {
+        "temp_min": 28,
+        "temp_max": 32,
+        "min_rh": 80,
+        "cloud_cover_min": 50
+      }
+    }
+  ],
+  "unsupported_diseases": [
+    {
+      "disease_key": "tungro",
+      "reason": "Not supported by BAMIS crop calendar sources: insect vector (green leafhopper) dynamic rather than microclimate trigger"
+    },
+    {
+      "disease_key": "brown_spot",
+      "reason": "Not supported by BAMIS crop calendar sources: physiological soil/nutrient stress and secondary fungal pathogen"
+    },
+    {
+      "disease_key": "leaf_smut",
+      "reason": "Not supported by BAMIS crop calendar sources: minor disease without documented microclimate early warning rule"
+    }
+  ]
+}
