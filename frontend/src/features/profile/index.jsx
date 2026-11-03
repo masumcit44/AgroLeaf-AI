@@ -66,6 +66,8 @@ export function ProfilePage({ _scan, _context }) {
   const { t, lang } = useT();
   const [profile, setProfile] = useState({});
   const [districtQuery, setDistrictQuery] = useState('');
+  // The suggestion list is open only while the farmer is typing; choosing a district closes it
+  const [listOpen, setListOpen] = useState(false);
   const [status, setStatus] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -94,6 +96,7 @@ export function ProfilePage({ _scan, _context }) {
       lon: district.lon,
     }));
     setDistrictQuery(lang === 'bn' ? district.district_name_bn : district.district_name_en);
+    setListOpen(false);
   };
 
   const handleSave = async () => {
@@ -124,21 +127,36 @@ export function ProfilePage({ _scan, _context }) {
             <input
               type="text"
               value={districtQuery}
-              onChange={(e) => setDistrictQuery(e.target.value)}
+              onChange={(e) => {
+                setDistrictQuery(e.target.value);
+                setListOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setListOpen(false);
+              }}
+              // a short delay lets a tap on a suggestion register before the list closes
+              onBlur={() => setTimeout(() => setListOpen(false), 150)}
               placeholder={t('profile.districtPlaceholder')}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:border-transparent"
               autoComplete="off"
+              role="combobox"
+              aria-expanded={listOpen && filteredDistricts.length > 0 && Boolean(districtQuery)}
+              aria-controls="profile-district-list"
             />
-            {filteredDistricts.length > 0 && districtQuery && (
-              <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+            {listOpen && filteredDistricts.length > 0 && districtQuery && (
+              <ul id="profile-district-list" role="listbox" className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                 {filteredDistricts.slice(0, 20).map((d) => (
-                  <li
-                    key={d.code}
-                    onClick={() => handleDistrictSelect(d)}
-                    className={`px-4 py-3 hover:bg-gray-50 cursor-pointer ${selectedDistrict?.code === d.code ? 'bg-leaf-50' : ''}`}
-                  >
-                    <div className="font-medium">{lang === 'bn' ? d.district_name_bn : d.district_name_en}</div>
-                    <div className="text-xs text-gray-500">{lang === 'bn' ? d.district_name_en : d.district_name_bn}</div>
+                  <li key={d.code} role="option" aria-selected={selectedDistrict?.code === d.code}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleDistrictSelect(d)}
+                      className={`w-full text-left px-4 py-3 min-h-11 hover:bg-gray-50 cursor-pointer ${selectedDistrict?.code === d.code ? 'bg-leaf-50' : ''}`}
+                      data-testid="district-option"
+                    >
+                      <div className="font-medium">{lang === 'bn' ? d.district_name_bn : d.district_name_en}</div>
+                      <div className="text-xs text-gray-500">{lang === 'bn' ? d.district_name_en : d.district_name_bn}</div>
+                    </button>
                   </li>
                 ))}
               </ul>

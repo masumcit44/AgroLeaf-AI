@@ -8,6 +8,7 @@ import * as actionPlan from './actionPlan/index.jsx';
 import * as feedback from './feedback/index.jsx';
 import * as help from './help/index.jsx';
 import * as areaMap from './areaMap/index.jsx';
+import WeatherPage from './weather/WeatherPage.jsx';
 
 
 export const SLOT_LAYOUT = {
@@ -33,6 +34,7 @@ export const SLOT_LAYOUT = {
 export const FEATURE_ROUTES = {
   '#/history': ['history', history.HistoryPage],
   '#/profile': ['profile', profile.ProfilePage],
+  '#/weather': ['weather', WeatherPage],
   '#/map': ['areaMap', areaMap.MapPage],
 };
 

@@ -6,6 +6,10 @@ export default {
   navHome: "Home",
   navAccuracy: "Accuracy",
   navAbout: "About",
+  navHistory: "History",
+  navWeather: "Weather",
+  navProfile: "Profile",
+  navFeatureTabs: "Features",
   langSwitch: "বাংলা",
 
   homeHeadline: "Upload a rice leaf photo, find the likely disease",

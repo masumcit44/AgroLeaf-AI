@@ -9,6 +9,7 @@ export const ROUTES = {
   HISTORY: '#/history',
   PROFILE: '#/profile',
   MAP: '#/map',
+  WEATHER: '#/weather',
 };
 
 function normalizeHash(hash) {

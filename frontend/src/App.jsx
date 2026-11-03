@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.jsx';
 import { useHashRoute, ROUTES } from './routes/useHashRoute.js';
 import useT from './i18n/useT.js';
 import { FeatureSlot, FeaturePage } from './features/slots.jsx';
+import TabBar from './components/TabBar.jsx';
 
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage.jsx'));
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
@@ -60,7 +61,9 @@ function AppContent() {
   return (
     <div className="min-h-screen flex flex-col bg-paper text-ink selection:bg-leaf-50 selection:text-leaf-700">
       <FeatureSlot slot="app" />
-      <Navbar currentRoute={route} onNavigate={navigate} />
+      <Navbar currentRoute={route} onNavigate={navigate}>
+        <TabBar currentRoute={route} onNavigate={navigate} />
+      </Navbar>
       <div className="flex-1 flex flex-col">
         {renderPage()}
       </div>

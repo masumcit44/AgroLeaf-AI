@@ -6,6 +6,10 @@ export default {
   navHome: "মূল পাতা",
   navAccuracy: "নির্ভুলতা",
   navAbout: "পরিচিতি",
+  navHistory: "ইতিহাস",
+  navWeather: "আবহাওয়া",
+  navProfile: "প্রোফাইল",
+  navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
 
   homeHeadline: "ধানের পাতার ছবি দিন, সম্ভাব্য রোগ জানুন",

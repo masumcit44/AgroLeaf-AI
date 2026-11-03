@@ -3,7 +3,7 @@ import useT from '../i18n/useT.js';
 import LanguageToggle from './LanguageToggle.jsx';
 import { ROUTES } from '../routes/useHashRoute.js';
 
-export default function Navbar({ currentRoute, onNavigate }) {
+export default function Navbar({ currentRoute, onNavigate, children = null }) {
   const { t } = useT();
 
   return (
@@ -78,6 +78,8 @@ export default function Navbar({ currentRoute, onNavigate }) {
           <LanguageToggle />
         </div>
       </div>
+      {/* Feature tabs (TabBar), inside the sticky header */}
+      {children}
     </header>
   );
 }
