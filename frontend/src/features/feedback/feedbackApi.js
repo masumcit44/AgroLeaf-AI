@@ -43,8 +43,7 @@ export function getTurnstileToken() {
 export function deriveBand(scan) {
   if (scan?.band && ['high', 'medium', 'not_sure'].includes(scan.band)) return scan.band;
   if (!scan?.isConfident || scan?.decision?.status !== 'confident') return 'not_sure';
-  const prob = Number(scan?.decision?.top?.prob);
-  return Number.isFinite(prob) && prob >= 0.8 ? 'high' : 'medium';
+  return 'high';
 }
 
 export function buildFeedbackPayload(scan, {

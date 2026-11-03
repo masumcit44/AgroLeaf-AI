@@ -110,7 +110,7 @@ export function FeedbackButton({ scan, context }) {
                 <h2 id="feedback-title" className="text-base font-bold text-gray-900">{t('feedback.title')}</h2>
                 <p className="text-xs text-gray-500 mt-0.5">{t('feedback.intro')}</p>
               </div>
-              <button type="button" onClick={closeSheet} className="text-xs font-semibold text-gray-500" aria-label={t('feedback.close')}>✕</button>
+              {/* close button removed; overlay click handles closing */}
             </div>
             <fieldset className="space-y-1.5">
               <legend className="sr-only">{t('feedback.title')}</legend>
@@ -133,7 +133,7 @@ export function FeedbackButton({ scan, context }) {
             <p className="text-[11px] leading-relaxed text-gray-500">{t('feedback.privacy')}</p>
             {formError && <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">{formError}</div>}
             <div className="flex gap-2 pt-1">
-              <button type="button" onClick={closeSheet} disabled={true} className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60">{t('feedback.cancel')}</button>
+              <button type="button" onClick={closeSheet} disabled={true} className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 disabled:opacity-60">{t('feedback.dismiss')}</button>
               <button type="submit" disabled={!reportedClass} className="flex-1 rounded-xl bg-leaf-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-60">{t('feedback.submit')}</button>
             </div>
           </form>

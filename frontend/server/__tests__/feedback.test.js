@@ -1,6 +1,17 @@
-import { createTestDb } from '../d1Fake.js';
 import { api, okTurnstile } from './api.test.js';
 import { afterEach, beforeEach, describe, it, expect, test } from 'vitest';
+
+// Minimal fake IndexedDB for tests
+function createTestDb() {
+  const store = new Map();
+  return {
+    prepare: (sql) => ({
+      first: () => store.get(sql) || null,
+      all: () => [],
+      run: (val) => { store.set(sql, val); return val; },
+    }),
+  };
+}
 
 const BASE = '/api/v1';
 const DEVICE_KEY = 'test-signing-key-64hex0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
