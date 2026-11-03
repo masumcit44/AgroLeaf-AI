@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "purpose": "Bangla voice scripts for result screens that name no disease. Each script says the same thing as the on-screen explanation (frontend/src/i18n/bn.js keys in 'matches_screen_text'), written for speech: 16123 is spelled out digit by digit.",
+    "used_by": "ml/tools/generate_tts_edge.py -> frontend/public/audio/<key>-v1.mp3 and manifest.json; NotSureCard picks the clip from the decision reason (frontend/src/lib/audioManifest.js notSureClipKey)."
+  },
+  "outcomes": {
+    "not_rice": {
+      "matches_screen_text": "notSureNotLeaf",
+      "voice_script_bn": "ছবিটি ধানের পাতার মতো দেখাচ্ছে না। একটি পাতা কাছ থেকে, দিনের আলোতে তুলে আবার চেষ্টা করুন।"
+    },
+    "other_rice": {
+      "matches_screen_text": "notSureOtherProblem",
+      "voice_script_bn": "পাতায় সমস্যা দেখা যাচ্ছে, কিন্তু এটি এই অ্যাপের জানা পাঁচটি রোগের মধ্যে পড়ে বলে মনে হচ্ছে না। যেমন, পাতা পোড়া রোগ বা পামরি পোকা হতে পারে। উপজেলা কৃষি অফিসার অথবা এক ছয় এক দুই তিন নম্বরে পরামর্শ নিন।"
+    },
+    "healthy_caution": {
+      "matches_screen_text": "notSureHealthyCaution",
+      "voice_script_bn": "পাতাটি সুস্থ মনে হতে পারে, কিন্তু আমি যথেষ্ট নিশ্চিত নই। দাগ থাকলে সেই অংশের পরিষ্কার ছবি তুলুন, অথবা এক ছয় এক দুই তিন নম্বরে জিজ্ঞাসা করুন।"
+    }
+  }
+}

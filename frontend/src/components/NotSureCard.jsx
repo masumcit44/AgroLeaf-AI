@@ -1,6 +1,7 @@
 import React from 'react';
 import useT from '../i18n/useT.js';
 import AudioExplain from './AudioExplain.jsx';
+import { notSureClipKey } from '../lib/audioManifest.js';
 
 export default function NotSureCard({
   top2 = [],
@@ -57,7 +58,8 @@ export default function NotSureCard({
 
       {/* Bangla Audio Explanation */}
       <AudioExplain
-        classKey="not_sure"
+        classKey={notSureClipKey(reason)}
+        fallbackKey="not_sure"
         voiceScriptBn={notSureData?.voice_script_bn}
       />
 

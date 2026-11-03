@@ -5,11 +5,13 @@ import { setActiveAudio, stopActiveAudio } from '../lib/audioManager.js';
 
 export default function AudioExplain({
   classKey,
+  fallbackKey = null,
   voiceScriptBn = '',
   className = '',
 }) {
   const { t } = useT();
   const [audioUrl, setAudioUrl] = useState(null);
+  const [clipScript, setClipScript] = useState('');
   const [isHumanVoice, setIsHumanVoice] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -27,8 +29,11 @@ export default function AudioExplain({
     getAudioManifest()
       .then((manifest) => {
         if (!isMounted) return;
-        const entry = resolveAudioEntry(manifest, classKey);
+        // A clip missing from an older manifest falls back to fallbackKey's clip
+        const entry = resolveAudioEntry(manifest, classKey) || (fallbackKey ? resolveAudioEntry(manifest, fallbackKey) : null);
         setAudioUrl(entry ? entry.url : null);
+        // The transcript is the script of the clip that actually plays
+        setClipScript(entry?.script || '');
         setIsHumanVoice(Boolean(entry?.isHuman));
       })
       .catch(() => {
@@ -40,7 +45,7 @@ export default function AudioExplain({
       isMounted = false;
       stopActiveAudio();
     };
-  }, [classKey]);
+  }, [classKey, fallbackKey]);
 
   // Clean up audio on unmount
   useEffect(() => {
@@ -112,6 +117,7 @@ export default function AudioExplain({
   if (!audioUrl) {
     return null;
   }
+  const transcript = clipScript || voiceScriptBn;
 
   return (
     <div className={`w-full p-3.5 bg-leaf-50/60 border border-leaf-700/20 rounded-2xl mb-4 text-center ${className}`}>
@@ -164,7 +170,7 @@ export default function AudioExplain({
       </div>
 
       {/* Transcript Text Toggle */}
-      {voiceScriptBn && (
+      {transcript && (
         <div className="mt-1">
           <button
             type="button"
@@ -175,7 +181,7 @@ export default function AudioExplain({
           </button>
           {showScript && (
             <p className="mt-2 p-2.5 bg-white rounded-xl border border-gray-200 text-xs text-gray-700 leading-relaxed text-left font-serif">
-              "{voiceScriptBn}"
+              "{transcript}"
             </p>
           )}
         </div>

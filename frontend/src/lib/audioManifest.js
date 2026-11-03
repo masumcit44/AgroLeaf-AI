@@ -58,12 +58,30 @@ export function resetAudioManifestCache() {
  * file is answered with index.html by the SPA fallback, which made the play
  * button silently fail (QA E3).
  *
- * @param {Record<string, { file?: string, voice?: string }>|null|undefined} manifest
+ * @param {Record<string, { file?: string, voice?: string, script?: string }>|null|undefined} manifest
  * @param {string} classKey
- * @returns {{ url: string, isHuman: boolean } | null}
+ * @returns {{ url: string, isHuman: boolean, script?: string } | null}
  */
 export function resolveAudioEntry(manifest, classKey) {
   const entry = manifest && typeof manifest === 'object' ? manifest[classKey] : null;
   if (!entry || typeof entry.file !== 'string' || entry.file.length === 0) return null;
-  return { url: entry.file, isHuman: entry.voice === 'human' };
+  return { url: entry.file, isHuman: entry.voice === 'human', script: entry.script };
+}
+
+// A "not sure" screen explains why (ml/decide.js reason); each reason with its own
+// on-screen text has its own clip, so the voice says what the screen says.
+const NOT_SURE_CLIPS = {
+  not_leaf: 'not_rice',
+  other_problem: 'other_rice',
+  healthy_needs_high_confidence: 'healthy_caution',
+};
+
+/**
+ * Clip key for a "not sure" result. Low confidence, ties and the suppressed
+ * leaf-smut case keep the general "not_sure" clip.
+ * @param {string|undefined} reason
+ * @returns {string}
+ */
+export function notSureClipKey(reason) {
+  return NOT_SURE_CLIPS[reason] || 'not_sure';
 }
