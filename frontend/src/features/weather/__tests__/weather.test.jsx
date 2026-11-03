@@ -408,5 +408,14 @@ describe('F8 WeatherChips UI Component', () => {
       <WeatherChips scan={tungroScan} context="result" initialLocation={loc} initialWeather={weather} />
     );
     expect(htmlTungro).toBe('');
+
+    // 3. Diagnosed with 'other_rice' while bacterial_leaf_blight is favourable -> renders nothing
+    // bacterial_leaf_blight is home-screen only; the app never names it on the result screen.
+    const otherRiceScan = { classKey: 'other_rice', decision: { status: 'confident' } };
+    const htmlOtherRice = renderMarkup(
+      <WeatherChips scan={otherRiceScan} context="result" initialLocation={loc} initialWeather={weather} />
+    );
+    expect(htmlOtherRice).not.toContain('Bacterial leaf blight');
+    expect(htmlOtherRice).not.toContain('ব্যাকটেরিয়াজনিত পাতা পোড়া');
   });
 });

@@ -73,8 +73,8 @@
     },
     {
       "id": "bacterial_leaf_blight",
-      "disease_key": "other_rice",
-      "sub_label": "bacterial_blight",
+      "disease_key": "bacterial_leaf_blight",
+      "app_class": "other_rice",
       "disease_name_en": "Bacterial Leaf Blight",
       "disease_name_bn": "ব্যাকটেরিয়াজনিত পাতা পোড়া",
       "source": "BAMIS Boro Crop Calendar, Sylhet District (Department of Agricultural Extension, Bangladesh)",

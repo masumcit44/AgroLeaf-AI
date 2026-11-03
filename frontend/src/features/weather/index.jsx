@@ -140,13 +140,11 @@ export function WeatherChips({ scan, context, initialLocation, initialWeather })
   if (context === 'result' && scan) {
     if (!location || !weather || favourable.length === 0) return null;
 
-    // Check if the diagnosed disease matches any favourable weather rule
+    // Check if the diagnosed disease matches any favourable weather rule.
+    // bacterial_leaf_blight is home-screen only (the app never names it on the result screen),
+    // so only blast and sheath_blight are matched here.
     const classKey = scan.classKey;
-    const matchedRule = favourable.find((r) => {
-      if (r.diseaseKey === classKey) return true;
-      if (classKey === 'other_rice' && r.ruleId === 'bacterial_leaf_blight') return true;
-      return false;
-    });
+    const matchedRule = favourable.find((r) => r.diseaseKey === classKey);
 
     if (!matchedRule) return null;
 
