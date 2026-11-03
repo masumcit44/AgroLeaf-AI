@@ -13,5 +13,20 @@
     "breakdown": {
       ".jpg": 200
     }
+  },
+  "abuabdurrahman_bd": {
+    "slug": "abuabdurrahman_bd",
+    "name": "Rice Disease Leaves Clean (abuabdurrahman1101)",
+    "archives": [
+      {
+        "archive": "rice-disease-leaves.zip",
+        "size": 1044789897,
+        "sha256": "d08a6ec1dec198489d96e95abddc963be8fea92e4227692b42989a68caa708a0"
+      }
+    ],
+    "image_count": 5678,
+    "breakdown": {
+      ".jpg": 5678
+    }
   }
 }
