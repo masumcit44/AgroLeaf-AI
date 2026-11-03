@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import useT from '../../i18n/useT.js';
 import { getProfileLocation, getWeatherData } from './weatherStore.js';
+import { PROFILE_CHANGED_EVENT } from '../profile/gpsLocation.js';
 import { evaluateWeatherRules } from './weatherRules.js';
 
 function getChipText(ruleId, _lang, t) {
@@ -54,8 +55,11 @@ export function WeatherChips({ scan, context, initialLocation, initialWeather })
     }
 
     load();
+    // A GPS or district change in the profile reloads the chips for the new place
+    window.addEventListener(PROFILE_CHANGED_EVENT, load);
     return () => {
       active = false;
+      window.removeEventListener(PROFILE_CHANGED_EVENT, load);
     };
   }, [initialLocation]);
 

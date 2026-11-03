@@ -347,13 +347,28 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
           <span className="text-3xl">🌾</span>
           <h2 className="text-base font-bold text-amber-950">{t('weather.setAreaPrompt')}</h2>
           <p className="text-xs text-amber-900 leading-relaxed">{t('weather.pageIntro')}</p>
-          <button
-            type="button"
-            onClick={() => setIsEditingLocation(true)}
-            className="inline-block min-h-[44px] px-6 py-2.5 text-xs font-semibold rounded-xl bg-leaf-700 hover:bg-leaf-800 text-white shadow-sm transition"
-          >
-            {t('weather.setAreaAction')}
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <button
+              type="button"
+              onClick={handleUseMyLocation}
+              disabled={isLocating}
+              className="min-h-[44px] px-6 py-2.5 text-sm font-semibold rounded-xl bg-leaf-700 hover:bg-leaf-800 text-white shadow-sm transition disabled:opacity-60"
+            >
+              📍 {isLocating ? t('weather.locating') : t('weather.useMyLocation')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsEditingLocation(true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => searchInputRef.current?.focus(), 50);
+              }}
+              className="min-h-[44px] px-6 py-2.5 text-sm font-semibold rounded-xl bg-white border border-leaf-300 text-leaf-800 hover:bg-leaf-50 transition"
+            >
+              🔍 {t('weather.setAreaAction')}
+            </button>
+          </div>
+          {geoError && <p className="text-xs text-amber-900">{geoError}</p>}
         </div>
       )}
 

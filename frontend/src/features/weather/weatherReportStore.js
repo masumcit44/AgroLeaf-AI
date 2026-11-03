@@ -287,7 +287,11 @@ export async function getWeatherReportData(location, options = {}, fetchFn = glo
       throw new Error('Incomplete Open-Meteo payload');
     }
 
-    const todayStr = new Date(now).toISOString().slice(0, 10);
+    // "Today" in the place's own time zone (timezone=auto): a UTC date is still yesterday in
+    // Bangladesh until 06:00, which shifted every forecast row by one day.
+    const todayStr = typeof data.current.time === 'string'
+      ? data.current.time.slice(0, 10)
+      : new Date(now).toLocaleDateString('en-CA');
     const pastSummary = computePastSummary(data.daily, data.hourly, todayStr);
     const forecastDays = computeForecastDays(data.daily, todayStr);
     const diseaseEvaluations = evaluateAllDiseases(data.hourly, todayStr);

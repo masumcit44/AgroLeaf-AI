@@ -3,6 +3,7 @@ import useT from '../../i18n/useT.js';
 import BigButton from '../../components/BigButton.jsx';
 import districts from './districts.json';
 import { getProfile, saveProfile, deleteProfile } from './profileStore.js';
+import { locateAndSaveProfile, PROFILE_CHANGED_EVENT } from './gpsLocation.js';
 
 const SEASONS = ['boro', 'aman', 'aus'];
 const SEASON_LABELS = {
@@ -23,21 +24,64 @@ function filterDistricts(query) {
   );
 }
 
+/** Button that fills the profile from GPS; shows its own progress and error text. */
+export function GpsLocateButton({ onLocated, className = '' }) {
+  const { t } = useT();
+  const [state, setState] = useState({ busy: false, message: '' });
+
+  const handleClick = async () => {
+    setState({ busy: true, message: '' });
+    try {
+      const result = await locateAndSaveProfile();
+      setState({ busy: false, message: result.approximate ? t('profile.gpsApprox') : t('profile.gpsSaved') });
+      onLocated?.(result);
+    } catch (err) {
+      const key = {
+        denied: 'profile.gpsDenied',
+        timeout: 'profile.gpsTimeout',
+        unsupported: 'profile.gpsUnsupported',
+      }[err.message] || 'profile.gpsUnavailable';
+      setState({ busy: false, message: t(key) });
+    }
+  };
+
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={state.busy}
+        data-testid="gps-locate"
+        className="min-h-[44px] px-4 py-2 rounded-xl border border-leaf-300 bg-leaf-50 hover:bg-leaf-100 text-leaf-800 text-sm font-semibold transition disabled:opacity-60"
+      >
+        📍 {state.busy ? t('profile.gpsLocating') : t('profile.gpsButton')}
+      </button>
+      {state.message && (
+        <p className="mt-1.5 text-xs text-gray-700" role="status">{state.message}</p>
+      )}
+    </div>
+  );
+}
+
 /** [home] Short prompt to set district / season (optional). */
 export function ProfilePrompt({ _scan, _context }) {
   const { t, lang } = useT();
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    getProfile().then(setProfile);
+    const load = () => getProfile().then(setProfile);
+    load();
+    window.addEventListener(PROFILE_CHANGED_EVENT, load);
+    return () => window.removeEventListener(PROFILE_CHANGED_EVENT, load);
   }, []);
 
   if (!profile?.district_code) {
     return (
-      <div className="w-full text-center text-sm text-gray-600 my-2">
+      <div className="w-full text-center text-sm text-gray-600 my-2 space-y-2">
+        <GpsLocateButton />
         <a
           href="#/profile"
-          className="text-leaf-700 underline font-medium hover:text-leaf-800"
+          className="block text-leaf-700 underline font-medium hover:text-leaf-800"
         >
           {t('profile.prompt')}
         </a>
@@ -49,14 +93,20 @@ export function ProfilePrompt({ _scan, _context }) {
   const name = lang === 'bn' ? district?.district_name_bn : district?.district_name_en;
 
   return (
-    <div className="w-full text-center text-sm text-gray-700 my-2">
-      <span className="font-medium">{name}</span>{' '}
-      <a
-        href="#/profile"
-        className="text-leaf-700 underline hover:text-leaf-800"
-      >
-        {t('profile.promptEdit')}
-      </a>
+    <div className="w-full text-center text-sm text-gray-700 my-2 space-y-1.5">
+      <div>
+        <span className="font-medium">{name}</span>
+        {profile.location_source === 'gps' && (
+          <span className="ml-1 text-xs text-gray-500">({t('profile.gpsTag')})</span>
+        )}{' '}
+        <a
+          href="#/profile"
+          className="text-leaf-700 underline hover:text-leaf-800"
+        >
+          {t('profile.promptEdit')}
+        </a>
+      </div>
+      <GpsLocateButton />
     </div>
   );
 }
@@ -94,6 +144,7 @@ export function ProfilePage({ _scan, _context }) {
       district_name_bn: district.district_name_bn,
       lat: district.lat,
       lon: district.lon,
+      location_source: 'district',
     }));
     setDistrictQuery(lang === 'bn' ? district.district_name_bn : district.district_name_en);
     setListOpen(false);
@@ -101,6 +152,7 @@ export function ProfilePage({ _scan, _context }) {
 
   const handleSave = async () => {
     await saveProfile(profile);
+    window.dispatchEvent(new Event(PROFILE_CHANGED_EVENT));
     setStatus('saved');
     setTimeout(() => setStatus(''), 2000);
   };
@@ -123,6 +175,14 @@ export function ProfilePage({ _scan, _context }) {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">{t('profile.districtLabel')}</label>
+          <GpsLocateButton
+            className="mb-2"
+            onLocated={({ profile: p }) => {
+              setProfile(p);
+              setDistrictQuery(lang === 'bn' ? p.district_name_bn : p.district_name_en);
+              setListOpen(false);
+            }}
+          />
           <div className="relative">
             <input
               type="text"
