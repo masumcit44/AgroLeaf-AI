@@ -58,7 +58,30 @@ export async function searchLocations(query, fetchFn = globalThis.fetch) {
       }
     }
   } catch {
-    // network or backend failure; fall back to local districts search
+    // network or backend failure; fall through
+  }
+
+  // Direct Nominatim fallback (e.g. during local preview / testing where Pages Functions aren't running)
+  try {
+    const directUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      q
+    )}&format=json&limit=5&countrycodes=bd&addressdetails=1`;
+    const res = await fetchFn(directUrl);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map((item) => ({
+          name: item.name || item.display_name.split(',')[0],
+          displayName: item.display_name,
+          lat: roundCoord(item.lat),
+          lon: roundCoord(item.lon),
+          level: determineLevel(item),
+          isApproximate: false,
+        }));
+      }
+    }
+  } catch {
+    // network or offline; fall back to local districts
   }
 
   // Local fallback: search 64 districts (works offline and on network error)
