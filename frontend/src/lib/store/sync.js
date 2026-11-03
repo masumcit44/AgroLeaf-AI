@@ -1,7 +1,7 @@
 // Sync client: device registration + outbox flush with signed requests.
 // Uses the outbox.js flushOutbox(send) for the actual sending loop.
 import { getOrCreateDevice, signingKey, signRequest } from './device.js';
-import { listOutbox, enqueue, flushOutbox as outboxFlush } from './outbox.js';
+import { listOutbox, enqueue, flushOutbox as outboxFlush, MAX_ATTEMPTS } from './outbox.js';
 import { getTurnstileToken } from './turnstile.js';
 import { getDb, STORES } from './db.js';
 
@@ -12,12 +12,13 @@ const ENDPOINTS = {
 };
 
 let flushPromise = null;
-let isOnline = typeof navigator !== 'undefined' && navigator.onLine;
 
 /** Mark device as registered in IndexedDB. */
-async function markRegistered(deviceId) {
+async function markRegistered() {
+  // Merge into the stored device: it also holds device_secret, which every signature needs
   const db = await getDb();
-  await db.put(STORES.DEVICE, { device_id: deviceId, registered: true }, 'self');
+  const device = await db.get(STORES.DEVICE, 'self');
+  await db.put(STORES.DEVICE, { ...device, registered: true }, 'self');
 }
 
 /** Check if device is already registered. */
@@ -53,9 +54,9 @@ async function registerDevice() {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `register failed: ${res.status}`);
+    throw new Error(err.error?.code || `register failed: ${res.status}`);
   }
-  await markRegistered(device.device_id);
+  await markRegistered();
   return device;
 }
   
@@ -89,13 +90,21 @@ async function sendItem(item) {
 /** Flush the outbox using the shared outbox.js flushOutbox(send). Single-flight. */
 export async function flushOutbox() {
   if (flushPromise) return flushPromise;
-  if (!isOnline) return { sent: 0, retry: 0, rejected: 0, skipped: 0 };
+  // Ask the browser each time; only a definite 'offline' skips the attempt
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return { sent: 0, retry: 0, rejected: 0, skipped: 0 };
+  }
 
   flushPromise = (async () => {
     const result = { sent: 0, retry: 0, rejected: 0, skipped: 0 };
 
     try {
-      // Ensure registered before sending
+      // Nothing waiting (or all waiting for backoff): never register, so no Turnstile prompt
+      const now = Date.now();
+      const pending = (await listOutbox()).filter(
+        (i) => i.attempts < MAX_ATTEMPTS && !(i.next_attempt_at > now)
+      );
+      if (pending.length === 0) return result;
       if (!(await isRegistered())) {
         await registerDevice();
       }
@@ -117,13 +126,15 @@ export async function flushOutbox() {
   return flushPromise;
 }
 
-/** Ensure registered and flush (called when user enqueues something). */
+/** Flush now (called right after the user enqueues something). Registration happens inside
+ * flushOutbox when there is something to send. Never throws: a failure (Turnstile not set up,
+ * cancelled, offline) leaves the items queued for the next trigger. */
 export async function ensureRegisteredAndFlush() {
-  await getOrCreateDevice();
-  if (!(await isRegistered())) {
-    await registerDevice();
+  try {
+    return await flushOutbox();
+  } catch (err) {
+    return { sent: 0, retry: 0, rejected: 0, skipped: 0, error: String(err?.message || err) };
   }
-  return flushOutbox();
 }
 
 /** Setup triggers: online event, app start (after 5s idle), after enqueue. */
@@ -132,11 +143,9 @@ export function setupSyncTriggers() {
 
   // Online event
   window.addEventListener('online', () => {
-    isOnline = true;
     // Debounce: wait for network to settle
     setTimeout(flushOutbox, 1000);
   });
-  window.addEventListener('offline', () => { isOnline = false; });
 
   // App start: after 5s idle
   if (document.readyState === 'complete') {
