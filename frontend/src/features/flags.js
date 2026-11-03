@@ -5,14 +5,14 @@
 // localStorage); this never works on the production host.
 export const FEATURES = {
   pwa: true, // F9
-  reliability: false, // F14
+  reliability: true, // F14
   history: true, // F16
   profile: true, // F21
   weather: true, // F8
   weatherReport: true, // F8 v2 dedicated weather & crop report (live 4 Nov)
   actionPlan: false, // F10
   feedback: false, // F20
-  help: false, // F22
+  help: true, // F22
   areaMap: false, // F23
   user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };

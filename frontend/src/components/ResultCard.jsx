@@ -4,6 +4,8 @@ import { getConfidenceLabel } from '../lib/resultRules.js';
 import OfficialGuidance from './OfficialGuidance.jsx';
 import AudioExplain from './AudioExplain.jsx';
 import InputSafetyCard from './InputSafetyCard.jsx';
+import { isFeatureOn } from '../features/flags.js';
+import { bandsData } from '../features/reliability/bands.js';
 
 export default function ResultCard({
   classKey,
@@ -28,7 +30,13 @@ export default function ResultCard({
     ? (diseaseData?.what_to_do_now_en || t('askOfficer'))
     : (diseaseData?.what_to_do_now_bn || t('askOfficer'));
 
-  const confidenceLabel = getConfidenceLabel(prob, lang);
+  // With F14 on, the badge uses the measured reliability cut points, so it can never say
+  // "high" while the reliability card below says "medium".
+  const useBands = isFeatureOn('reliability');
+  const isHigh = useBands ? prob >= bandsData.cut_points.high : prob >= 0.90;
+  const confidenceLabel = useBands
+    ? t(isHigh ? 'reliability.badge_high' : 'reliability.badge_medium')
+    : getConfidenceLabel(prob, lang);
 
   return (
     <div
@@ -52,7 +60,7 @@ export default function ResultCard({
 
         <span
           className={`text-xs font-semibold px-2.5 py-0.5 rounded-md border ${
-            prob >= 0.90
+            isHigh
               ? 'bg-leaf-50 text-leaf-700 border-leaf-700/30'
               : 'bg-gray-100 text-gray-700 border-gray-200'
           }`}
