@@ -75,37 +75,34 @@ export function ProfilePrompt({ _scan, _context }) {
     return () => window.removeEventListener(PROFILE_CHANGED_EVENT, load);
   }, []);
 
-  if (!profile?.district_code) {
-    return (
-      <div className="w-full text-center text-sm text-gray-600 my-2 space-y-2">
-        <GpsLocateButton />
+  const district = districts.find((d) => d.code === profile?.district_code);
+  const name = lang === 'bn' ? district?.district_name_bn : district?.district_name_en;
+
+  // The GPS button stays in one place in both states, so its "location set" message survives
+  // the re-render that the saved location triggers.
+  return (
+    <div className="w-full text-center text-sm text-gray-700 my-2 space-y-1.5">
+      {district ? (
+        <div>
+          <span className="font-medium">{name}</span>
+          {profile.location_source === 'gps' && (
+            <span className="ml-1 text-xs text-gray-500">({t('profile.gpsTag')})</span>
+          )}{' '}
+          <a
+            href="#/profile"
+            className="text-leaf-700 underline hover:text-leaf-800"
+          >
+            {t('profile.promptEdit')}
+          </a>
+        </div>
+      ) : (
         <a
           href="#/profile"
           className="block text-leaf-700 underline font-medium hover:text-leaf-800"
         >
           {t('profile.prompt')}
         </a>
-      </div>
-    );
-  }
-
-  const district = districts.find((d) => d.code === profile.district_code);
-  const name = lang === 'bn' ? district?.district_name_bn : district?.district_name_en;
-
-  return (
-    <div className="w-full text-center text-sm text-gray-700 my-2 space-y-1.5">
-      <div>
-        <span className="font-medium">{name}</span>
-        {profile.location_source === 'gps' && (
-          <span className="ml-1 text-xs text-gray-500">({t('profile.gpsTag')})</span>
-        )}{' '}
-        <a
-          href="#/profile"
-          className="text-leaf-700 underline hover:text-leaf-800"
-        >
-          {t('profile.promptEdit')}
-        </a>
-      </div>
+      )}
       <GpsLocateButton />
     </div>
   );
