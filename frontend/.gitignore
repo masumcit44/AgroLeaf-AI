@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 
 e2e-logs/
+*raw.geojson
 

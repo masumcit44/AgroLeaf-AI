@@ -8,6 +8,7 @@ export default {
   navAbout: "About",
   navHistory: "History",
   navWeather: "Weather",
+  navMap: "Map",
   navProfile: "Profile",
   navFeatureTabs: "Features",
   langSwitch: "বাংলা",

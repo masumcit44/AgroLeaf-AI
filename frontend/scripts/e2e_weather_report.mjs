@@ -159,7 +159,7 @@ async function main() {
       // Open location search
       await page.evaluate(() => {
         const btn = [...document.querySelectorAll('button')].find(
-          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন')
+          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন') || b.innerText.includes('এলাকা নির্ধারণ') || b.innerText.includes('Set your area') || b.innerText.includes('এলাকা')
         );
         btn?.click();
       });
@@ -170,14 +170,20 @@ async function main() {
       if (input) {
         await input.type('Savar');
         await page.keyboard.press('Enter');
-        await sleep(1500);
 
-        // Click first search result
+        // Wait for search result button to appear
+        await page.waitForSelector('div[class*="overflow-y-auto"] button', { timeout: 6000 }).catch(() => {});
         await page.evaluate(() => {
           const resBtn = document.querySelector('div[class*="overflow-y-auto"] button');
           resBtn?.click();
         });
-        await sleep(2500);
+
+        // Wait for weather report to render
+        for (let i = 0; i < 20; i++) {
+          const body = await page.evaluate(() => document.body.innerText);
+          if (body.includes('বর্তমান আবহাওয়া') || body.includes('Current Weather')) break;
+          await sleep(250);
+        }
       }
 
       const body = await page.evaluate(() => document.body.innerText);
@@ -246,7 +252,7 @@ async function main() {
       // Open location selector & click "Use my location"
       await page.evaluate(() => {
         const changeBtn = [...document.querySelectorAll('button')].find(
-          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন')
+          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন') || b.innerText.includes('এলাকা নির্ধারণ') || b.innerText.includes('Set your area') || b.innerText.includes('এলাকা')
         );
         changeBtn?.click();
       });
@@ -303,7 +309,7 @@ async function main() {
 
       await page.evaluate(() => {
         const changeBtn = [...document.querySelectorAll('button')].find(
-          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন')
+          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন') || b.innerText.includes('এলাকা নির্ধারণ') || b.innerText.includes('Set your area') || b.innerText.includes('এলাকা')
         );
         changeBtn?.click();
       });
@@ -344,7 +350,7 @@ async function main() {
 
       await page.evaluate(() => {
         const changeBtn = [...document.querySelectorAll('button')].find(
-          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন')
+          (b) => b.innerText.includes('বদলান') || b.innerText.includes('Change') || b.innerText.includes('এলাকা নির্বাচন') || b.innerText.includes('এলাকা নির্ধারণ') || b.innerText.includes('Set your area') || b.innerText.includes('এলাকা')
         );
         changeBtn?.click();
       });

@@ -8,6 +8,7 @@ export default {
   navAbout: "পরিচিতি",
   navHistory: "ইতিহাস",
   navWeather: "আবহাওয়া",
+  navMap: "মানচিত্র",
   navProfile: "প্রোফাইল",
   navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
