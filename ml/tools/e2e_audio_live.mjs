@@ -6,6 +6,14 @@ const puppeteer = require('puppeteer-core');
 const BASE = process.argv[2]; const FILES = JSON.parse(require('node:fs').readFileSync(process.argv[3], 'utf-8'));
 const ANALYSE = 'পরীক্ষা করুন'; const PLAY_LABEL = 'ব্যাখ্যা অডিও শুনুন';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// The clip each screen should play: named results by their title, "not sure" screens by
+// the explanation they show (the same rule as NotSureCard / notSureClipKey).
+const DISEASE_TITLES = { 'সুস্থ পাতা': 'healthy', 'ব্লাস্ট রোগ': 'blast', 'বাদামী দাগ রোগ': 'brown_spot', 'টুংরো রোগ': 'tungro', 'খোল পোড়া রোগ': 'sheath_blight' };
+const expectedClip = (text, title) =>
+  text.includes('ধানের পাতার মতো দেখাচ্ছে না') ? 'not_rice'
+    : text.includes('জানা ৫টি রোগের মধ্যে পড়ে') ? 'other_rice'
+      : text.includes('পাতাটি সুস্থ মনে হতে পারে') ? 'healthy_caution'
+        : DISEASE_TITLES[title.trim()] || (title.includes('নিশ্চিত নই') ? 'not_sure' : null);
 const browser = await puppeteer.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true,
   args: ['--autoplay-policy=user-gesture-required'] });
 let bad = 0;
@@ -32,12 +40,14 @@ try {
       });
     }
     const title = await page.evaluate(() => (document.querySelector('h2,h1')?.innerText || '').split('\n')[0]);
-    const ok = r.t > 0.5 && !r.paused;
-    if (!ok) bad++;
-    console.log(`${ok ? 'PLAYS ' : 'FAIL  '} ${f.split(/[\\/]/).pop().padEnd(36)} ${title.padEnd(22)} ${JSON.stringify(r)} ${errs.length ? errs.join(' | ').slice(0, 160) : ''}`);
+    const want = expectedClip(await page.evaluate(() => document.body.innerText), title);
+    const plays = r.t > 0.5 && !r.paused;
+    const right = Boolean(want) && r.src === `/audio/${want}-v1.mp3`;
+    if (!plays || !right) bad++;
+    console.log(`${plays && right ? 'PLAYS ' : plays ? 'WRONG ' : 'FAIL  '} ${f.split(/[\\/]/).pop().padEnd(36)} ${title.padEnd(22)} want=${want} ${JSON.stringify(r)} ${errs.length ? errs.join(' | ').slice(0, 160) : ''}`);
     await page.close();
   }
 } finally {
   await browser.close();
 }
-console.log(bad ? `${bad} result screens without a working voice` : 'voice plays on every result screen');
+console.log(bad ? `${bad} result screens without the right working voice` : 'the right voice plays on every result screen');
