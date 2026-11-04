@@ -33,7 +33,7 @@ const DISEASE_NAMES_EN = {
 };
 
 export default function FollowUpCard({ scan, context }) {
-  const { lang } = useT();
+  const { lang, t } = useT();
   const isBn = lang === 'bn';
 
   const classKey = scan?.classKey || (scan?.decision?.status === 'confident' ? scan?.decision?.top?.key : 'not_sure') || 'not_sure';
@@ -145,39 +145,59 @@ export default function FollowUpCard({ scan, context }) {
           </p>
 
           {/* Quick timing options */}
-          <div className="flex flex-wrap gap-1.5">
-            {[2, 3, 5, 7].map((days) => (
-              <button
-                key={days}
-                type="button"
-                onClick={() => {
-                  setSelectedDays(days);
-                  setIsCustom(false);
-                }}
-                className={`min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
-                  selectedDays === days && !isCustom
-                    ? 'bg-leaf-600 text-white border-leaf-700 shadow-xs'
-                    : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                {isBn ? `${toBanglaDigits(days)} দিন পর` : `In ${days} days`}
-              </button>
-            ))}
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label={isBn ? 'স্মরণবার্তা বিরতি নির্বাচন' : 'Reminder interval options'}
+          >
+            {[2, 3, 5, 7].map((days) => {
+              const isSelected = selectedDays === days && !isCustom;
+              const daysLabel = isBn
+                ? `${toBanglaDigits(days)} ${t('reminders.daysLater') || 'দিন পর'}`
+                : `In ${days} days`;
+
+              return (
+                <button
+                  key={days}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => {
+                    setSelectedDays(days);
+                    setIsCustom(false);
+                  }}
+                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-leaf-700 text-white border-leaf-800 shadow-sm ring-2 ring-leaf-700/20'
+                      : 'bg-gray-50 text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
+                  }`}
+                >
+                  {daysLabel}
+                </button>
+              );
+            })}
           </div>
 
-          <p className="text-xs text-gray-500 font-medium">
+          <p className="text-xs text-gray-600 font-medium">
             {isBn
-              ? `নির্ধারিত তারিখ: ${formattedDueDate}`
-              : `Scheduled Date: ${dueDate}`}
+              ? `${t('reminders.scheduledDate') || 'নির্ধারিত তারিখ'}: ${formattedDueDate}`
+              : `${t('reminders.scheduledDate') || 'Scheduled Date'}: ${dueDate}`}
           </p>
 
           <button
             type="button"
             onClick={handleAddReminder}
             disabled={isSaving}
-            className="w-full min-h-[44px] bg-leaf-600 hover:bg-leaf-700 active:bg-leaf-800 text-white font-bold text-sm rounded-xl py-2 px-4 shadow-sm transition-colors flex items-center justify-center space-x-2 focus-visible:outline-2 focus-visible:outline-leaf-700"
+            aria-label={isSaving
+              ? (isBn ? 'স্মরণবার্তা সংরক্ষণ হচ্ছে' : 'Saving reminder')
+              : (isBn ? (t('reminders.createFollowUp') || 'স্মরণবার্তা তৈরি করুন') : (t('reminders.createFollowUp') || 'Create Reminder'))}
+            className="w-full min-h-[48px] bg-leaf-700 hover:bg-leaf-800 active:bg-leaf-900 text-white font-bold text-sm sm:text-base rounded-xl py-3 px-4 shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-leaf-700 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <span>{isSaving ? (isBn ? 'সংরক্ষণ হচ্ছে…' : 'Saving…') : (isBn ? '⏰ স্মরণবার্তা যোগ করুন' : '⏰ Add Reminder')}</span>
+            <span aria-hidden="true" className="text-base">⏰</span>
+            <span className="font-bold">
+              {isSaving
+                ? (isBn ? (t('reminders.saving') || 'সংরক্ষণ হচ্ছে…') : (t('reminders.saving') || 'Saving…'))
+                : (isBn ? (t('reminders.createFollowUp') || 'স্মরণবার্তা তৈরি করুন') : (t('reminders.createFollowUp') || 'Create Reminder'))}
+            </span>
           </button>
         </div>
       )}

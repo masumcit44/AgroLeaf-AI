@@ -27,7 +27,7 @@ describe('FollowUpCard', () => {
     expect(html2).toBe('');
   });
 
-  it('renders follow-up prompt for Rice Blast diagnosis in Bengali', () => {
+  it('renders follow-up prompt for Rice Blast diagnosis in Bengali with visible intervals and action button', () => {
     const scan = {
       classKey: 'blast',
       isConfident: true,
@@ -36,10 +36,23 @@ describe('FollowUpCard', () => {
     const html = renderWithI18n(<FollowUpCard context="result" scan={scan} />, 'bn');
     expect(html).toContain('পরবর্তী মাঠ পর্যবেক্ষণ স্মরণবার্তা');
     expect(html).toContain('ধানের ব্লাস্ট');
-    expect(html).toContain('স্মরণবার্তা যোগ করুন');
+    // Main action button displays both icon and text label
+    expect(html).toContain('⏰');
+    expect(html).toContain('স্মরণবার্তা তৈরি করুন');
+    expect(html).toContain('aria-label="স্মরণবার্তা তৈরি করুন"');
+
+    // Every interval option renders its clear, visible Bangla label
+    expect(html).toContain('২ দিন পর');
+    expect(html).toContain('৩ দিন পর');
+    expect(html).toContain('৫ দিন পর');
+    expect(html).toContain('৭ দিন পর');
+
+    // Selected option (3 days for blast) has aria-pressed="true" and bg-leaf-700
+    expect(html).toContain('aria-pressed="true"');
+    expect(html).toContain('bg-leaf-700 text-white');
   });
 
-  it('renders follow-up prompt in English', () => {
+  it('renders follow-up prompt in English with visible intervals and action button', () => {
     const scan = {
       classKey: 'blast',
       isConfident: true,
@@ -48,7 +61,13 @@ describe('FollowUpCard', () => {
     const html = renderWithI18n(<FollowUpCard context="result" scan={scan} />, 'en');
     expect(html).toContain('Follow-up Inspection Reminder');
     expect(html).toContain('Rice Blast');
-    expect(html).toContain('Add Reminder');
+    expect(html).toContain('⏰');
+    expect(html).toContain('Create Reminder');
+    expect(html).toContain('aria-label="Create Reminder"');
+    expect(html).toContain('In 2 days');
+    expect(html).toContain('In 3 days');
+    expect(html).toContain('In 5 days');
+    expect(html).toContain('In 7 days');
   });
 
   it('renders routine follow-up prompt for healthy leaf', () => {

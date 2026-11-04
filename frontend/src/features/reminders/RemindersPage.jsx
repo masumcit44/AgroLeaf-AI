@@ -129,7 +129,7 @@ export default function RemindersPage() {
         <button
           type="button"
           onClick={() => setShowAddModal(true)}
-          className="min-h-[44px] px-3 sm:px-4 py-2 bg-leaf-600 hover:bg-leaf-700 active:bg-leaf-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center space-x-1.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
+          className="min-h-[44px] px-3 sm:px-4 py-2 bg-leaf-700 hover:bg-leaf-800 active:bg-leaf-900 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center space-x-1.5 focus-visible:outline-2 focus-visible:outline-leaf-700 cursor-pointer"
         >
           <span className="text-base font-bold">+</span>
           <span>{isBn ? 'নতুন স্মরণবার্তা' : 'New Reminder'}</span>
@@ -141,7 +141,7 @@ export default function RemindersPage() {
         <button
           type="button"
           onClick={() => setActiveTab('active')}
-          className={`flex-1 min-h-[40px] text-xs sm:text-sm font-bold rounded-lg transition-colors flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 min-h-[44px] text-xs sm:text-sm font-bold rounded-lg transition-colors flex items-center justify-center space-x-1.5 cursor-pointer ${
             activeTab === 'active'
               ? 'bg-white text-leaf-800 shadow-xs'
               : 'text-gray-600 hover:text-gray-900'
@@ -156,7 +156,7 @@ export default function RemindersPage() {
         <button
           type="button"
           onClick={() => setActiveTab('completed')}
-          className={`flex-1 min-h-[40px] text-xs sm:text-sm font-bold rounded-lg transition-colors flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 min-h-[44px] text-xs sm:text-sm font-bold rounded-lg transition-colors flex items-center justify-center space-x-1.5 cursor-pointer ${
             activeTab === 'completed'
               ? 'bg-white text-gray-900 shadow-xs'
               : 'text-gray-600 hover:text-gray-900'
@@ -223,7 +223,7 @@ export default function RemindersPage() {
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(r)}
-                        className="min-h-[40px] px-3 py-1.5 bg-leaf-50 hover:bg-leaf-100 active:bg-leaf-200 text-leaf-800 font-bold text-xs rounded-xl border border-leaf-200 transition-colors flex items-center space-x-1 focus-visible:outline-2 focus-visible:outline-leaf-700"
+                        className="min-h-[44px] px-3.5 py-2 bg-leaf-50 hover:bg-leaf-100 active:bg-leaf-200 text-leaf-800 font-bold text-xs rounded-xl border border-leaf-200 transition-colors flex items-center space-x-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-leaf-700"
                       >
                         <span aria-hidden="true">✓</span>
                         <span>{isBn ? 'সম্পন্ন' : 'Done'}</span>
@@ -232,7 +232,7 @@ export default function RemindersPage() {
                       <button
                         type="button"
                         onClick={() => handleDelete(r.id)}
-                        className="min-h-[40px] px-2.5 py-1.5 text-gray-400 hover:text-red-600 active:text-red-700 font-bold text-xs rounded-xl transition-colors focus-visible:outline-2"
+                        className="min-h-[44px] min-w-[44px] px-2.5 py-2 text-gray-400 hover:text-red-600 active:text-red-700 font-bold text-xs rounded-xl transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-2"
                         aria-label={isBn ? 'মুছে ফেলুন' : 'Delete'}
                       >
                         🗑️
@@ -270,14 +270,15 @@ export default function RemindersPage() {
                     <button
                       type="button"
                       onClick={() => handleToggleStatus(r)}
-                      className="text-xs font-semibold text-leaf-700 hover:underline min-h-[36px] flex items-center px-1"
+                      className="text-xs font-semibold text-leaf-700 hover:underline min-h-[44px] flex items-center px-2 cursor-pointer"
                     >
                       {isBn ? 'পুনরায় সক্রিয়' : 'Reopen'}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(r.id)}
-                      className="text-xs text-gray-400 hover:text-red-600 min-h-[36px] flex items-center px-1"
+                      className="text-xs text-gray-400 hover:text-red-600 min-h-[44px] min-w-[44px] flex items-center justify-center px-2 cursor-pointer"
+                      aria-label={isBn ? 'মুছে ফেলুন' : 'Delete'}
                     >
                       🗑️
                     </button>
@@ -305,7 +306,8 @@ export default function RemindersPage() {
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-700 text-lg font-bold min-h-[40px] min-w-[40px] flex items-center justify-center"
+                className="text-gray-400 hover:text-gray-700 text-lg font-bold min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                aria-label={isBn ? 'বন্ধ করুন' : 'Close modal'}
               >
                 ✕
               </button>
@@ -395,7 +397,7 @@ export default function RemindersPage() {
               <div className="pt-2 flex items-center space-x-2">
                 <button
                   type="submit"
-                  className="flex-1 min-h-[44px] bg-leaf-600 hover:bg-leaf-700 text-white font-bold text-xs sm:text-sm rounded-xl py-2 px-4 shadow-xs"
+                  className="flex-1 min-h-[44px] bg-leaf-700 hover:bg-leaf-800 active:bg-leaf-900 text-white font-bold text-xs sm:text-sm rounded-xl py-2 px-4 shadow-xs transition-colors cursor-pointer"
                 >
                   {isBn ? 'স্মরণবার্তা সংরক্ষণ করুন' : 'Save Reminder'}
                 </button>

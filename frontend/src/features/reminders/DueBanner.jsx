@@ -46,7 +46,7 @@ export default function DueBanner() {
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="text-amber-800 hover:text-amber-950 p-1 text-sm font-bold leading-none min-h-[32px] min-w-[32px] flex items-center justify-center rounded-lg"
+          className="text-amber-800 hover:text-amber-950 p-2 text-sm font-bold leading-none min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl cursor-pointer"
           aria-label={isBn ? 'বিজ্ঞপ্তি বন্ধ করুন' : 'Dismiss banner'}
         >
           ✕
@@ -59,7 +59,7 @@ export default function DueBanner() {
         </span>
         <a
           href="#/reminders"
-          className="text-xs font-bold text-leaf-800 hover:text-leaf-950 underline px-2 py-1 min-h-[36px] flex items-center"
+          className="text-xs font-bold text-leaf-700 hover:text-leaf-800 hover:underline px-2 py-1 min-h-[44px] flex items-center cursor-pointer"
         >
           {isBn ? 'সব কাজ দেখুন →' : 'View all →'}
         </a>

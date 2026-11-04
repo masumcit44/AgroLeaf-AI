@@ -18,6 +18,10 @@ export default {
     'reminders.reminderSaved': 'স্মরণবার্তা সংরক্ষিত হয়েছে',
     'reminders.viewAll': 'সব স্মরণবার্তা দেখুন',
     'reminders.offlineNotice': 'ইন্টারনেট বন্ধ থাকলেও আপনার সব স্মরণবার্তা ডিভাইসে সংরক্ষিত থাকে।',
+    'reminders.createFollowUp': 'স্মরণবার্তা তৈরি করুন',
+    'reminders.saving': 'সংরক্ষণ হচ্ছে…',
+    'reminders.daysLater': 'দিন পর',
+    'reminders.scheduledDate': 'নির্ধারিত তারিখ',
   },
   en: {
     'reminders.title': 'Reminders & Crop Care',
@@ -38,5 +42,9 @@ export default {
     'reminders.reminderSaved': 'Reminder saved successfully',
     'reminders.viewAll': 'View all reminders',
     'reminders.offlineNotice': 'Reminders are stored safely on your device and work completely offline.',
+    'reminders.createFollowUp': 'Create Reminder',
+    'reminders.saving': 'Saving…',
+    'reminders.daysLater': 'days later',
+    'reminders.scheduledDate': 'Scheduled Date',
   },
 };
