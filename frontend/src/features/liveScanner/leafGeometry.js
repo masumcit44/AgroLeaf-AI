@@ -149,3 +149,4 @@ export function classifyLeafFraming(moments, quality = {}) {
   // 6. All criteria satisfied: leaf is centered, well-lit, sharp, and properly sized
   return 'READY';
 }
+

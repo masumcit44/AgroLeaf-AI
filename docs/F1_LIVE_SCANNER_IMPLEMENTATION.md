@@ -43,3 +43,4 @@ flowchart TD
 5. **Integration in `HomePage.jsx` & `PhotoPicker.jsx`:**
    - Clicking the Camera button launches the live scanner when the `liveScanner` feature flag is active.
    - Falls back gracefully to standard file input if camera permissions are unavailable.
+

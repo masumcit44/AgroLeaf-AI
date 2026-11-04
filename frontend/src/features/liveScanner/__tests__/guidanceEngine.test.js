@@ -50,3 +50,4 @@ describe('Live Camera Scanner: LiveGuidanceEngine', () => {
     expect(engine.consecutiveCount).toBe(0);
   });
 });
+

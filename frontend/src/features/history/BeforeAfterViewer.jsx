@@ -188,3 +188,4 @@ export function BeforeAfterViewer({ items = [], lang = 'bn', t, onClose }) {
     </div>
   );
 }
+

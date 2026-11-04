@@ -61,3 +61,4 @@
 | **F32: Outbreak Early Warning** | Community| **Requires Implementation** | Planned as an opt-in, privacy-preserving administrative area surveillance rollup. |
 | **F12: Anonymous Device Registration** | Auth | **Blocked by External Cloudflare Secret**| Ready locally with HMAC-SHA256, but requires production `TURNSTILE_SECRET` and `HASH_SALT`. |
 | **F23: Area Disease Map** | Geo | **Blocked by External Cloudflare Migration**| Frontend GeoJSON map ready; blocked on owner applying `0002_area_district.sql` to prod D1. |
+

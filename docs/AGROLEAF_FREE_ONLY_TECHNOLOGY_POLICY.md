@@ -51,3 +51,4 @@ All features must be constructed using verified free and open-source assets:
    - Any open dataset used (e.g. Mendeley RiceLeafDiseaseBD under CC BY 4.0) must preserve original provenance, license notes, and author citations in `docs/` and application credits.
 3. **Audit Trail Requirement:**
    - Every model checkpoint, audio asset, and external script must have its license recorded in this document prior to deployment.
+

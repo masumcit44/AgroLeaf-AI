@@ -82,3 +82,4 @@ npx --prefix frontend oxlint .
 # 3. Verify production build and asset sizes
 npm --prefix frontend run build
 ```
+

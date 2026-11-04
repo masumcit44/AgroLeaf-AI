@@ -36,3 +36,4 @@
    - Explicit fallback warnings must be rendered in Bangla.
 3. **Cost Invariance:**
    - Zero paid cloud APIs or GPUs. All on-device WASM, Web APIs, and free-tier edge workers.
+

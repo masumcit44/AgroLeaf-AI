@@ -91,3 +91,4 @@ export function evaluateProgression(beforeEntry, afterEntry) {
     afterClass,
   };
 }
+

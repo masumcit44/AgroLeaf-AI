@@ -38,3 +38,4 @@ describe('LiveCameraScanner Component', () => {
     expect(html).toContain('Initializing camera...');
   });
 });
+

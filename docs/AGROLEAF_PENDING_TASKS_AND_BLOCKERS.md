@@ -39,3 +39,4 @@
 - **Mitigation:**
   - Core farmer features (F1, F11, F14, F24, F26, F30, F31, Confidence Score) are 100% local-first and function offline without backend secrets.
   - Server endpoints operate in mock mode in local test suites (`server/__tests__`).
+

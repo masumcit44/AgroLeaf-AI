@@ -35,3 +35,4 @@
 - **Network Payload:** 0 KB added (no additional model downloads).
 - **RAM Footprint:** $< 1.2$ MB transient memory during pixel traversal.
 - **Offline Compatibility:** 100% offline functional via IndexedDB/Service Worker.
+

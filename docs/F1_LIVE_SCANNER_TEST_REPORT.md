@@ -32,3 +32,4 @@
 | Low Light | Luma $= 25 < 40$ | `DARK` | "আলো কম। পর্যাপ্ত আলোতে যান" | PASS |
 | Shaky / Blurry | Blur Var $= 20 < 45$ | `BLURRY` | "ছবিটি ঝাপসা। ফোন স্থির রাখুন" | PASS |
 | Ideal Framing | $cx=0.50, cy=0.50$, Area$=0.35$ | `READY` | "পাতাটি স্ক্যানের জন্য প্রস্তুত!" | PASS |
+

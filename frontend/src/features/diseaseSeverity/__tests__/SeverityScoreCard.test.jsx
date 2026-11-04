@@ -107,3 +107,4 @@ describe('SeverityScoreCard Component', () => {
     expect(htmlEn).toContain('IRRI Scale');
   });
 });
+

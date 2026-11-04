@@ -116,3 +116,4 @@ describe('ConfidenceScoreCard Component', () => {
     expect(html).toContain('কৃষি হেল্পলাইন 16123-এ কল করুন');
   });
 });
+

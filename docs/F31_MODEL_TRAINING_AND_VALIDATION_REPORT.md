@@ -40,3 +40,4 @@ Deploy Option B as the core client-side measurement engine. It guarantees real-t
 - **Low Severity:** Marginal water-soaked lesions covering $< 10\%$ of leaf area.
 - **Medium Severity:** Wavy marginal wilting covering $10\%\text{--}25\%$ of leaf area.
 - **High Severity:** Extensive leaf blighting covering $> 25\%$ of leaf area.
+

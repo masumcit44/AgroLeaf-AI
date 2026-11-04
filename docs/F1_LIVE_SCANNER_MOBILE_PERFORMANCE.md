@@ -27,3 +27,4 @@ The Live Guided Camera Scanner operates with zero external model downloads, main
 - **375px Width (e.g. iPhone SE / standard Android):** Viewfinder reticle leaves adequate border margin without clipping guidance pills.
 - **390px – 412px Width (Modern devices):** Smooth responsive full-bleed viewfinder overlay with zero layout shifts.
 - **Thermal & Battery Impact:** By restricting CV calculations to 8 FPS and using an integer arithmetic mask loop, battery drain is indistinguishable from standard native camera viewfinder usage.
+

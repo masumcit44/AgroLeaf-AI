@@ -29,3 +29,4 @@
 
 ## 2. Conclusion & Annotation Policy
 No fake ground truth or unverified labels are introduced. Where ground truth is unavailable or scientifically inappropriate (such as Tungro stunting or Sheath Blight culm height), the system enforces honest abstention.
+

@@ -23,3 +23,4 @@ frontend/src/features/diseaseSeverity/
 - **Slot System (`slotLayout.js`):** Integrated into the `result` slot immediately after `confidenceScore`.
 - **Feature Flags (`flags.js`):** Enabled via `FEATURES.diseaseSeverity = true`.
 - **Bilingual Support:** Strict parity between `bn` and `en` with Bangla-first phrasing.
+

@@ -82,3 +82,4 @@ describe('Live Camera Scanner: leafGeometry', () => {
     expect(classifyLeafFraming({ isDetected: true, areaRatio: 0.35, cx: 0.50, cy: 0.50 }, { isBlurry: false, isDark: false })).toBe('READY');
   });
 });
+

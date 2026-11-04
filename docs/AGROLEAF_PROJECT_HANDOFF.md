@@ -69,3 +69,4 @@ Any incoming model or engineer must follow this exact order:
 4. **Step 4:** Execute **F31 Disease Severity Scoring** architecture and implementation.
 5. **Step 5:** Execute **F30 Voice-First Farmer Copilot** local RAG implementation.
 6. **Step 6:** Execute **F32 Outbreak Early Warning** aggregation engine.
+

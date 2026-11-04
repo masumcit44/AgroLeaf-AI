@@ -43,3 +43,4 @@ export default {
     'liveScanner.overrideWarn': 'Bypassing quality checks may reduce disease diagnosis reliability.',
   },
 };
+

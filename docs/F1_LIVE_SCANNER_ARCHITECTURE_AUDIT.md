@@ -108,3 +108,4 @@ Camera movement instructions guide the farmer on how to move their physical devi
    - Snap-to-canvas capture passing directly into `useScanFlow`.
 4. **`src/features/liveScanner/i18n.js`:**
    - Complete bilingual dictionary (Bangla primary, English secondary).
+

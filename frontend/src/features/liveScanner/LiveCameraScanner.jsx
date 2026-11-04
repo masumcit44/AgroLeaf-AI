@@ -395,3 +395,4 @@ export function LiveCameraScanner({ onCapture, onClose }) {
 }
 
 export default LiveCameraScanner;
+

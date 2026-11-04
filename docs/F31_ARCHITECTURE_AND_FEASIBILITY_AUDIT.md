@@ -63,3 +63,4 @@ $$\text{Visible Lesion Coverage (\%)} = \left(\frac{\text{Lesion Pixels}}{\text{
 ## 4. Architectural Summary
 
 F31 executes client-side on the user's mobile browser in $< 10$ ms with zero server roundtrips, zero paid APIs, and zero bloat, preserving complete offline autonomy.
+

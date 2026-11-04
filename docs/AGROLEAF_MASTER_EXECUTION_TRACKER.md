@@ -20,9 +20,10 @@
 | **F11: Explainable AI Heatmap** | Explainable AI | **Implemented, Fixed & Verified** | `deploy/candidate-ready` | `758ed02` | 24/24 XAI tests pass | In production, visual regression verified |
 | **F14: Photo History (Before/After Tracking)** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | `03ecb43` | 19/19 tests pass | Production deployed |
 | **Confidence Score (Calibrated Prob)** | AI Uncertainty | **Implemented & Verified** | `deploy/candidate-ready` | `e5df981` | 7/7 tests pass | In production |
-| **F24: Farmer Reminder & Crop Care Scheduler** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | `73787c1` | 24/24 reminder tests pass | Preserved offline IndexedDB v2 |
+| **F21: Farmer Profile & Crop Calendar** | Crop Planning | **Redesigned & Verified** | `deploy/candidate-ready` | Working tree | 26/26 profile tests pass | Personalized Crop Calendar ready |
+| **F24: Farmer Reminder & Crop Care Scheduler** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | `73787c1` | 24/24 reminder tests pass | Connected to Crop Calendar |
 | **F26: Yield Impact Estimation & Risk** | Agronomy / Risk | **Implemented & Verified** | `deploy/candidate-ready` | `fb4e042` | 15/15 yield tests pass | BAMIS dynamic risk validated |
-| **F31: Disease Severity Scoring** | Quantitative AI| **Implemented & Verified** | `deploy/candidate-ready` | Working tree | 17/17 severity tests pass | Production candidate ready |
+| **F31: Disease Severity Scoring** | Quantitative AI| **Implemented & Verified** | `deploy/candidate-ready` | `a886b05` | 17/17 severity tests pass | In production |
 | **F30: AI-Powered Disease Q&A (Voice Copilot)**| Voice Assistant | **Ready for Implementation** | `deploy/candidate-ready` | Next Milestone | Free-only local RAG & Voice UI | Begin Phase 5 implementation |
 | **F32: Outbreak Early Warning & Neighbor Alert**| Community Intel | **Requirements Recovered** | Planning phase | Design finalized | Central aggregation planned | Build privacy-preserving area rollup |
 
