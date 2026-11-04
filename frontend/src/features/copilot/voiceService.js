@@ -86,7 +86,8 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       const item = event.results[i];
       if (item.isFinal) {
-        finalTranscript += item[0].transcript;
+        // Chrome's first guess can be "আম…" while a lower-ranked one is "আমার ধানে…"
+        finalTranscript += pickBestAlternative(Array.from(item, (alt) => alt.transcript));
       } else {
         interimTranscript += item[0].transcript;
       }
@@ -220,6 +221,39 @@ export function speakUtterance(text, { onStart, onEnd, onError, onVoiceUnavailab
     }
     finish();
   };
+}
+
+// Words that show the farmer is talking about rice / rice farming (Bangla and Banglish)
+const RICE_CONTEXT = /(ধান|চাল|পাতা|ব্লাস্ট|টুংরো|খোল|দাগ|সার|সেচ|বীজ|চারা|পোকা|রোগ|dhan|rice|blast|tungro)/i;
+
+/**
+ * Among the recognizer's alternatives, prefers the first one with rice context; a lone "আম"
+ * (mango) guess never wins over an alternative that says "আমার"/"আমি". Falls back to the first.
+ */
+export function pickBestAlternative(alternatives) {
+  const alts = (alternatives || []).map((a) => (a || '').trim()).filter(Boolean);
+  if (alts.length === 0) return '';
+  const withRice = alts.find((a) => RICE_CONTEXT.test(a));
+  if (withRice) return withRice;
+  const hasLoneAam = (a) => /(^|\s)আম(\s|$)/.test(a);
+  if (hasLoneAam(alts[0])) {
+    const pronoun = alts.find((a) => /(^|\s)(আমার|আমি|আমাদের)(\s|$)/.test(a));
+    if (pronoun) return pronoun;
+  }
+  return alts[0];
+}
+
+/**
+ * A spoken transcript must be confirmed before answering when it may be a mis-hearing:
+ * it contains the standalone word "আম" (often a clipped "আমার"), or it is 1–2 words with no
+ * rice context ("আমি", "আমার ধ…"). Typed questions are not checked.
+ */
+export function needsTranscriptConfirmation(text) {
+  const clean = (text || '').trim();
+  if (!clean) return true;
+  if (/(^|\s)আম(\s|$)/.test(clean)) return true;
+  const tokens = clean.split(/\s+/);
+  return tokens.length <= 2 && !RICE_CONTEXT.test(clean);
 }
 
 /** Resolves with the browser's voice list, waiting up to `timeoutMs` for it to load. */

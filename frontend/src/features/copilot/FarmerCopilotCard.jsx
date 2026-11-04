@@ -10,6 +10,7 @@ import {
   stopSpeech,
   isSpeechRecognitionSupported,
   isSpeechSynthesisSupported,
+  needsTranscriptConfirmation,
 } from './voiceService.js';
 import useT from '../../i18n/useT.js';
 
@@ -175,8 +176,10 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
       setActivePlan(answer?.plan || null);
       setVoiceState('idle');
 
-      if (answer?.voiceBn) {
-        speakText(answer.voiceBn);
+      // Speak the same answer that is shown on screen
+      const spoken = answer?.textBn || answer?.voiceBn;
+      if (spoken) {
+        speakText(spoken);
       }
     },
     [activeDisease, lang, speakText]
@@ -224,8 +227,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
 
           if (isFinal) {
             const clean = text.trim();
-            const tokens = clean.split(/\s+/).filter(Boolean);
-            if (tokens.length <= 1 && (tokens[0] === 'আমার' || tokens[0] === 'আমি' || tokens[0] === 'আম')) {
+            if (needsTranscriptConfirmation(clean)) {
               setPendingConfirmation(clean);
               setVoiceState('idle');
             } else {
@@ -254,7 +256,8 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
 
   // Replay speech
   const handleReplayVoice = () => {
-    const textToSpeak = activePlan?.overview?.voice_summary_bn || copilotResponse?.voiceBn;
+    // Read the answer the farmer sees, not a separate shorter script
+    const textToSpeak = activePlan?.overview?.voice_summary_bn || copilotResponse?.textBn || copilotResponse?.voiceBn;
     if (textToSpeak) {
       speakText(textToSpeak);
     }
