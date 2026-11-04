@@ -70,3 +70,32 @@ export function cropCanvas(source, box, doc = typeof document !== 'undefined' ? 
   ctx.drawImage(source, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
   return out;
 }
+
+/**
+ * Computes a square region of interest (ROI) centered at the user's selected box.
+ * Preserves the full length of elongated leaves (e.g. 318x660) without center-cutting
+ * or aspect-ratio distortion, embedding natural surrounding rice foliage context.
+ */
+export function getSquareContextBox(box, imgW, imgH) {
+  const b = clampBox(box, imgW, imgH);
+  const targetSide = Math.max(b.w, b.h);
+  const s = Math.min(targetSide, imgW, imgH);
+  const cx = b.x + b.w / 2;
+  const cy = b.y + b.h / 2;
+  let sx = Math.round(cx - s / 2);
+  let sy = Math.round(cy - s / 2);
+  sx = Math.max(0, Math.min(imgW - s, sx));
+  sy = Math.max(0, Math.min(imgH - s, sy));
+  return { x: sx, y: sy, w: s, h: s };
+}
+
+/**
+ * Extracts the square context canvas from source so inference sees the intact leaf blade
+ * in its natural aspect ratio. Returns null if extraction fails.
+ */
+export function cropSquareContextCanvas(source, box, doc = typeof document !== 'undefined' ? document : null) {
+  if (!source || !doc) return null;
+  const sq = getSquareContextBox(box, source.width, source.height);
+  return cropCanvas(source, sq, doc);
+}
+

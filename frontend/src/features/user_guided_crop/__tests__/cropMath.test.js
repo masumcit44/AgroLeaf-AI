@@ -1,5 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { clampBox, isBoxTooSmall, defaultBox, dragBox, keyStepBox, cropCanvas, MIN_CROP_PX } from '../cropMath.js';
+import {
+  clampBox,
+  isBoxTooSmall,
+  defaultBox,
+  dragBox,
+  keyStepBox,
+  cropCanvas,
+  getSquareContextBox,
+  cropSquareContextCanvas,
+  MIN_CROP_PX,
+} from '../cropMath.js';
 
 const W = 1024;
 const H = 768;
@@ -65,5 +75,49 @@ describe('canvas crop', () => {
   it('returns null instead of throwing when it cannot crop', () => {
     expect(cropCanvas(null, { x: 0, y: 0, w: 200, h: 200 }, {})).toBeNull();
     expect(cropCanvas({ width: 10, height: 10 }, { x: 0, y: 0, w: 5, h: 5 }, { createElement: () => ({ getContext: () => null }) })).toBeNull();
+  });
+
+  describe('square context ROI preservation', () => {
+    it('expands a tall vertical leaf crop (e.g. 318x660) to a centered square box', () => {
+      // 318x660 centered horizontally at x=200, vertically at y=50 in a 1024x1024 canvas
+      const tallBox = { x: 200, y: 50, w: 318, h: 660 };
+      const sq = getSquareContextBox(tallBox, 1024, 1024);
+      expect(sq.w).toBe(660);
+      expect(sq.h).toBe(660);
+      // center of tallBox: cx = 200 + 159 = 359, cy = 50 + 330 = 380
+      // sx = 359 - 330 = 29, sy = 380 - 330 = 50
+      expect(sq.x).toBe(29);
+      expect(sq.y).toBe(50);
+    });
+
+    it('clamps to canvas borders without shrinking side when image permits', () => {
+      // Box near left edge where cx - s/2 < 0
+      const edgeBox = { x: 10, y: 10, w: 200, h: 500 };
+      const sq = getSquareContextBox(edgeBox, 1024, 1024);
+      expect(sq.w).toBe(500);
+      expect(sq.h).toBe(500);
+      expect(sq.x).toBe(0); // clamped to left border (cx = 110, cx - 250 = -140 -> 0)
+      expect(sq.y).toBe(10); // fits within [0, 1024]
+    });
+
+    it('caps square side to image dimensions if target side exceeds image', () => {
+      const largeBox = { x: 50, y: 50, w: 400, h: 900 };
+      const sq = getSquareContextBox(largeBox, 800, 600);
+      expect(sq.w).toBe(600);
+      expect(sq.h).toBe(600);
+      expect(sq.x).toBeGreaterThanOrEqual(0);
+      expect(sq.x + sq.w).toBeLessThanOrEqual(800);
+      expect(sq.y).toBe(0);
+    });
+
+    it('extracts square context canvas via cropSquareContextCanvas', () => {
+      const drawImage = vi.fn();
+      const out = { getContext: () => ({ drawImage }) };
+      const doc = { createElement: () => out };
+      const source = { width: 1000, height: 1000 };
+      const res = cropSquareContextCanvas(source, { x: 300, y: 100, w: 200, h: 600 }, doc);
+      expect(res).toBe(out);
+      expect([out.width, out.height]).toEqual([600, 600]);
+    });
   });
 });

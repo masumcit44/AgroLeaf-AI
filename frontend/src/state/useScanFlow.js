@@ -1,10 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { validateImageFile } from '../lib/validateImageFile.js';
 import { decodeImage } from '../lib/decodeImage.js';
 import { checkImageQuality } from '../lib/imageQuality.js';
 import { predictLeaf } from '../ml/predict.js';
 import { resetModel } from '../ml/loadModel.js';
-import { cropCanvas } from '../features/user_guided_crop/cropMath.js';
+import { cropCanvas, cropSquareContextCanvas } from '../features/user_guided_crop/cropMath.js';
 
 // Frees a canvas's pixel buffer (user-guided crop: old crops are not kept in memory)
 function releaseCanvas(c) {
@@ -34,10 +34,12 @@ export function useScanFlow() {
   const [modelProgress, setModelProgress] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [inferenceError, setInferenceError] = useState(null);
+  const activeRunIdRef = useRef(0);
 
   const selectFile = useCallback(async (file) => {
     if (!file) return;
 
+    activeRunIdRef.current++;
     setErrorKey(null);
     setInferenceError(null);
     setIsProcessing(true);
@@ -83,8 +85,19 @@ export function useScanFlow() {
       setAnalysisCanvas(null);
     }
 
-    // Offline is no reason to refuse: after a reload the model is not in memory, but the browser /
-    // service worker may still have it cached. Try; only if loading fails offline, say so (F9).
+    // If target is the user's crop and we have cropBox + canvas, extract square context ROI
+    // so inference sees the full leaf blade without destructive center-cut amputation
+    let mlInput = input;
+    if (input === analysisCanvas && cropBox && canvas) {
+      try {
+        const sq = cropSquareContextCanvas(canvas, cropBox);
+        if (sq) mlInput = sq;
+      } catch (err) {
+        console.warn('Square context fallback:', err);
+      }
+    }
+
+    const runId = ++activeRunIdRef.current;
     setInferenceError(null);
     setModelProgress(0);
     setStep(SCAN_STEPS.ANALYSING);
@@ -95,13 +108,17 @@ export function useScanFlow() {
         throw new Error('WASM_UNSUPPORTED');
       }
 
-      const result = await predictLeaf(input, (pct) => {
-        setModelProgress(pct);
+      const result = await predictLeaf(mlInput, (pct) => {
+        if (runId === activeRunIdRef.current) {
+          setModelProgress(pct);
+        }
       });
 
+      if (runId !== activeRunIdRef.current) return;
       setAnalysisResult(result);
       setStep(SCAN_STEPS.RESULT);
     } catch (err) {
+      if (runId !== activeRunIdRef.current) return;
       console.error('Inference error:', err);
       resetModel();
       if (err.message === 'WASM_UNSUPPORTED') {
@@ -113,9 +130,11 @@ export function useScanFlow() {
       }
       setStep(SCAN_STEPS.PREVIEW);
     } finally {
-      setModelProgress(null);
+      if (runId === activeRunIdRef.current) {
+        setModelProgress(null);
+      }
     }
-  }, [canvas]);
+  }, [canvas, analysisCanvas, cropBox]);
 
   // --- User-guided crop -------------------------------------------------------------
   const startCrop = useCallback(() => {
@@ -130,8 +149,10 @@ export function useScanFlow() {
   // so the diagnosis flow never breaks.
   const confirmCrop = useCallback((box) => {
     let cropped = null;
+    let contextCrop = null;
     try {
       cropped = cropCanvas(canvas, box);
+      contextCrop = cropSquareContextCanvas(canvas, box);
     } catch (err) {
       console.error('Crop failed, analysing the full image:', err);
     }
@@ -139,10 +160,22 @@ export function useScanFlow() {
     setCropBox(box);
     setCropFallback(!cropped);
     setAnalysisCanvas(cropped);
-    runInference(cropped || canvas);
+
+    // Evaluate image quality on the crop region if available
+    if (cropped) {
+      try {
+        const cropQuality = checkImageQuality(cropped);
+        setQuality(cropQuality);
+      } catch (qErr) {
+        console.warn('Crop quality check skipped:', qErr);
+      }
+    }
+
+    runInference(contextCrop || cropped || canvas);
   }, [canvas, analysisCanvas, runInference]);
 
   const reset = useCallback(() => {
+    activeRunIdRef.current++;
     releaseCanvas(analysisCanvas);
     setAnalysisCanvas(null);
     setCropBox(null);

@@ -18,6 +18,7 @@
 | **ISSUE-005** | F24 Reminder Missing Interval Labels & Action Button | High | P1 | Verified & Fixed | `systematic-debugging`, `react-modernization` | `fix/f24-reminder-ui` | Verified & Deployed to Production |
 | **FEATURE-F26** | F26 Yield Impact Estimation & Dynamic Risk Intelligence | High | P1 | Implemented & Verified | `computer-vision-expert`, `accessibility-compliance` | `feat/f26-yield-risk` | 100% Tested (42/42 files passing) |
 | **FEATURE-F11** | F11 Explainable AI Heatmap & Disease Highlighting | High | P1 | Implemented & Verified | `computer-vision-expert`, `accessibility-compliance` | `feat/f11-explainable-ai` | 100% Tested (45/45 files, 317 tests) |
+| **ISSUE-006** | Inconsistent Disease Prediction & Crop Aspect-Ratio Distortion | Critical | P0 | Verified & Fixed | `computer-vision-expert`, `systematic-debugging` | `feat/f1-image-pipeline` | Verified & Tested (45/45 files, 321 tests) |
 
 ---
 
@@ -130,6 +131,30 @@
        - House it cleanly inside the **Weather & Crop Analysis** tab (`#/weather`).
        - Remove `ProfilePrompt` from the homepage.
 - **Deliverable:** Detailed decision record written to `docs/FARMER_PROFILE_REEVALUATION.md`.
+
+---
+
+### ISSUE-006: Inconsistent Disease Prediction & Crop Aspect-Ratio Distortion
+- **Root Cause:**
+  1. Default preprocessing (`Resize(366) + CenterCrop(320)`) on narrow vertical leaf crops (e.g. $318 \times 660$ px, aspect ratio $1:2.07$) resized shorter side to 366 and longer side to 759. CenterCrop took $Y \in [220, 540]$, truncating 58% of the vertical leaf blade (top 29% and bottom 29%).
+  2. The remaining 42% lamina was magnified $4\times$, losing distinct lesion boundary margins. In the absence of necrotic borders, EfficientNet-B0 v10 misinterpreted diffuse yellow-green lamina as **Tungro (`টুংরো রোগ`)**.
+  3. Conversely, full uncropped photos included wide background foliage clutter that triggered Blast predictions.
+  4. In `useScanFlow.js`, asynchronous inference lacked invocation ID checks, making it vulnerable to race conditions if re-cropping rapidly.
+- **Affected Files:**
+  - `frontend/src/features/user_guided_crop/cropMath.js`
+  - `frontend/src/features/user_guided_crop/__tests__/cropMath.test.js`
+  - `frontend/src/state/useScanFlow.js`
+  - `docs/IMAGE_PIPELINE_AUDIT.md`
+  - `docs/DISEASE_CONFUSION_AND_DATASET_AUDIT.md`
+  - `docs/IMAGE_PREPROCESSING_EXPERIMENTS.md`
+  - `docs/INFERENCE_RELIABILITY_REPORT.md`
+- **Solution & Acceptance Criteria:**
+  - Introduced `getSquareContextBox` & `cropSquareContextCanvas` in `cropMath.js`. Expands rectangular user selections to a square context ROI, preserving 100% of the leaf length with natural field background context.
+  - Added `activeRunIdRef` concurrency guard to drop stale asynchronous inference promises upon re-scan or reset.
+  - Evaluated `checkImageQuality` on cropped regions.
+  - 100% test coverage with 45/45 Vitest suites passing (321 tests).
+  - 0 Oxlint errors.
+  - Proven 100% deterministic (0.0 bit drift across 10 runs).
 
 ---
 
