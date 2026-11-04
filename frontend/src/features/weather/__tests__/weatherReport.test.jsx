@@ -242,6 +242,32 @@ describe('F8 v2 Weather Report Store & Caching', () => {
     expect(forecast[0].maxTemp).toBe(28);
     expect(forecast[0].sunshineHours).toBe(7);
   });
+
+  it('correctly uses the local place date for "today" at 00:30 Bangladesh time (18:30 UTC)', () => {
+    // At 00:30 Bangladesh time on 4 Nov 2026, UTC is 18:30 on 3 Nov 2026.
+    // Open-Meteo with timezone=auto returns data.current.time in local time: "2026-11-04T00:30"
+    const daily = {
+      time: ['2026-11-03', '2026-11-04', '2026-11-05', '2026-11-06'],
+      temperature_2m_min: [19, 20, 21, 22],
+      temperature_2m_max: [29, 30, 31, 32],
+      precipitation_sum: [0, 0, 5, 0],
+      precipitation_probability_max: [10, 20, 80, 10],
+      wind_speed_10m_max: [10, 12, 15, 10],
+      wind_direction_10m_dominant: [90, 100, 110, 90],
+      sunshine_duration: [28800, 28800, 14400, 28800],
+    };
+
+    const currentTimeLocal = '2026-11-04T00:30';
+    const localTodayStr = currentTimeLocal.slice(0, 10);
+    expect(localTodayStr).toBe('2026-11-04');
+
+    const forecast = computeForecastDays(daily, localTodayStr);
+    expect(forecast.length).toBe(3);
+    // First forecast row MUST be local today (4 Nov), which UI maps to "আজ"
+    expect(forecast[0].date).toBe('2026-11-04');
+    expect(forecast[0].minTemp).toBe(20);
+    expect(forecast[0].maxTemp).toBe(30);
+  });
 });
 
 describe('F8 v2 Missing Variables & Formatting Honesty', () => {

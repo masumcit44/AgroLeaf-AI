@@ -766,7 +766,7 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                           {lang === 'bn' ? dis.nameBn : dis.nameEn}
                         </h3>
                         <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
-                          {isUnsupported ? 'QUALITATIVE ADVISORY' : t('weather.researchRuleTag')}
+                          {isUnsupported ? t('weather.qualitativeAdvisory') : t('weather.researchRuleTag')}
                         </span>
                       </div>
 
@@ -813,9 +813,9 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                               {t('weather.forecastValues')}:{' '}
                             </span>
                             <span>
-                              Max {formatNumber(dis.nextDaysSummary.dayMax, lang)}°C, Min{' '}
-                              {formatNumber(dis.nextDaysSummary.nightMin, lang)}°C, RH{' '}
-                              {formatNumber(dis.nextDaysSummary.maxRh, lang)}%, Cloud{' '}
+                              {t('weather.statMax')} {formatNumber(dis.nextDaysSummary.dayMax, lang)}°C, {t('weather.statMin')}{' '}
+                              {formatNumber(dis.nextDaysSummary.nightMin, lang)}°C, {t('weather.statRh')}{' '}
+                              {formatNumber(dis.nextDaysSummary.maxRh, lang)}%, {t('weather.statCloud')}{' '}
                               {formatNumber(dis.nextDaysSummary.cloud, lang)}%
                             </span>
                           </div>
