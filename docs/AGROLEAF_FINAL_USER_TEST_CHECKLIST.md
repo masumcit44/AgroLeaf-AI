@@ -1,4 +1,4 @@
-# AgroLeaf AI — Your Manual Test Checklist (candidate)
+# AgroLeaf AI — Your Manual Test Checklist (candidate 8f2fa1b)
 
 Open https://deploy-candidate-ready.agroleaf-ai.pages.dev on each phone. If an old version
 shows, tap "রিলোড করুন" or clear site data. Tick ✅ / ❌ and note the phone + browser.
@@ -16,12 +16,13 @@ shows, tap "রিলোড করুন" or clear site data. Tick ✅ / ❌ and
 
 ## 2. Main farmer journey (390 px phone)
 - [ ] Scan a real leaf with the camera → result in a few seconds.
-- [ ] Result shows: disease name, reliability (e.g. "১০০ টির মধ্যে ৮০ টি"), this-week plan,
-      help button; extra details only after tapping "🔍 আরও বিশ্লেষণ".
+- [ ] Bottom/top tabs are exactly: হোম, ভয়েস সহকারী, স্মরণবার্তা, ইতিহাস, আবহাওয়া.
+- [ ] Result shows: disease name, ▶ শুনুন, reliability (e.g. "১০০ টির মধ্যে ৮০ টি"),
+      this-week plan, reminder, save, help. No severity / yield-loss / heatmap cards (deferred).
 - [ ] No English words like "F30:" or "Max/Min" in Bangla mode.
 - [ ] Save to history → appears in 🗂️ ইতিহাস.
 - [ ] Set a reminder → it appears in the reminders tab after closing and reopening the app.
-- [ ] 📍 GPS on Home → your district shows with "(GPS)"; Weather tab shows your area.
+- [ ] Profile: on Home tap "এডিট করুন" → profile opens. 📍 GPS on Home → your district shows with "(GPS)"; Weather tab shows your area.
 - [ ] Help → 16123 call link works; summary image downloads/shares.
 
 ## 3. Offline
