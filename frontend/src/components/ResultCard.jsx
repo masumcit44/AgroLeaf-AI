@@ -113,8 +113,8 @@ export default function ResultCard({
         </div>
       )}
 
-      {/* Section: What to do now (Highlighted Action Box) */}
-      {whatToDo && (
+      {/* Section: What to do now (Highlighted Action Box; hidden when ActionPlan is active to prevent duplicate text) */}
+      {!isFeatureOn('actionPlan') && whatToDo && (
         <div
           className={`p-3.5 rounded-2xl border mb-4 text-xs sm:text-sm leading-relaxed ${
             isHealthy
@@ -136,8 +136,8 @@ export default function ResultCard({
         </div>
       )}
 
-      {/* Section: Prevention */}
-      {prevention.length > 0 && (
+      {/* Section: Prevention (hidden when ActionPlan is active to prevent duplicate text) */}
+      {!isFeatureOn('actionPlan') && prevention.length > 0 && (
         <div className="mb-2">
           <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
             {t('sectionPrevention')}

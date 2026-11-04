@@ -10,7 +10,7 @@ export const FEATURES = {
   profile: true, // F21
   weather: true, // F8
   weatherReport: true, // F8 v2 dedicated weather & crop report (live 4 Nov)
-  actionPlan: false, // F10
+  actionPlan: true, // F10
   feedback: false, // F20
   help: true, // F22
   areaMap: false, // F23
