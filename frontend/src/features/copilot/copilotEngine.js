@@ -569,7 +569,7 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     normalized.includes('সরাসরি বীজ বপন') ||
     (normalized.includes('রোপণ') && (normalized.includes('কী করব') || normalized.includes('কী করণীয়')))
   ) {
-    const slots = parseFarmingPlannerSlots(cleanQuery);
+    const slots = parseFarmingPlannerSlots(rawQuery);
     if (!slots.variety) {
       return {
         intent: 'clarification_needed',
