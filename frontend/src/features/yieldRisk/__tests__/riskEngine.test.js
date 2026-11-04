@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateRiskContext, resolveCalendarContext, evaluateSheathBlightMicroclimate } from '../riskEngine.js';
+import { evaluateRiskContext, resolveCalendarContext, evaluateSheathBlightMicroclimate, evaluateBlastMicroclimate } from '../riskEngine.js';
 
 describe('F26 Yield Risk Engine: Pure Calculations', () => {
   // Test 1: Inconclusive diagnosis ('not_sure')
@@ -130,5 +130,12 @@ describe('F26 Yield Risk Engine: Pure Calculations', () => {
     const evalShb = evaluateSheathBlightMicroclimate(weather);
     expect(evalShb.score).toBeGreaterThanOrEqual(0.8);
     expect(evalShb.factors.length).toBe(2);
+  });
+
+  // Test 10: Multiplicative coupling prevents false alarm in bone-dry air
+  it('suppresses blast microclimate in bone dry air even if temperature is optimal', () => {
+    const weather = { temperature: 22, relativeHumidity: 0 };
+    const evalBlast = evaluateBlastMicroclimate(weather);
+    expect(evalBlast.score).toBeLessThan(0.1);
   });
 });

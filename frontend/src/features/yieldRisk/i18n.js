@@ -72,6 +72,10 @@ export default {
     'yieldRisk.lastUpdated': 'হালনাগাদ',
     'yieldRisk.updatedToday': 'আজ পর্যবেক্ষণকৃত',
     'yieldRisk.offlineNotice': 'অফলাইন তথ্য — আবহাওয়া লাইভ তথ্য ছাড়াই রোগের সাধারণ মানদণ্ড দেখানো হচ্ছে।',
+    'yieldRisk.noDistrictNotice': 'লোকেশন সেট করা নেই — স্থানীয় আবহাওয়া ছাড়া সাধারণ পূর্বাভাস দেখানো হচ্ছে। প্রোফাইল থেকে জেলা নির্বাচন করুন।',
+    'yieldRisk.scoutingPrompt': 'ক্ষেতের অন্তত ২০টি গাছ ঘুরে দেখুন: মাত্র ২-১টি পাতায় দাগ থাকলে আতঙ্কিত হবেন না; বেশি গাছে ছড়ালে তবেই উপরিউক্ত ব্যবস্থা দ্রুত কার্যকর করুন।',
+    'yieldRisk.sourceTrialBenchmarkTitle': 'গবেষণা প্লটের ট্রায়াল তথ্য (BRRI/IRRI)',
+    'yieldRisk.sourceTrialBenchmarkDesc': 'অনিয়ন্ত্রিত গবেষণামূলক ট্রায়ালে সর্বোচ্চ ১৫%–৩৫% পর্যন্ত ফলন ঘাটতি দেখা গেছে, তবে সুষম ব্যবস্থাপনায় তা ৫% এর নিচে রাখা সম্ভব। পুরো ক্ষেতের ক্ষতির পরিমাণ ফসলের বৃদ্ধি পর্যায় ও রোগের তীব্রতার ওপর নির্ভরশীল।',
   },
   en: {
     'yieldRisk.cardTitle': 'Yield Impact & Risk Intelligence',
@@ -142,5 +146,9 @@ export default {
     'yieldRisk.lastUpdated': 'Last updated',
     'yieldRisk.updatedToday': 'Assessed today',
     'yieldRisk.offlineNotice': 'Offline data — standard disease baselines are shown without live weather.',
+    'yieldRisk.noDistrictNotice': 'District not configured — standard baselines are shown without local microclimate. Set your district in Profile.',
+    'yieldRisk.scoutingPrompt': 'Inspect at least 20 hills across your field: do not panic if only 1–2 leaves show spots; take prompt action only if symptoms spread to multiple plants.',
+    'yieldRisk.sourceTrialBenchmarkTitle': 'Research Plot Trial Benchmarks (BRRI/IRRI)',
+    'yieldRisk.sourceTrialBenchmarkDesc': 'In uncontrolled experimental check plots, up to 15%–35% yield reduction has been recorded, but timely management keeps losses below 5%. Whole-field impact depends on crop growth stage and field incidence.',
   },
 };

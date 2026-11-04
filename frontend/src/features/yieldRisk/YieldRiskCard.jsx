@@ -32,12 +32,11 @@ export function YieldRiskCard({ scan, context }) {
     return null;
   }
 
-  // Determine disease class key from scan
-  let classKey = scan.classKey || scan.decision?.top?.key;
-  if (!classKey && scan.decision?.status === 'inconclusive') {
+  // Determine disease class key from scan with strict inconclusive gate
+  let classKey = scan.classKey;
+  if (!classKey || scan.isConfident === false || scan.decision?.status !== 'confident') {
     classKey = 'not_sure';
   }
-  if (!classKey) classKey = 'not_sure';
 
   // Evaluate risk using pure engine
   const weatherMetrics = extractRiskMetrics(envContext?.weather);
@@ -50,19 +49,19 @@ export function YieldRiskCard({ scan, context }) {
 
   const riskBadgeConfig = {
     high: {
-      icon: '🔴',
+      icon: '⚠️',
       badgeClass: 'bg-red-50 text-red-900 border-red-300 ring-1 ring-red-200',
       title: t('yieldRisk.levelHigh'),
       headline: t('yieldRisk.headlineHigh'),
     },
     medium: {
-      icon: '🟡',
+      icon: '⚡',
       badgeClass: 'bg-amber-50 text-amber-950 border-amber-300 ring-1 ring-amber-200',
       title: t('yieldRisk.levelModerate'),
       headline: t('yieldRisk.headlineModerate'),
     },
     low: {
-      icon: '🟢',
+      icon: '🛡️',
       badgeClass: 'bg-emerald-50 text-emerald-950 border-emerald-300 ring-1 ring-emerald-200',
       title: t('yieldRisk.levelLow'),
       headline: t('yieldRisk.headlineLow'),
@@ -81,10 +80,9 @@ export function YieldRiskCard({ scan, context }) {
   };
 
   const isOffline = envContext?.status === 'offline' || envContext?.status === 'unavailable';
+  const isNoDistrict = envContext?.status === 'no_district';
 
-  // Safe fallback for loss ranges if classKey is unrecognized
-  const untreatedLoss = t(`yieldRisk.lossRange.${classKey}.untreated`) || t('yieldRisk.lossRange.not_sure.untreated');
-  const managedLoss = t(`yieldRisk.lossRange.${classKey}.managed`) || t('yieldRisk.lossRange.not_sure.managed');
+  const qualitativeImpact = lang === 'bn' ? evaluation.qualitativeImpactBn : evaluation.qualitativeImpactEn;
   const diseaseReason = t(`yieldRisk.reasons.${classKey}.diseaseReason`) || t('yieldRisk.reasons.other_rice.diseaseReason');
   const weatherReason = t(`yieldRisk.reasons.${classKey}.weatherReason`) || t('yieldRisk.reasons.other_rice.weatherReason');
   const immediateAction = t(`yieldRisk.immediateAction.${classKey}`) || t('yieldRisk.immediateAction.other_rice');
@@ -96,8 +94,8 @@ export function YieldRiskCard({ scan, context }) {
       data-testid="yield-risk-card"
       className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4 text-left transition-all"
     >
-      {/* 1. Header: Risk Badge & Title */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-3 gap-2">
+      {/* 1. Header: Risk Badge & Title with responsive wrapping on 360px */}
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between border-b border-gray-100 pb-3 gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl" aria-hidden="true">🌾</span>
           <h3 id="yield-risk-title" className="font-extrabold text-sm sm:text-base text-gray-900 tracking-tight">
@@ -105,45 +103,36 @@ export function YieldRiskCard({ scan, context }) {
           </h3>
         </div>
         <span
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border yield-risk-band-badge ${riskBadgeConfig.badgeClass}`}
+          className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border yield-risk-band-badge ${riskBadgeConfig.badgeClass}`}
         >
           <span aria-hidden="true">{riskBadgeConfig.icon}</span>
           <span>{riskBadgeConfig.title}</span>
         </span>
       </div>
 
-      {/* Offline Notice if applicable */}
-      {isOffline && (
-        <div className="bg-amber-50/60 border border-amber-200 rounded-lg px-2.5 py-1.5 text-[11px] text-amber-900 flex items-center gap-1.5">
+      {/* Offline / No Location Notices */}
+      {isNoDistrict && (
+        <div className="bg-blue-50/70 border border-blue-200 rounded-lg px-2.5 py-1.5 text-xs text-blue-900 flex items-center gap-1.5">
+          <span aria-hidden="true">📍</span>
+          <span>{t('yieldRisk.noDistrictNotice')}</span>
+        </div>
+      )}
+      {isOffline && !isNoDistrict && (
+        <div className="bg-amber-50/60 border border-amber-200 rounded-lg px-2.5 py-1.5 text-xs text-amber-900 flex items-center gap-1.5">
           <span aria-hidden="true">📡</span>
           <span>{t('yieldRisk.offlineNotice')}</span>
         </div>
       )}
 
-      {/* 2. Primary Yield Impact Metric (Q1) */}
-      <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80 space-y-2">
+      {/* 2. Primary Qualitative Yield Impact (Q1) - Dynamic, Stage-Aware & Free of Ecological Fallacy */}
+      <div className="bg-gray-50/80 rounded-xl p-3 sm:p-4 border border-gray-200/80 space-y-2">
         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block">
           {t('yieldRisk.potentialLossTitle')}
         </span>
-        <div className="grid grid-cols-2 gap-2 text-center">
-          <div className="p-2.5 rounded-lg bg-red-50/80 border border-red-200">
-            <span className="text-[11px] font-semibold text-red-800 block">
-              {t('yieldRisk.lossUntreated')}
-            </span>
-            <span className="text-base sm:text-lg font-extrabold text-red-900 yield-impact-value">
-              {untreatedLoss}
-            </span>
-          </div>
-          <div className="p-2.5 rounded-lg bg-emerald-50/80 border border-emerald-200">
-            <span className="text-[11px] font-semibold text-emerald-800 block">
-              {t('yieldRisk.lossManaged')}
-            </span>
-            <span className="text-base sm:text-lg font-extrabold text-emerald-900">
-              {managedLoss}
-            </span>
-          </div>
-        </div>
-        <p className="text-xs text-gray-700 leading-snug pt-1">
+        <p className="text-xs sm:text-sm font-semibold text-gray-900 leading-relaxed yield-impact-value">
+          {qualitativeImpact}
+        </p>
+        <p className="text-xs text-gray-600 leading-snug pt-1 border-t border-gray-200/60">
           {riskBadgeConfig.headline}
         </p>
       </div>
@@ -165,8 +154,8 @@ export function YieldRiskCard({ scan, context }) {
         </ul>
       </div>
 
-      {/* 4. What should I do now? (Q4) */}
-      <div className="p-3 bg-leaf-50 border border-leaf-300 rounded-xl space-y-2">
+      {/* 4. What should I do now? (Q4) Non-chemical actions, whole-field scouting & 16123 helpline */}
+      <div className="p-3 sm:p-4 bg-leaf-50 border border-leaf-300 rounded-xl space-y-2.5">
         <div className="flex items-center gap-1.5 text-leaf-900 font-bold text-xs uppercase tracking-wide">
           <span aria-hidden="true">⚡</span>
           <span>{t('yieldRisk.immediateActionTitle')}</span>
@@ -174,6 +163,10 @@ export function YieldRiskCard({ scan, context }) {
         <p className="text-xs sm:text-sm text-gray-800 font-medium leading-relaxed">
           {immediateAction}
         </p>
+        <div className="bg-white/80 border border-leaf-200 rounded-lg p-2.5 text-xs text-leaf-950 flex items-start gap-2">
+          <span className="text-leaf-700 font-bold shrink-0 mt-0.5" aria-hidden="true">🔍</span>
+          <span>{t('yieldRisk.scoutingPrompt')}</span>
+        </div>
         <div className="pt-1">
           <a
             href="tel:16123"
@@ -185,7 +178,7 @@ export function YieldRiskCard({ scan, context }) {
         </div>
       </div>
 
-      {/* 5. Collapsible Accordion: Sources & Methodology (Q5) */}
+      {/* 5. Collapsible Accordion: Sources, Benchmark Plots & Methodology (Q5) */}
       <div className="pt-1">
         <button
           type="button"
@@ -204,32 +197,35 @@ export function YieldRiskCard({ scan, context }) {
           </span>
         </button>
 
-        {detailsOpen && (
-          <div
-            id="yield-risk-sources"
-            className="p-3 mt-2 bg-gray-50 border border-gray-200 rounded-xl text-[11px] text-gray-600 space-y-2 leading-relaxed"
-          >
-            <div>
-              <strong className="text-gray-800">{t('yieldRisk.sourceBrriTitle')}:</strong>{' '}
-              {t('yieldRisk.sourceBrriDesc')}
-            </div>
-            <div>
-              <strong className="text-gray-800">{t('yieldRisk.sourceBamisTitle')}:</strong>{' '}
-              {t('yieldRisk.sourceBamisDesc')}
-            </div>
-            <div className="text-[10px] text-gray-500 pt-1 border-t border-gray-200 flex justify-between">
-              <span>{t('yieldRisk.lastUpdated')}: {t('yieldRisk.updatedToday')}</span>
-              <a
-                href="https://www.bamis.gov.bd/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-leaf-700 underline font-semibold"
-              >
-                BAMIS DAE ↗
-              </a>
-            </div>
+        <div
+          id="yield-risk-sources"
+          hidden={!detailsOpen}
+          className="p-3 mt-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-600 space-y-2.5 leading-relaxed"
+        >
+          <div>
+            <strong className="text-gray-800">{t('yieldRisk.sourceTrialBenchmarkTitle')}:</strong>{' '}
+            {t('yieldRisk.sourceTrialBenchmarkDesc')}
           </div>
-        )}
+          <div>
+            <strong className="text-gray-800">{t('yieldRisk.sourceBrriTitle')}:</strong>{' '}
+            {t('yieldRisk.sourceBrriDesc')}
+          </div>
+          <div>
+            <strong className="text-gray-800">{t('yieldRisk.sourceBamisTitle')}:</strong>{' '}
+            {t('yieldRisk.sourceBamisDesc')}
+          </div>
+          <div className="text-xs text-gray-500 pt-1 border-t border-gray-200 flex justify-between items-center">
+            <span>{t('yieldRisk.lastUpdated')}: {t('yieldRisk.updatedToday')}</span>
+            <a
+              href="https://www.bamis.gov.bd/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-leaf-700 underline font-semibold"
+            >
+              BAMIS DAE ↗
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -13,6 +13,17 @@ export const STAGE_VULNERABILITY = {
   not_sure: { seedling: null, tillering: null, booting_flowering: null, ripening: null }
 };
 
+export const SEASON_VULNERABILITY = {
+  blast: { boro: 0.85, aman: 0.70, aus: 0.50 },
+  sheath_blight: { boro: 0.70, aman: 0.85, aus: 0.65 },
+  brown_spot: { boro: 0.60, aman: 0.75, aus: 0.60 },
+  tungro: { boro: 0.50, aman: 0.80, aus: 0.60 },
+  leaf_smut: { boro: 0.40, aman: 0.50, aus: 0.40 },
+  other_rice: { boro: 0.50, aman: 0.50, aus: 0.50 },
+  healthy: { boro: 0.10, aman: 0.10, aus: 0.10 },
+  not_sure: { boro: 0.50, aman: 0.50, aus: 0.50 }
+};
+
 export const CROP_SEASONS = {
   BORO: 'boro',
   AUS: 'aus',
@@ -44,33 +55,35 @@ export function resolveCalendarContext(date = new Date()) {
 
 /**
  * Continuous microclimate evaluation for Blast (DAE BAMIS Faridpur 5102.pdf).
+ * Incorporates multiplicative microclimate coupling (thermal window x leaf wetness/humidity)
+ * and smooth sigmoid thermal suppression above 37°C.
  */
 export function evaluateBlastMicroclimate(weather) {
   if (!weather || weather.temperature == null) return { score: 0.4, confidence: 'low', factors: [] };
 
-  const temp = Math.max(-10, Math.min(55, Number(weather.temperature) || 0));
-  const rh = Math.max(0, Math.min(100, Number(weather.relativeHumidity) || 75));
-  const diurnal = Math.max(0, Number(weather.diurnalRange) || 8);
+  const rawTemp = Number(weather.temperature);
+  const temp = Math.max(-10, Math.min(55, Number.isFinite(rawTemp) ? rawTemp : 25));
+  const rawRh = Number(weather.relativeHumidity);
+  const rh = Math.max(0, Math.min(100, Number.isFinite(rawRh) ? rawRh : 75));
+  const rawDiurnal = Number(weather.diurnalRange);
+  const diurnal = Math.max(0, Number.isFinite(rawDiurnal) ? rawDiurnal : 8);
   const factors = [];
 
-  // Extreme heat cutoff: spores denature at extreme heat (>38°C)
+  // Smooth thermal suppression using sigmoid function (centered at 37°C)
+  const heatSuppression = 1 / (1 + Math.exp(0.7 * (temp - 37)));
+
   if (temp > 38) {
     factors.push({
       factorId: 'weather_temperature',
       category: 'weather',
       labelBn: 'অতিরিক্ত তাপমাত্রা',
       labelEn: 'Extreme High Temperature',
-      evidenceBn: `অতিরিক্ত তাপমাত্রা (${Math.round(temp)}°সে) ছত্রাকের স্পোরের বিস্তার কমিয়ে দেয়।`,
+      evidenceBn: `অতিরিক্ত তাপমাত্রা (${Math.round(temp)}°সে) ছত্রাকের স্পোরের বিস্তার স্বাভাবিকের চেয়ে কমিয়ে দেয়।`,
       evidenceEn: `Extreme temperature (${Math.round(temp)}°C) suppresses fungal sporulation.`,
       impactDirection: 'decreases_risk',
       weightNormalized: 0.40
     });
-    return { score: 0.15, confidence: 'high', factors };
-  }
-
-  // Gaussian night/day temp affinity (optimal ~22°C mean, 18-20°C night, 26-28°C day)
-  const tempAffinity = Math.exp(-Math.pow(temp - 22, 2) / (2 * Math.pow(4.5, 2)));
-  if (temp >= 16 && temp <= 28) {
+  } else if (temp >= 16 && temp <= 28) {
     factors.push({
       factorId: 'weather_temperature',
       category: 'weather',
@@ -82,6 +95,9 @@ export function evaluateBlastMicroclimate(weather) {
       weightNormalized: 0.35
     });
   }
+
+  // Gaussian night/day temp affinity (optimal ~22°C mean, 18-20°C night, 26-28°C day)
+  const tempAffinity = Math.exp(-Math.pow(temp - 22, 2) / (2 * Math.pow(4.5, 2)));
 
   // Sigmoid humidity affinity: steep rise above 85%
   const rhAffinity = 1 / (1 + Math.exp(-0.25 * (rh - 88)));
@@ -98,22 +114,38 @@ export function evaluateBlastMicroclimate(weather) {
     });
   }
 
-  const score = (tempAffinity * 0.45) + (rhAffinity * 0.45) + (diurnal >= 10 ? 0.10 : 0.0);
-  return { score: Math.min(1.0, score), confidence: 'high', factors };
+  // Multiplicative microclimate coupling: spores require both moisture and thermal window
+  const diurnalBoost = diurnal >= 10 ? 1.15 : 1.0;
+  const rawMicroScore = (tempAffinity * rhAffinity * diurnalBoost) * heatSuppression;
+  const score = Math.min(1.0, Math.max(0.0, rawMicroScore));
+
+  return { score, confidence: 'high', factors };
 }
 
 /**
  * Continuous microclimate evaluation for Sheath Blight (DAE BAMIS Sylhet 5108.pdf).
+ * Employs continuous thermal window and multiplicative humidity coupling.
  */
 export function evaluateSheathBlightMicroclimate(weather) {
   if (!weather || weather.temperature == null) return { score: 0.4, confidence: 'low', factors: [] };
 
-  const temp = Math.max(-10, Math.min(55, Number(weather.temperature) || 0));
-  const rh = Math.max(0, Math.min(100, Number(weather.relativeHumidity) || 75));
+  const rawTemp = Number(weather.temperature);
+  const temp = Math.max(-10, Math.min(55, Number.isFinite(rawTemp) ? rawTemp : 28));
+  const rawRh = Number(weather.relativeHumidity);
+  const rh = Math.max(0, Math.min(100, Number.isFinite(rawRh) ? rawRh : 80));
   const factors = [];
 
-  const tempAffinity = (temp >= 28 && temp <= 32) ? 1.0 : (temp >= 25 && temp <= 35) ? 0.6 : 0.2;
-  const rhAffinity = rh >= 80 ? 1.0 : rh >= 70 ? 0.5 : 0.2;
+  // Continuous trapezoidal thermal window for Sheath Blight (optimal 28-32°C)
+  const tempAffinity = (temp >= 28 && temp <= 32)
+    ? 1.0
+    : (temp >= 24 && temp < 28)
+      ? 0.5 + 0.5 * ((temp - 24) / 4)
+      : (temp > 32 && temp <= 36)
+        ? 1.0 - 0.5 * ((temp - 32) / 4)
+        : 0.2;
+
+  // Continuous humidity affinity (optimal >= 85%, rising from 60%)
+  const rhAffinity = rh >= 85 ? 1.0 : rh <= 60 ? 0.1 : 0.1 + 0.9 * ((rh - 60) / 25);
 
   if (tempAffinity >= 0.6) {
     factors.push({
@@ -141,7 +173,8 @@ export function evaluateSheathBlightMicroclimate(weather) {
     });
   }
 
-  const score = (tempAffinity * 0.5) + (rhAffinity * 0.5);
+  // Multiplicative microclimate score
+  const score = Math.min(1.0, Math.max(0.0, tempAffinity * rhAffinity));
   return { score, confidence: 'high', factors };
 }
 
@@ -310,8 +343,11 @@ export function evaluateRiskContext(params) {
   const stageWeight = hasWeather ? 0.45 : 0.70;
   const seasonalWeight = 0.15;
 
-  // Composite raw risk
-  const rawScore = ((stageVulnerability * stageWeight) + (microclimateResult.score * weatherWeight) + (0.6 * seasonalWeight)) * trajectoryMult;
+  const seasonMap = SEASON_VULNERABILITY[diseaseClass] || SEASON_VULNERABILITY.other_rice;
+  const seasonalVulnerability = seasonMap[resolvedSeason] ?? 0.60;
+
+  // Composite raw risk incorporating dynamic seasonal vulnerability
+  const rawScore = ((stageVulnerability * stageWeight) + (microclimateResult.score * weatherWeight) + (seasonalVulnerability * seasonalWeight)) * trajectoryMult;
   // If extreme heat or suppressive microclimate, suppress the score
   const effectiveScore = microclimateResult.score <= 0.2 ? rawScore * 0.6 : rawScore;
   const normalizedScore = Math.min(1.0, Math.max(0.0, effectiveScore));

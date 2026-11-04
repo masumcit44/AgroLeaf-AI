@@ -34,19 +34,19 @@ describe('YieldRiskCard Component', () => {
     // Risk badge
     expect(html).toContain('yield-risk-band-badge');
 
-    // Yield loss comparison
-    expect(html).toContain('ব্যবস্থা না নিলে');
-    expect(html).toContain('সময়মতো ব্যবস্থা নিলে');
-    expect(html).toContain('১৫% – ৩৫%');
+    // Qualitative Yield impact & scouting prompt
+    expect(html).toContain('yield-impact-value');
+    expect(html).toContain('ক্ষেতের অন্তত ২০টি গাছ ঘুরে দেখুন');
 
     // Immediate action & helpline
     expect(html).toContain('ইউরিয়া সার সাময়িক বন্ধ রাখুন');
     expect(html).toContain('১৬১২৩ নম্বরে পরামর্শ নিন');
     expect(html).toContain('href="tel:16123"');
 
-    // Sources accordion trigger
+    // Sources accordion trigger & benchmark plots
     expect(html).toContain('id="yield-risk-toggle"');
     expect(html).toContain('তথ্যসূত্র ও বৈজ্ঞানিক ভিত্তি');
+    expect(html).toContain('১৫%–৩৫%');
   });
 
   it('renders correctly in English for healthy leaf', () => {
@@ -59,9 +59,8 @@ describe('YieldRiskCard Component', () => {
 
     expect(html).toContain('Yield Impact &amp; Risk Intelligence');
     expect(html).toContain('Low Risk');
-    expect(html).toContain('Untreated Impact');
-    expect(html).toContain('With Timely Care');
-    expect(html).toContain('0%');
+    expect(html).toContain('yield-impact-value');
+    expect(html).toContain('Inspect at least 20 hills across your field');
     expect(html).toContain('No intervention required');
   });
 
@@ -74,8 +73,18 @@ describe('YieldRiskCard Component', () => {
     const html = renderWithI18n(<YieldRiskCard context="result" scan={scan} />, 'bn');
 
     expect(html).toContain('অনিশ্চিত');
-    expect(html).toContain('অনির্দিষ্ট');
-    expect(html).toContain('সতর্কতা প্রয়োজন');
     expect(html).toContain('১৬১২৩');
+    expect(html).toContain('দিনের আলোতে');
+  });
+
+  it('correctly maps inconclusive scan as not_sure even if decision has top key', () => {
+    const scan = {
+      isConfident: false,
+      decision: { status: 'not_sure', top: { key: 'blast' } },
+    };
+    const html = renderWithI18n(<YieldRiskCard context="result" scan={scan} />, 'bn');
+
+    expect(html).toContain('অনিশ্চিত');
+    expect(html).not.toContain('নেক ব্লাস্ট বা শিষ ব্লাস্ট');
   });
 });
