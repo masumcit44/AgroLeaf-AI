@@ -13,6 +13,7 @@ import {
   formatTimeAgo,
 } from './geoUtils.js';
 import { getProfileLocation } from './weatherStore.js';
+import { saveProfile } from '../profile/profileStore.js';
 import {
   getWeatherReportData,
   getWindCardinal,
@@ -179,6 +180,18 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
         });
         setIsEditingLocation(false);
 
+        // Persist location locally for seamless return visits
+        if (nearest) {
+          saveProfile({
+            district_code: nearest.code,
+            district_name_en: nearest.district_name_en,
+            district_name_bn: nearest.district_name_bn,
+            lat: rLat,
+            lon: rLon,
+            location_source: 'gps',
+          }).catch(() => {});
+        }
+
         // Reverse lookup place name via proxy with fallback to district name
         fetch(`/api/v1/geocode?lat=${rLat}&lon=${rLon}`)
           .then((res) => (res.ok ? res.json() : null))
@@ -241,6 +254,19 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
     setSearchResults([]);
     setHasSearched(false);
     setGeoError(null);
+
+    // Persist chosen district locally for seamless return visits
+    const nearest = findNearestDistrict(loc.lat, loc.lon);
+    if (nearest) {
+      saveProfile({
+        district_code: nearest.code,
+        district_name_en: nearest.district_name_en,
+        district_name_bn: nearest.district_name_bn,
+        lat: loc.lat,
+        lon: loc.lon,
+        location_source: 'district',
+      }).catch(() => {});
+    }
   }
 
   function toggleQuote(id) {
@@ -512,7 +538,7 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                     : t('weather.dataNotAvailable')}
                 </span>
                 <span className="text-[10px] text-gray-500 block mt-0.5">
-                  {report.current.rh >= 80 ? 'আর্দ্রতাপ্রবণ (High)' : 'স্বাভাবিক (Normal)'}
+                  {report.current.rh >= 80 ? t('weather.rhHigh') : t('weather.rhNormal')}
                 </span>
               </div>
 
@@ -527,7 +553,7 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                     : t('weather.dataNotAvailable')}
                 </span>
                 <span className="text-[10px] text-gray-500 block mt-0.5">
-                  {report.current.precip > 0 ? 'বৃষ্টি হচ্ছে' : 'বৃষ্টি নেই'}
+                  {report.current.precip > 0 ? t('weather.raining') : t('weather.noRain')}
                 </span>
               </div>
 
@@ -557,16 +583,16 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                     : t('weather.dataNotAvailable')}
                 </span>
                 <span className="text-[10px] text-gray-500 block mt-0.5">
-                  {report.current.cloudCover >= 50 ? 'মেঘলা (Cloudy)' : 'পরিষ্কার (Clear)'}
+                  {report.current.cloudCover >= 50 ? t('weather.cloudy') : t('weather.clear')}
                 </span>
               </div>
             </div>
           </section>
 
           {/* ======================================================== */}
-          {/* 4. NEXT 7 DAYS FORECAST */}
+          {/* 4. NEXT 7 DAYS FORECAST (Fluid Responsive Layout) */}
           {/* ======================================================== */}
-          <section className="bg-white rounded-2xl p-4 border border-leaf-700/20 shadow-sm space-y-3">
+          <section className="bg-white rounded-2xl p-3 sm:p-4 border border-leaf-700/20 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                 <span>📅</span>
@@ -581,10 +607,10 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
               {report.forecastDays.map((d, idx) => (
                 <div
                   key={d.date}
-                  className="py-2.5 flex items-center justify-between text-xs gap-2"
+                  className="py-2.5 flex items-center justify-between text-xs gap-1.5 sm:gap-2"
                 >
-                  <div className="w-24 shrink-0">
-                    <span className="font-semibold text-gray-900 block">
+                  <div className="w-20 sm:w-24 shrink-0">
+                    <span className="font-semibold text-gray-900 block truncate">
                       {idx === 0
                         ? lang === 'bn'
                           ? 'আজ'
@@ -600,27 +626,27 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
                     </span>
                   </div>
 
-                  <div className="flex-1 flex items-center justify-center gap-2">
-                    <span className="text-gray-600 font-medium">
+                  <div className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 min-w-0">
+                    <span className="text-gray-600 font-medium text-[11px] sm:text-xs">
                       {formatNumber(Math.round(d.minTemp), lang)}°
                     </span>
-                    <div className="w-16 h-2 rounded-full bg-gray-100 overflow-hidden relative">
+                    <div className="w-10 sm:w-16 h-2 rounded-full bg-gray-100 overflow-hidden relative shrink-0">
                       <div
                         className="h-full bg-gradient-to-r from-blue-400 to-amber-500 rounded-full"
                         style={{ width: `${Math.min(100, Math.max(20, (d.maxTemp - d.minTemp) * 7))}%` }}
                       ></div>
                     </div>
-                    <span className="text-gray-900 font-bold">
+                    <span className="text-gray-900 font-bold text-[11px] sm:text-xs">
                       {formatNumber(Math.round(d.maxTemp), lang)}°
                     </span>
                   </div>
 
-                  <div className="w-24 text-right shrink-0">
-                    <span className="text-blue-700 font-semibold block">
+                  <div className="w-20 sm:w-24 text-right shrink-0">
+                    <span className="text-blue-700 font-semibold block text-[11px] sm:text-xs truncate">
                       🌧️ {formatNumber(Math.round(d.precipSum * 10) / 10, lang)} {t('weather.unitMm')}
                     </span>
                     {d.precipProb != null && (
-                      <span className="text-[10px] text-gray-500">
+                      <span className="text-[10px] text-gray-500 block">
                         {formatNumber(d.precipProb, lang)}% {t('weather.rainProb')}
                       </span>
                     )}

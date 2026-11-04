@@ -9,7 +9,7 @@ export default {
   navHistory: "History",
   navWeather: "Weather",
   navMap: "Map",
-  navProfile: "Profile",
+  navProfile: "Area & Crop",
   navFeatureTabs: "Features",
   langSwitch: "বাংলা",
 
@@ -19,7 +19,7 @@ export default {
   homeComingSoon: "Coming soon (Module 3)",
 
   // Photo Picker & Preview
-  btnCamera: "Camera",
+  btnCamera: "Take Photo",
   btnGallery: "Gallery",
   btnCheck: "🔍 Check Leaf",
   btnRetake: "↺ Retake Photo",

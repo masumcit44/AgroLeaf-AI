@@ -9,7 +9,7 @@ export default {
   navHistory: "ইতিহাস",
   navWeather: "আবহাওয়া",
   navMap: "মানচিত্র",
-  navProfile: "প্রোফাইল",
+  navProfile: "এলাকা ও ফসল",
   navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
 
@@ -19,7 +19,7 @@ export default {
   homeComingSoon: "শীঘ্রই চালু হবে (মডিউল ৩)",
 
   // Photo Picker & Preview
-  btnCamera: "ক্যামেরা",
+  btnCamera: "ছবি তুলুন",
   btnGallery: "গ্যালারি",
   btnCheck: "🔍 পরীক্ষা করুন",
   btnRetake: "↺ আবার ছবি দিন",

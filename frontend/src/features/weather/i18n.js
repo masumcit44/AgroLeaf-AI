@@ -129,6 +129,14 @@ export default {
     'weather.limitForecast': 'পূর্বাভাস ৩ দিনের পর প্রাকৃতিক বায়ুমণ্ডলীয় কারণে পরিবর্তিত হতে পারে। নিয়মিত অ্যাপের পূর্বাভাস হালনাগাদ দেখুন।',
     'weather.limitDistrictCal': 'রোগের অনুকূল শর্তসমূহ সিলেট ও ফরিদপুর জেলার ক্রপ ক্যালেন্ডার এবং ব্রি নির্দেশিকা থেকে গৃহীত।',
 
+    // Weather Status Labels
+    'weather.rhHigh': 'অতিরিক্ত আর্দ্র',
+    'weather.rhNormal': 'স্বাভাবিক',
+    'weather.cloudy': 'মেঘলা আকাশ',
+    'weather.clear': 'পরিষ্কার আকাশ',
+    'weather.raining': 'বৃষ্টি হচ্ছে',
+    'weather.noRain': 'বৃষ্টি নেই',
+
     // Units
     'weather.unitC': '°সে',
     'weather.unitMm': 'মিমি',
@@ -260,6 +268,14 @@ export default {
     'weather.limitGrid': 'Weather grid resolution covers ~11 km. Field microclimate under dense leaf canopy may vary slightly.',
     'weather.limitForecast': 'Forecasts beyond 3 days carry atmospheric uncertainty; check daily for fresh forecasts.',
     'weather.limitDistrictCal': 'Rules are based on DAE crop calendars and BRRI published research.',
+
+    // Weather Status Labels
+    'weather.rhHigh': 'High Humidity',
+    'weather.rhNormal': 'Normal Humidity',
+    'weather.cloudy': 'Cloudy',
+    'weather.clear': 'Clear Sky',
+    'weather.raining': 'Raining',
+    'weather.noRain': 'No Rain',
 
     // Units
     'weather.unitC': '°C',

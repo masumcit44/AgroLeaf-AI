@@ -5,7 +5,6 @@ import ResultCard from './ResultCard.jsx';
 import NotSureCard from './NotSureCard.jsx';
 import CallHelpButton from './CallHelpButton.jsx';
 import ShareButton from './ShareButton.jsx';
-import DisclaimerNote from './DisclaimerNote.jsx';
 import BigButton from './BigButton.jsx';
 import { stopActiveAudio } from '../lib/audioManager.js';
 import { FeatureSlot } from '../features/slots.jsx';
@@ -50,7 +49,6 @@ export default function ResultScreen({
   const { calibration, decision } = analysisResult;
   const isPlaceholder = calibration?.placeholder === true;
   const isConfident = decision.status === 'confident' && decision.top;
-  const metaDisclaimer = diseaseKnowledge?._meta?.disclaimer_bn;
   const classesData = diseaseKnowledge?.classes || {};
 
   return (
@@ -141,9 +139,6 @@ export default function ResultScreen({
           {t('btnRetakePhoto')}
         </BigButton>
       </div>
-
-      {/* Disclaimer Note */}
-      <DisclaimerNote metaDisclaimer={metaDisclaimer} />
     </PageContainer>
   );
 }

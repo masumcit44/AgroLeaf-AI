@@ -7,7 +7,7 @@ export const TABS = [
   { route: ROUTES.HISTORY, icon: '🗂️', labelKey: 'navHistory', feature: 'history' },
   { route: ROUTES.WEATHER, icon: '🌦️', labelKey: 'navWeather', feature: 'weather' },
   { route: ROUTES.MAP, icon: '🗺️', labelKey: 'navMap', feature: 'areaMap' },
-  { route: ROUTES.PROFILE, icon: '👤', labelKey: 'navProfile', feature: 'profile' },
+  { route: ROUTES.PROFILE, icon: '📍', labelKey: 'navProfile', feature: 'profile' },
 ];
 
 export function visibleTabs() {

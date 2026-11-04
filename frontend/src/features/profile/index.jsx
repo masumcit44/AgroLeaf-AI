@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import useT from '../../i18n/useT.js';
 import BigButton from '../../components/BigButton.jsx';
 import districts from './districts.json';
@@ -167,7 +167,11 @@ export function ProfilePage({ _scan, _context }) {
     <div className="w-full max-w-md mx-auto px-4 py-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-900 text-center">{t('profile.pageTitle')}</h1>
 
-      <p className="text-xs text-gray-500 text-center">{t('profile.dataStaysLocal')}</p>
+      <div className="p-3 bg-leaf-50 border border-leaf-200 rounded-xl text-xs text-leaf-900 leading-relaxed text-center">
+        🌱 {lang === 'bn' 
+          ? 'এই তথ্যটি ঐচ্ছিক। এটি শুধুমাত্র আপনার স্থানীয় আবহাওয়া ও ফসলের ক্যালেন্ডার দেখানোর জন্য আপনার ফোনেই সংরক্ষিত থাকে।' 
+          : 'This information is optional and stored locally on your device only for localized weather and crop advisories.'}
+      </div>
 
       <div className="space-y-4">
         <div>

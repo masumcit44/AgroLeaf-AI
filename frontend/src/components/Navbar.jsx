@@ -8,7 +8,7 @@ export default function Navbar({ currentRoute, onNavigate, children = null }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xs border-b border-gray-200/80 shadow-xs w-full">
-      <div className="max-w-xl mx-auto px-2 sm:px-3 py-2 flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
+      <div className="max-w-xl mx-auto px-2 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between gap-1 sm:gap-2 min-w-0">
         {/* Left: AIgnite Sticker (height strictly >= 40px and <= 52px, never shrinks below 40px) */}
         <a
           href={ROUTES.HOME}
@@ -16,7 +16,7 @@ export default function Navbar({ currentRoute, onNavigate, children = null }) {
             e.preventDefault();
             onNavigate(ROUTES.HOME);
           }}
-          className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 rounded-lg p-0.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
+          className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1 rounded-lg p-0.5 focus-visible:outline-2 focus-visible:outline-leaf-700"
           aria-label={`${t('appName')} - ${t('navHome')}`}
         >
           <img
@@ -46,7 +46,7 @@ export default function Navbar({ currentRoute, onNavigate, children = null }) {
                 e.preventDefault();
                 onNavigate(ROUTES.ACCURACY);
               }}
-              className={`inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center justify-center min-w-[40px] sm:min-w-[44px] min-h-[44px] px-1.5 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 currentRoute === ROUTES.ACCURACY
                   ? 'bg-leaf-700 text-white'
                   : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
@@ -63,7 +63,7 @@ export default function Navbar({ currentRoute, onNavigate, children = null }) {
                 e.preventDefault();
                 onNavigate(ROUTES.ABOUT);
               }}
-              className={`inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-2 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center justify-center min-w-[40px] sm:min-w-[44px] min-h-[44px] px-1.5 sm:px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors ${
                 currentRoute === ROUTES.ABOUT
                   ? 'bg-leaf-700 text-white'
                   : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'

@@ -10,13 +10,10 @@ import * as help from './help/index.jsx';
 import * as areaMap from './areaMap/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
-
 export const SLOT_LAYOUT = {
   app: [['pwa', pwa.PwaStatus]],
   home: [
     ['pwa', pwa.InstallPrompt],
-    ['profile', profile.ProfilePrompt],
-    ['weather', weather.WeatherChips],
     ['history', history.HistoryLink],
   ],
   result: [
@@ -37,4 +34,3 @@ export const FEATURE_ROUTES = {
   '#/weather': ['weather', WeatherPage],
   '#/map': ['areaMap', areaMap.MapPage],
 };
-
