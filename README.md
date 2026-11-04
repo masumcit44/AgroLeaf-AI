@@ -5,7 +5,8 @@
 ---
 
 ## Live demo
-> 🔗 **Live Web App:** _Deployment in progress on Cloudflare Pages_ (Preview URL: `https://agroleaf-ai.pages.dev`)
+> 🔗 **Live Web App:** https://agroleaf-ai.pages.dev (production)  
+> 🧪 **Release candidate (latest features, under final testing):** https://deploy-candidate-ready.agroleaf-ai.pages.dev
 
 ---
 
@@ -52,6 +53,10 @@ flowchart LR
 - **Official Guidance, quoted:** where available, BAMIS/DAE advice is quoted verbatim with a link. The app's own disease text is preliminary and not yet reviewed by an agronomist (stated in the app).
 - **"Check before you buy a pesticide":** registered dealer, Bangla label and registration number, no open or expired packs, report a suspected fake. The app never names a pesticide or a dose.
 - **One-Tap Extension Helpline (16123):** Built-in direct dialer connecting farmers directly to the Upazila agricultural extension call center.
+- **Bengali Voice Assistant (ভয়েস সহকারী):** ask a rice question by voice or text (Bangla or Banglish). Answers come from a curated BRRI/DAE knowledge base, and **every fixed answer has a pre-recorded Bengali MP3** (122 clips, edge-tts `bn-BD-NabanitaNeural`, built by `ml/tools/build_copilot_audio.py`) so the voice is genuine Bengali on any phone; it is cached for offline replay. Planner-generated text uses the phone's Bengali voice only; an English voice is never used for Bangla.
+- **Reliability levels:** each result says how often results like it were right in testing (e.g. "80 of 100"), measured on a validation set.
+- **This-week plan, reminders and history:** a short action plan, follow-up reminders (on-device), and a scan history to compare a field over time.
+- **Weather & disease risk:** 7-day forecast for the farmer's GPS location (rounded to ~1 km) with BAMIS-cited disease-weather rules.
 - **Transparent In-App Accuracy Screen:** Dedicated public evaluation page showing real test dataset metrics, confusion matrices, and known model limitations.
 
 ---
@@ -76,6 +81,7 @@ flowchart LR
 - **Preliminary Screening, Not Final Diagnosis:** AgroLeaf AI is an advisory screening aid designed to assist smallholder farmers in early symptom awareness. It is explicitly not a laboratory-grade diagnosis or a substitute for certified agronomists. The disease information is preliminary and has not been reviewed by an agronomist.
 - **Strictly No AI-Written Chemical Dosages:** The system strictly rejects generative LLM chemical hallucination. All treatment recommendations are verbatim reproductions of approved DAE/BAMIS advisories.
 - **Quality Advisory Warnings:** Non-blocking heuristics alert the user if an image is underexposed or excessively blurry before running inference.
+- **Pesticide safety filter:** every voice-assistant answer passes `copilot/safety.js`, which removes any sentence naming a pesticide or giving a spray/seed-treatment dose and refers the farmer to the Upazila agriculture officer / 16123 (tested on every recorded answer).
 - **Helpline Integration:** Direct access to government agricultural extension officers via `16123` (standard operator call rates apply).
 
 ---

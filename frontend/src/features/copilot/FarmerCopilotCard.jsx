@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { queryAgriculturalCopilot } from './copilotEngine.js';
+import { sanitizeResponse } from './safety.js';
 import { runAgriculturalResearch, parseFarmingPlannerSlots } from './researchPlannerEngine.js';
 import { savePlan } from './plannerStore.js';
 import { saveReminder } from '../reminders/remindersStore.js';
@@ -122,7 +123,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
         abortControllerRef.current = new AbortController();
 
         try {
-          const researchResult = await runAgriculturalResearch(question, {
+          const researchResult = sanitizeResponse(await runAgriculturalResearch(question, {
             profile: { ...profile, ...extraSlots },
             scan: { classKey: activeDisease },
             lang,
@@ -130,7 +131,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
               setResearchStage(prog);
             },
             abortSignal: abortControllerRef.current.signal,
-          });
+          }));
 
           setResearchStage(null);
 

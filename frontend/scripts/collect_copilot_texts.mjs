@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { AGRICULTURAL_KB } from '../src/features/copilot/data/agricultural_kb.js';
 import { AGRICULTURAL_RESEARCH_BUNDLE } from '../src/features/copilot/data/agricultural_research_bundle.js';
 import { cleanTextForSpeech } from '../src/features/copilot/voiceService.js';
+import { sanitizeChemicalDoses } from '../src/features/copilot/safety.js';
 import { OUT_OF_DOMAIN_STEMS } from '../src/features/copilot/copilotEngine.js';
 
 export function audioKey(text) {
@@ -41,7 +42,8 @@ export function collectCopilotTexts() {
   if (ood) for (const stem of OUT_OF_DOMAIN_STEMS) texts.push(ood[1].replace('${oodStem}', stem));
 
   const byKey = new Map();
-  for (const t of texts) {
+  for (const raw of texts) {
+    const t = sanitizeChemicalDoses(raw); // the app shows (and speaks) the sanitized text
     const clean = cleanTextForSpeech(t);
     if (!clean || !/[ঀ-৿]/.test(clean)) continue;
     byKey.set(audioKey(t), clean);

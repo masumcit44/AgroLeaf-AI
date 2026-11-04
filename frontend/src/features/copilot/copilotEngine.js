@@ -3,6 +3,7 @@
 // Zero paid APIs, zero cloud inference dependencies, sub-5ms latency.
 // Strictly adheres to Bangla Response Language Policy (100% Bangla answers in BN mode).
 
+import { sanitizeResponse } from './safety.js';
 import { AGRICULTURAL_KB } from './data/agricultural_kb.js';
 import {
   parseFarmingPlannerSlots,
@@ -318,7 +319,12 @@ function detectIntent(normalizedText) {
  * @param {string|null} activeScanDisease - Active scan class key (e.g. 'blast', 'brown_spot')
  * @returns {Object} Structured agronomic answer guaranteed in natural Bangla
  */
+/** Public entry: every answer passes the no-pesticide-dose safety rule (safety.js). */
 export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
+  return sanitizeResponse(queryAgriculturalCopilotRaw(rawQuery, activeScanDisease));
+}
+
+function queryAgriculturalCopilotRaw(rawQuery, activeScanDisease = null) {
   const normalized = normalizeQuery(rawQuery);
 
   // 1. Empty / Incomplete Query Check

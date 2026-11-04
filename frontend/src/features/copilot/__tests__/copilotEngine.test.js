@@ -27,7 +27,8 @@ describe('F30 Copilot Engine - "আম" vs "আমার" / "আমি" Regressi
     expect(res.diseaseKey).toBe('blast');
     expect(res.isAbstention).toBe(false);
     expect(res.textBn).not.toContain('আম');
-    expect(res.textBn).toContain('ট্রাইসাইক্লাজোল');
+    expect(res.textBn).toContain('১৬১২৩'); // safety rule: referral, never the pesticide name
+    expect(res.textBn).not.toContain('ট্রাইসাইক্লাজোল');
   });
 
   it('handles "আমার ধান" incomplete query cleanly without mango error', () => {
@@ -82,7 +83,8 @@ describe('F30 Copilot Engine - Core Golden Agricultural Questions', () => {
     const res = queryAgriculturalCopilot('আমার ধানে ব্লাস্ট হয়েছে, এখন কী করব?');
     expect(res.diseaseKey).toBe('blast');
     expect(res.intent).toBe('treatment');
-    expect(res.textBn).toContain('ট্রাইসাইক্লাজোল');
+    expect(res.textBn).toContain('১৬১২৩'); // safety rule: referral, never the pesticide name
+    expect(res.textBn).not.toContain('ট্রাইসাইক্লাজোল');
   });
 
   it('2. "এই রোগ কি অন্য গাছে ছড়াবে?" with blast context -> Blast spread', () => {
@@ -145,7 +147,8 @@ describe('F30 Copilot Engine - Core Golden Agricultural Questions', () => {
     const res = queryAgriculturalCopilot('এই রোগের প্রতিকার কী?', 'sheath_blight');
     expect(res.diseaseKey).toBe('sheath_blight');
     expect(res.intent).toBe('treatment');
-    expect(res.textBn).toContain('ভ্যালিডামাইসিন');
+    expect(res.textBn).toContain('১৬১২৩'); // safety rule: referral, never the pesticide name
+    expect(res.textBn).not.toContain('ভ্যালিডামাইসিন');
   });
 });
 
@@ -154,7 +157,8 @@ describe('F30 Copilot Engine - Banglish Transliteration Tests', () => {
     const res = queryAgriculturalCopilot('amar dhane blast hoise ekhon ki korbo');
     expect(res.diseaseKey).toBe('blast');
     expect(res.intent).toBe('treatment');
-    expect(res.textBn).toContain('ট্রাইসাইক্লাজোল');
+    expect(res.textBn).toContain('১৬১২৩'); // safety rule: referral, never the pesticide name
+    expect(res.textBn).not.toContain('ট্রাইসাইক্লাজোল');
   });
 
   it('handles "amar dhaner patay dag dekha jacche"', () => {
