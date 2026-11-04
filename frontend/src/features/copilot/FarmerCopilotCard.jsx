@@ -6,8 +6,8 @@ import { saveReminder } from '../reminders/remindersStore.js';
 import { getProfile } from '../profile/profileStore.js';
 import {
   createSpeechRecognizer,
-  speakUtterance,
-  stopSpeech,
+  playAnswerAudio,
+  stopAnswerAudio,
   isSpeechRecognitionSupported,
   isSpeechSynthesisSupported,
   needsTranscriptConfirmation,
@@ -60,7 +60,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
-      stopSpeech();
+      stopAnswerAudio();
     };
   }, []);
 
@@ -72,7 +72,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
     setIsAudioPlaying(true);
     setTtsUnavailable(false);
 
-    stopPlaybackRef.current = speakUtterance(textToSpeak, {
+    stopPlaybackRef.current = playAnswerAudio(textToSpeak, {
       onStart: () => {
         setIsAudioPlaying(true);
         setVoiceState('speaking');
@@ -188,7 +188,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
   // Voice recognition trigger
   const handleToggleMic = () => {
     if (isAudioPlaying || voiceState === 'speaking') {
-      stopSpeech();
+      stopAnswerAudio();
       setIsAudioPlaying(false);
       setVoiceState('idle');
       return;
@@ -256,6 +256,14 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
 
   // Replay speech
   const handleReplayVoice = () => {
+    // The same button stops playback while audio is playing
+    if (isAudioPlaying) {
+      if (stopPlaybackRef.current) stopPlaybackRef.current();
+      stopAnswerAudio();
+      setIsAudioPlaying(false);
+      setVoiceState('idle');
+      return;
+    }
     // Read the answer the farmer sees, not a separate shorter script
     const textToSpeak = activePlan?.overview?.voice_summary_bn || copilotResponse?.textBn || copilotResponse?.voiceBn;
     if (textToSpeak) {
@@ -835,7 +843,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
                   setTranscript('');
                   setQueryText('');
                   setPendingConfirmation(null);
-                  stopSpeech();
+                  stopAnswerAudio();
                   setIsAudioPlaying(false);
                 }}
                 className="hover:text-gray-700"

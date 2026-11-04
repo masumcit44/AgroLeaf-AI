@@ -82,7 +82,7 @@ const BANNED_CHEMICAL_KEYWORDS = [
 ];
 
 // Out-of-Domain Non-Rice Entities (Stems checked with inflection support)
-const OUT_OF_DOMAIN_STEMS = [
+export const OUT_OF_DOMAIN_STEMS = [
   'আলু',
   'গম',
   'ভুট্টা',

@@ -18,7 +18,7 @@ export const MODEL_URL_PATTERN = /\/(?:models|ort)\//;
 // therefore cannot fetch the voice clips. Cache them at runtime instead: the
 // page warms this cache with a Range request and the service worker serves it.
 export const AUDIO_CACHE_NAME = 'agroleaf-audio-cache-v1';
-export const AUDIO_URL_PATTERN = /\/audio\/[^/?]+\.mp3$/;
+export const AUDIO_URL_PATTERN = /\/audio\/(copilot\/)?[^/?]+\.mp3$/; // result clips + copilot answer clips
 
 // ONNX Runtime loads these two files from /ort/ (see src/ml/loadModel.js).
 export const ORT_ASSETS = [

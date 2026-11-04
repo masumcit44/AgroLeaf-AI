@@ -256,6 +256,98 @@ export function needsTranscriptConfirmation(text) {
   return tokens.length <= 2 && !RICE_CONTEXT.test(clean);
 }
 
+// ---------------------------------------------------------------------------------------------
+// Pre-recorded Bengali answers (edge-tts bn-BD-NabanitaNeural, built by
+// ml/tools/build_copilot_audio.py). Every fixed copilot answer has an MP3 whose key is the first
+// 16 hex of SHA-256 of the cleaned answer text, so the clip always matches the text on screen.
+// ---------------------------------------------------------------------------------------------
+const MANIFEST_URL = '/audio/copilot/manifest.json';
+let manifestPromise = null;
+let currentAudio = null;
+
+/** Same key as frontend/scripts/collect_copilot_texts.mjs computes at build time. */
+export async function audioKeyFor(text) {
+  const bytes = new TextEncoder().encode(cleanTextForSpeech(text));
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+}
+
+export function loadAnswerAudioManifest(fetchImpl = globalThis.fetch) {
+  if (!manifestPromise) {
+    manifestPromise = fetchImpl(MANIFEST_URL)
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => {
+        manifestPromise = null; // offline before first load: try again next time
+        return {};
+      });
+  }
+  return manifestPromise;
+}
+
+export function stopAnswerAudio() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.onended = null;
+    currentAudio.onerror = null;
+    currentAudio = null;
+  }
+  stopSpeech();
+}
+
+/**
+ * Plays the Bengali audio for the answer shown on screen.
+ * 1. Pre-recorded MP3 for that exact answer (works on every phone, offline once cached).
+ * 2. Otherwise the phone's own Bengali voice (speakUtterance: never an English voice).
+ * 3. Otherwise onVoiceUnavailable: the written answer stays on screen.
+ * Returns a stop function. Only one answer plays at a time.
+ */
+export function playAnswerAudio(text, { onStart, onEnd, onError, onVoiceUnavailable, fetchImpl, AudioImpl } = {}) {
+  stopAnswerAudio();
+  let stopped = false;
+  let stopFallback = null;
+  let ended = false;
+  const finish = () => {
+    if (ended) return;
+    ended = true;
+    if (onEnd) onEnd();
+  };
+
+  (async () => {
+    const [manifest, key] = await Promise.all([loadAnswerAudioManifest(fetchImpl), audioKeyFor(text)]);
+    if (stopped) return;
+    const url = manifest[key];
+    if (url) {
+      const AudioCtor = AudioImpl || globalThis.Audio;
+      const audio = new AudioCtor(url);
+      currentAudio = audio;
+      audio.onended = () => {
+        if (currentAudio === audio) currentAudio = null;
+        finish();
+      };
+      audio.onerror = () => {
+        if (currentAudio === audio) currentAudio = null;
+        if (onError) onError(new Error('audio_failed'));
+        finish();
+      };
+      await audio.play();
+      if (onStart) onStart();
+      return;
+    }
+    // No recorded clip (a personalised / dynamic answer): the phone's Bengali voice, if any
+    stopFallback = speakUtterance(text, { onStart, onEnd: finish, onError, onVoiceUnavailable });
+  })().catch((err) => {
+    if (onError) onError(err);
+    finish();
+  });
+
+  return () => {
+    stopped = true;
+    if (stopFallback) stopFallback();
+    stopAnswerAudio();
+    finish();
+  };
+}
+
 /** Resolves with the browser's voice list, waiting up to `timeoutMs` for it to load. */
 export function waitForVoices(timeoutMs = 2000) {
   return new Promise((resolve) => {
