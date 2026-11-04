@@ -817,7 +817,7 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
                   setQueryText(chipText);
                   handleProcessQuery(chipText);
                 }}
-                className="px-2.5 py-1 rounded-full text-xs bg-gray-100 hover:bg-leaf-100 hover:text-leaf-800 text-gray-700 border border-gray-200 transition-colors font-medium text-left"
+                className="min-h-[40px] px-3 py-1.5 rounded-full text-xs bg-gray-100 hover:bg-leaf-100 hover:text-leaf-800 text-gray-700 border border-gray-200 transition-colors font-medium text-left"
               >
                 {chipText}
               </button>

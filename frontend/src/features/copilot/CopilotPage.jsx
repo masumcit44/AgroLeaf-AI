@@ -77,7 +77,7 @@ export default function CopilotPage() {
         <button
           type="button"
           onClick={() => setActiveTab('planner')}
-          className={`flex-1 py-2 px-3 rounded-lg flex items-center justify-center space-x-2 transition-all ${
+          className={`flex-1 min-w-0 min-h-[44px] py-2 px-2 sm:px-3 rounded-lg flex items-center justify-center space-x-2 text-center leading-tight transition-all ${
             activeTab === 'planner'
               ? 'bg-white text-leaf-800 shadow-sm font-bold'
               : 'text-gray-600 hover:text-gray-900'
@@ -94,7 +94,7 @@ export default function CopilotPage() {
             setActiveTab('saved');
             loadSavedPlans();
           }}
-          className={`flex-1 py-2 px-3 rounded-lg flex items-center justify-center space-x-2 transition-all ${
+          className={`flex-1 min-w-0 min-h-[44px] py-2 px-2 sm:px-3 rounded-lg flex items-center justify-center space-x-2 text-center leading-tight transition-all ${
             activeTab === 'saved'
               ? 'bg-white text-leaf-800 shadow-sm font-bold'
               : 'text-gray-600 hover:text-gray-900'
