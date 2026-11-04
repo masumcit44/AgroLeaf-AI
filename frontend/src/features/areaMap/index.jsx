@@ -5,6 +5,7 @@ import { getProfile } from '../profile/profileStore.js';
 import { enqueueAreaReport } from '../../lib/store/sync.js';
 import { getIsoWeek } from './isoWeek.js';
 import districtsData from '../profile/districts.json';
+import CommunityAlertCard from '../communityAlerts/CommunityAlertCard.jsx';
 
 const CLASSES = [
   { key: 'blast', bn: 'ব্লাস্ট', en: 'Blast' },
@@ -424,6 +425,12 @@ export function MapPage() {
             </div>
           </div>
         )}
+
+        {/* F32: Outbreak Early Warning & Neighbor Risk Alert Card */}
+        <CommunityAlertCard
+          initialDistrictCode={selectedDistrict?.code}
+          activeDisease={selectedClass}
+        />
 
         {/* Keyboard Accessible Table of Districts */}
         <div className="space-y-2 pt-2">
