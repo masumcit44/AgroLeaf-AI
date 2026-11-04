@@ -12,7 +12,7 @@
 | Feature ID & Name | Category | Status | Branch / Worktree | Latest Commit / Checkpoint | Test Status | Next Action |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **F1: Image Pipeline & Preprocessing** | Core AI | **Implemented & Verified** | `deploy/candidate-ready` | `69a48dd` | 13/13 unit tests pass | Maintained |
-| **F1 Advanced: Live Guided Camera Scanner** | Mobile CV | **Implemented & Verified** | `deploy/candidate-ready` | `49d4e4e` | 8/8 tests pass | Production deployed |
+| **F1 Advanced: Live Guided Camera Scanner** | Mobile CV | **Non-Blocking & Accuracy Verified** | `deploy/candidate-ready` | Working tree | 9/9 tests pass | Non-blocking capture freedom deployed |
 | **F5–F7: Bangla Voice Audio Advisory** | Accessibility | **Implemented & Verified** | `deploy/candidate-ready` | `a0f865a` | 6/6 audio tests pass | Maintain offline audio cache |
 | **F8 / F8 v2: Weather & Crop Disease Analysis** | Weather / BAMIS | **Implemented & Verified** | `deploy/candidate-ready` | `faa1d17` | 33/33 tests pass | Maintain Open-Meteo edge proxy |
 | **F9: Progressive Web App (Offline PWA)** | Infrastructure | **Implemented & Verified** | `deploy/candidate-ready` | `758ed02` | 6/6 PWA tests pass | Model Cache v2 verified in build |

@@ -1,5 +1,6 @@
 // F1 Advanced: Intelligent Live Guided Camera Scanner
-// Real-time mobile viewfinder with live leaf framing, blur, and lighting guidance.
+// Non-blocking real-time mobile viewfinder with live framing, blur, and lighting advisory.
+// Farmer is always free to capture at any moment once the camera stream is active.
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import useT from '../../i18n/useT.js';
@@ -19,13 +20,17 @@ export function LiveCameraScanner({ onCapture, onClose }) {
   const animFrameIdRef = useRef(null);
   const engineRef = useRef(new LiveGuidanceEngine());
 
+  // Discrete state machines
+  const [cameraState, setCameraState] = useState('INITIALIZING'); // 'INITIALIZING' | 'ACTIVE' | 'ERROR'
+  const [captureState, setCaptureState] = useState('AVAILABLE'); // 'AVAILABLE' | 'CAPTURING'
+  const [guidanceHidden, setGuidanceHidden] = useState(false);
+
   const [guidance, setGuidance] = useState({
-    state: 'INITIALIZING',
+    state: 'ANALYZING',
     isReady: false,
     consecutiveCount: 0,
   });
   const [cameraError, setCameraError] = useState(null);
-  const [allowManualCapture, setAllowManualCapture] = useState(false);
 
   // Stop camera tracks cleanly
   const stopCamera = useCallback(() => {
@@ -43,12 +48,14 @@ export function LiveCameraScanner({ onCapture, onClose }) {
       });
       streamRef.current = null;
     }
+    setCameraState('STOPPED');
   }, []);
 
   // Initialize camera stream
   useEffect(() => {
     let isMounted = true;
     setCameraError(null);
+    setCameraState('INITIALIZING');
 
     const startCamera = async () => {
       try {
@@ -56,27 +63,35 @@ export function LiveCameraScanner({ onCapture, onClose }) {
           throw new Error('CAMERA_UNSUPPORTED');
         }
 
+        const isPortrait = typeof window !== 'undefined' && window.innerHeight > window.innerWidth;
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
           video: {
             facingMode: { ideal: 'environment' },
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
+            width: { ideal: isPortrait ? 1080 : 1920, min: 720 },
+            height: { ideal: isPortrait ? 1920 : 1080, min: 720 },
           },
         });
 
         if (!isMounted) {
-          stream.getTracks().forEach((t) => t.stop());
+          stream.getTracks().forEach((trk) => trk.stop());
           return;
         }
 
         streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play().catch(() => {});
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = stream;
+          video.onloadedmetadata = () => {
+            if (isMounted) {
+              setCameraState('ACTIVE');
+              video.play().catch(() => {});
+            }
+          };
         }
       } catch (err) {
         if (isMounted) {
+          setCameraState('ERROR');
           setCameraError(err.name === 'NotAllowedError' ? 'PERMISSION_DENIED' : 'CAMERA_UNAVAILABLE');
         }
       }
@@ -84,24 +99,18 @@ export function LiveCameraScanner({ onCapture, onClose }) {
 
     startCamera();
 
-    // After 6 seconds of scanning, permit manual capture override so the farmer is never locked out
-    const overrideTimer = setTimeout(() => {
-      if (isMounted) setAllowManualCapture(true);
-    }, 6000);
-
     return () => {
       isMounted = false;
-      clearTimeout(overrideTimer);
       stopCamera();
     };
   }, [stopCamera]);
 
-  // Frame analysis loop (downsampled offscreen canvas at 6-8 FPS)
+  // Frame analysis loop (downsampled offscreen canvas at 6-8 FPS for guidance suggestions)
   useEffect(() => {
-    if (cameraError) return;
+    if (cameraState !== 'ACTIVE' || cameraError) return;
 
     let lastSampleTime = 0;
-    const SAMPLE_INTERVAL_MS = 125; // ~8 FPS
+    const SAMPLE_INTERVAL_MS = 140; // ~7 FPS
     const downW = 160;
     const downH = 160;
 
@@ -123,33 +132,24 @@ export function LiveCameraScanner({ onCapture, onClose }) {
         try {
           sampleCtx.drawImage(video, 0, 0, downW, downH);
           const imgData = sampleCtx.getImageData(0, 0, downW, downH);
-          const rgba = imgData.data;
 
-          // 1. Quality metrics: Luminance & Blur
-          const numPixels = downW * downH;
-          const gray = new Uint8ClampedArray(numPixels);
-          for (let i = 0; i < numPixels; i++) {
-            const off = i * 4;
-            gray[i] = Math.round(0.299 * rgba[off] + 0.587 * rgba[off + 1] + 0.114 * rgba[off + 2]);
-          }
+          // 1. Plant leaf pixel extraction & centroid moments
+          const mask = extractPlantMask(imgData);
+          const moments = computeLeafMoments(mask);
 
-          const luma = meanLuminance(gray);
-          const blurVar = laplacianVariance(gray, downW, downH);
+          // 2. Optical quality evaluation
+          const lum = meanLuminance(sampleCanvas);
+          const blurVar = laplacianVariance(sampleCanvas);
 
-          const quality = {
-            isDark: luma < 40,
-            isBright: luma > 230,
-            isBlurry: blurVar < 45,
-          };
+          const isDark = lum < 35;
+          const isBright = lum > 225;
+          const isBlurry = blurVar < 14;
 
-          // 2. Leaf spatial localization
-          const plantMask = extractPlantMask(rgba, downW, downH);
-          const moments = computeLeafMoments(plantMask, downW, downH);
+          // 3. Raw heuristic framing classification
+          const rawCandidate = classifyLeafFraming(moments, { isDark, isBright, isBlurry });
 
-          // 3. Classify framing & smooth temporally
-          const rawCandidate = classifyLeafFraming(moments, quality);
+          // 4. Temporal hysteresis smoothing
           const smoothed = engineRef.current.update(rawCandidate);
-
           setGuidance(smoothed);
         } catch {
           // Ignore transient frame read error
@@ -166,13 +166,17 @@ export function LiveCameraScanner({ onCapture, onClose }) {
         cancelAnimationFrame(animFrameIdRef.current);
       }
     };
-  }, [cameraError]);
+  }, [cameraState, cameraError]);
 
-  // Capture full resolution photo from the live video feed
+  // Non-blocking capture: Captures full-resolution clean frame directly from camera video
   const handleCapture = useCallback(() => {
+    // Only genuine camera stream absence or active capturing prevents capture
+    if (cameraState !== 'ACTIVE' || captureState === 'CAPTURING') return;
+
     const video = videoRef.current;
     if (!video) return;
 
+    setCaptureState('CAPTURING');
     const vWidth = video.videoWidth || 1280;
     const vHeight = video.videoHeight || 720;
 
@@ -180,12 +184,17 @@ export function LiveCameraScanner({ onCapture, onClose }) {
     captureCanvas.width = vWidth;
     captureCanvas.height = vHeight;
     const ctx = captureCanvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      setCaptureState('AVAILABLE');
+      return;
+    }
 
+    // Draw pure sensor frame — ZERO overlays, ZERO text, ZERO artificial crop
     ctx.drawImage(video, 0, 0, vWidth, vHeight);
 
     captureCanvas.toBlob(
       (blob) => {
+        setCaptureState('AVAILABLE');
         if (!blob) return;
         const file = new File([blob], `rice_leaf_${Date.now()}.jpg`, {
           type: 'image/jpeg',
@@ -195,9 +204,9 @@ export function LiveCameraScanner({ onCapture, onClose }) {
         onCapture(file);
       },
       'image/jpeg',
-      0.92
+      0.95
     );
-  }, [onCapture, stopCamera]);
+  }, [cameraState, captureState, onCapture, stopCamera]);
 
   const handleClose = () => {
     stopCamera();
@@ -227,12 +236,14 @@ export function LiveCameraScanner({ onCapture, onClose }) {
         return '✋';
       case 'READY':
         return '✨';
+      case 'UNCERTAIN':
+        return 'ℹ️';
       default:
         return '🌾';
     }
   };
 
-  // Instruction text lookup
+  // Advisory instruction text lookup
   const getInstructionText = (state) => {
     switch (state) {
       case 'NO_LEAF':
@@ -257,10 +268,14 @@ export function LiveCameraScanner({ onCapture, onClose }) {
         return t('liveScanner.blurry');
       case 'READY':
         return t('liveScanner.ready');
+      case 'UNCERTAIN':
+        return t('liveScanner.uncertain');
       default:
         return t('liveScanner.initializing');
     }
   };
+
+  const isCameraLive = cameraState === 'ACTIVE';
 
   return (
     <div
@@ -268,24 +283,40 @@ export function LiveCameraScanner({ onCapture, onClose }) {
       aria-modal="true"
       aria-label={t('liveScanner.title')}
       data-testid="live-camera-scanner"
-      className="fixed inset-0 z-50 bg-black flex flex-col justify-between overflow-hidden"
+      className="fixed inset-0 z-50 bg-black flex flex-col justify-between overflow-hidden select-none"
     >
       {/* 1. Header Bar */}
-      <div className="relative z-10 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 to-transparent text-white">
+      <div className="relative z-10 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/85 via-black/50 to-transparent text-white">
         <div className="flex items-center gap-2">
           <span className="text-xl" aria-hidden="true">📷</span>
           <span className="text-sm font-bold tracking-tight">
             {t('liveScanner.title')}
           </span>
         </div>
-        <button
-          type="button"
-          onClick={handleClose}
-          className="min-h-[44px] min-w-[44px] p-2 text-white/80 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center cursor-pointer"
-          aria-label={t('liveScanner.closeBtn')}
-        >
-          ✕
-        </button>
+
+        <div className="flex items-center gap-2">
+          {/* Optional Guidance Visibility Toggle */}
+          {isCameraLive && (
+            <button
+              type="button"
+              onClick={() => setGuidanceHidden(!guidanceHidden)}
+              data-testid="toggle-guidance-btn"
+              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white/15 hover:bg-white/25 text-white/90 border border-white/20 transition cursor-pointer"
+            >
+              {guidanceHidden ? t('liveScanner.showGuidance') : t('liveScanner.hideGuidance')}
+            </button>
+          )}
+
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={handleClose}
+            className="min-h-[44px] min-w-[44px] p-2 text-white/80 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center cursor-pointer"
+            aria-label={t('liveScanner.closeBtn')}
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
       {/* 2. Main Viewport & Reticle Overlay */}
@@ -315,84 +346,88 @@ export function LiveCameraScanner({ onCapture, onClose }) {
               className="w-full h-full object-cover"
             />
 
-            {/* Central Framing Alignment Reticle */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-8">
+            {/* Central Advisory Framing Reticle (Hidden if user toggles guidance off) */}
+            {!guidanceHidden && (
               <div
-                className={`w-64 h-80 rounded-3xl border-3 transition-colors duration-300 flex flex-col justify-between p-3 ${
-                  guidance.isReady
-                    ? 'border-emerald-400 bg-emerald-500/10 shadow-[0_0_25px_rgba(52,211,153,0.4)]'
-                    : 'border-white/60 border-dashed bg-black/10'
-                }`}
+                data-testid="scanner-reticle"
+                className="absolute inset-0 pointer-events-none flex items-center justify-center p-8 transition-opacity duration-300"
               >
-                <div className="flex justify-between w-full opacity-60">
-                  <div className="w-4 h-4 border-t-2 border-l-2 border-white" />
-                  <div className="w-4 h-4 border-t-2 border-r-2 border-white" />
-                </div>
-                <div className="flex justify-between w-full opacity-60">
-                  <div className="w-4 h-4 border-b-2 border-l-2 border-white" />
-                  <div className="w-4 h-4 border-b-2 border-r-2 border-white" />
+                <div
+                  className={`w-64 h-80 rounded-3xl border-3 transition-colors duration-300 flex flex-col justify-between p-3 ${
+                    guidance.isReady
+                      ? 'border-emerald-400 bg-emerald-500/10 shadow-[0_0_25px_rgba(52,211,153,0.35)]'
+                      : 'border-white/50 border-dashed bg-black/10'
+                  }`}
+                >
+                  <div className="flex justify-between w-full opacity-60">
+                    <div className="w-4 h-4 border-t-2 border-l-2 border-white" />
+                    <div className="w-4 h-4 border-t-2 border-r-2 border-white" />
+                  </div>
+                  <div className="flex justify-between w-full opacity-60">
+                    <div className="w-4 h-4 border-b-2 border-l-2 border-white" />
+                    <div className="w-4 h-4 border-b-2 border-r-2 border-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Prominent Floating Guidance Instruction Banner */}
-            <div className="absolute top-16 left-4 right-4 pointer-events-none flex justify-center">
-              <div
-                data-testid="scanner-guidance-pill"
-                className={`max-w-xs px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-lg border text-center flex items-center gap-2.5 transition-all duration-300 ${
-                  guidance.isReady
-                    ? 'bg-emerald-600/90 border-emerald-400 text-white font-bold'
-                    : 'bg-black/75 border-white/20 text-white font-medium'
-                }`}
-              >
-                <span className="text-xl shrink-0" aria-hidden="true">
-                  {getDirectionIcon(guidance.state)}
-                </span>
-                <span className="text-xs sm:text-sm leading-snug">
-                  {getInstructionText(guidance.state)}
-                </span>
+            {/* Floating Advisory Guidance Pill (Advisory only; never blocks capture) */}
+            {!guidanceHidden && (
+              <div className="absolute top-16 left-4 right-4 pointer-events-none flex justify-center">
+                <div
+                  data-testid="scanner-guidance-pill"
+                  className={`max-w-xs px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-lg border text-center flex items-center gap-2.5 transition-all duration-300 ${
+                    guidance.isReady
+                      ? 'bg-emerald-600/95 border-emerald-400 text-white font-bold'
+                      : 'bg-black/75 border-white/20 text-white font-medium'
+                  }`}
+                >
+                  <span className="text-xl shrink-0" aria-hidden="true">
+                    {getDirectionIcon(guidance.state)}
+                  </span>
+                  <span className="text-xs sm:text-sm leading-snug">
+                    {getInstructionText(guidance.state)}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </>
         )}
       </div>
 
-      {/* 3. Bottom Controls */}
-      <div className="relative z-10 px-6 py-6 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center gap-3">
+      {/* 3. Bottom Controls — Capture Button Always Available */}
+      <div className="relative z-10 px-6 py-6 bg-gradient-to-t from-black via-black/85 to-transparent flex flex-col items-center gap-3">
         {/* Shutter Capture Button */}
         <div className="flex items-center justify-center gap-6 w-full">
           <button
             type="button"
-            disabled={!guidance.isReady && !allowManualCapture}
+            disabled={!isCameraLive || captureState === 'CAPTURING'}
             onClick={handleCapture}
             data-testid="scanner-capture-btn"
             className={`w-20 h-20 rounded-full border-4 flex items-center justify-center transition-all duration-200 cursor-pointer ${
-              guidance.isReady
-                ? 'border-white bg-emerald-500 hover:bg-emerald-400 scale-105 shadow-[0_0_20px_rgba(52,211,153,0.6)]'
-                : allowManualCapture
-                ? 'border-white/80 bg-white/20 hover:bg-white/30'
-                : 'border-white/30 bg-white/5 opacity-40 cursor-not-allowed'
+              !isCameraLive
+                ? 'border-white/30 bg-white/5 opacity-40 cursor-not-allowed'
+                : guidance.isReady
+                ? 'border-emerald-300 bg-emerald-500 hover:bg-emerald-400 scale-105 shadow-[0_0_22px_rgba(52,211,153,0.55)]'
+                : 'border-white/90 bg-white/25 hover:bg-white/35 active:scale-95 shadow-md'
             }`}
             aria-label={t('liveScanner.captureBtn')}
           >
             <div
               className={`w-14 h-14 rounded-full transition-all ${
-                guidance.isReady ? 'bg-white' : allowManualCapture ? 'bg-white/60' : 'bg-white/20'
+                guidance.isReady ? 'bg-white' : 'bg-white/80'
               }`}
             />
           </button>
         </div>
 
-        {/* Manual capture warning prompt if overridden */}
-        {!guidance.isReady && allowManualCapture && (
-          <p className="text-[11px] text-amber-300/80 text-center font-medium">
-            {t('liveScanner.overrideWarn')}
-          </p>
-        )}
+        {/* Advisory subtitle: Capture anytime */}
+        <p className="text-[11px] text-white/70 text-center font-medium">
+          {t('liveScanner.captureAnytime')}
+        </p>
       </div>
     </div>
   );
 }
 
 export default LiveCameraScanner;
-

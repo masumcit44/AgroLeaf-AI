@@ -40,3 +40,4 @@ When a farmer clicks "স্মরণবার্তা চালু করু�
 - Calls `remindersStore.saveReminder({ title, description, due_date: target_date, source: 'crop_calendar' })`.
 - Updates `active_reminder_ids` in `profile`.
 - The task is immediately rendered with a green "স্মরণবার্তা সক্রিয়" badge and is tracked in the F24 Due Reminders banner on the Home page.
+

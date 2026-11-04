@@ -35,3 +35,4 @@
    - Chronological Timeline of 8 key agronomic tasks
    - 1-tap "স্মরণবার্তা চালু করুন" (Enable Reminder) directly connected to F24 (`remindersStore.js`)
    - Expandable learning drawers ("কেন করতে হবে?", "কীভাবে করতে হবে?", "তথ্যসূত্র").
+

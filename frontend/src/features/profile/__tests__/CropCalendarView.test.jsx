@@ -50,3 +50,4 @@ describe('CropCalendarView Component', () => {
     expect(html).toContain('Progress');
   });
 });
+

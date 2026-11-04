@@ -80,3 +80,4 @@ When directly seeded (dry seeded or drum-seeded wet rice), seedbed establishment
 - Never calculate exact chemical concentrations or application dates for unverified soil types.
 - Fertilizer guidance focuses on timely split applications (Urea in 3 splits, MOP in 2 splits) per BRRI standards.
 - Water management follows Alternate Wetting and Drying (AWD) and critical stage inundation.
+

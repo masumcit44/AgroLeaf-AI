@@ -53,3 +53,4 @@ export function getVarietyDuration(season, varietyId, customDuration) {
   if (season === 'aman') return 130;
   return 110; // aus
 }
+

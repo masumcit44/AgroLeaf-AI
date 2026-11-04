@@ -55,3 +55,4 @@ Transform `ProfilePage` from an unmotivating setup form into **"আমার ধ
 - Searchable BRRI variety selector with "জাত জানি না" and "অন্যান্য জাত" fallbacks.
 - Cultivation method toggle (Transplanting vs Direct Seeding) with growth-stage fallback.
 - Instant personalized crop calendar with active crop stage, next priority task, timeline, and 1-tap F24 reminder integration.
+

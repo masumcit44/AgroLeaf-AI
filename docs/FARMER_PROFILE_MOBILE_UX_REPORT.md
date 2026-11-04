@@ -27,3 +27,4 @@ The redesigned setup form and active crop calendar were audited across mobile vi
 2. **Accessible Combobox:** District searchable field includes proper `role="combobox"`, `aria-expanded`, `aria-controls`, and `role="listbox"` attributes.
 3. **Bangla Typography:** Clear, legible Bengali fonts (`Noto Sans Bengali` / `system-ui`) with proper vowel mark (`kar`) rendering and Bengali numerals (`০-৯`).
 4. **Offline Resilience:** All features operate 100% offline from browser-local IndexedDB.
+
