@@ -12,10 +12,12 @@ import { getDiseaseKnowledge } from '../lib/diseaseKnowledge.js';
 import { FeatureSlot } from '../features/slots.jsx';
 import { isFeatureOn } from '../features/flags.js';
 import CropScreen from '../features/user_guided_crop/CropScreen.jsx';
+import LiveCameraScanner from '../features/liveScanner/LiveCameraScanner.jsx';
 
 export default function HomePage() {
   const { lang, t } = useT();
   const scanFlow = useScanFlow();
+  const [scannerOpen, setScannerOpen] = useState(false);
   const [diseaseKnowledge, setDiseaseKnowledge] = useState(null);
   const [devForcedResult, setDevForcedResult] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -215,9 +217,21 @@ export default function HomePage() {
       <div className="w-full max-w-sm mb-6">
         <PhotoPicker
           onFileSelect={scanFlow.selectFile}
+          onStartScanner={isFeatureOn('liveScanner') ? () => setScannerOpen(true) : null}
           disabled={scanFlow.isProcessing}
         />
       </div>
+
+      {/* Live Camera Scanner Viewfinder Modal */}
+      {scannerOpen && (
+        <LiveCameraScanner
+          onCapture={(file) => {
+            setScannerOpen(false);
+            scanFlow.selectFile(file);
+          }}
+          onClose={() => setScannerOpen(false)}
+        />
+      )}
 
       {/* 3 Pictogram Tips */}
       <div className="w-full max-w-sm grid grid-cols-3 gap-2 mb-6">

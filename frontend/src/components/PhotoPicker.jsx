@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import useT from '../i18n/useT.js';
 
-export default function PhotoPicker({ onFileSelect, disabled = false }) {
+export default function PhotoPicker({ onFileSelect, onStartScanner, disabled = false }) {
   const { t } = useT();
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
@@ -13,6 +13,14 @@ export default function PhotoPicker({ onFileSelect, disabled = false }) {
     }
     // Reset input value so re-selecting the same file fires onChange
     e.target.value = '';
+  };
+
+  const handleCameraClick = () => {
+    if (typeof onStartScanner === 'function') {
+      onStartScanner();
+    } else {
+      cameraInputRef.current?.click();
+    }
   };
 
   return (
@@ -40,7 +48,7 @@ export default function PhotoPicker({ onFileSelect, disabled = false }) {
       <button
         type="button"
         disabled={disabled}
-        onClick={() => cameraInputRef.current?.click()}
+        onClick={handleCameraClick}
         className="flex-1 min-h-[56px] px-5 py-3.5 bg-leaf-700 hover:bg-leaf-700/90 active:scale-[0.99] text-white font-bold rounded-xl flex items-center justify-center gap-2.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t('btnCamera')}
       >
