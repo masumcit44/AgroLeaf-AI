@@ -4,6 +4,7 @@ import { isFeatureOn } from '../features/flags.js';
 
 export const TABS = [
   { route: ROUTES.HOME, icon: '🏠', labelKey: 'navHome', feature: null },
+  { route: ROUTES.REMINDERS, icon: '⏰', labelKey: 'navReminders', feature: 'reminders' },
   { route: ROUTES.HISTORY, icon: '🗂️', labelKey: 'navHistory', feature: 'history' },
   { route: ROUTES.WEATHER, icon: '🌦️', labelKey: 'navWeather', feature: 'weather' },
   { route: ROUTES.MAP, icon: '🗺️', labelKey: 'navMap', feature: 'areaMap' },

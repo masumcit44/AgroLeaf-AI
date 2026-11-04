@@ -27,6 +27,7 @@
 | **F21: Farmer Profile** | Stores district, crop season, and variety locally | **Implemented but broken UX** | `src/features/profile/index.jsx`, `src/features/profile/profileStore.js`, `src/features/profile/gpsLocation.js` | None | IndexedDB (`STORES.PROFILE`) | **Yes (broken UX)** | Unit tests passing | Reevaluate purpose; remove GPS from homepage; simplify (ISSUE-004) |
 | **F22: Expert Help Request** | Connects farmers to agricultural extension officers (DAE / 16123 helpline) | **Implemented but not fully tested** | `src/features/help/index.jsx` | `functions/api/v1/help-requests/index.js` | Cloudflare D1 `help_requests` | **Partial** (helpline link works) | UI tests passing | Verify D1 submission endpoint once backend secret configured |
 | **F23: Area Disease Map** | Outbreak map displaying district-level disease density with GeoJSON overlay | **Blocked by dependency** | `src/features/areaMap/index.jsx`, `src/features/areaMap/districtGeo.js`, `public/geo/bd_districts.geojson` | `functions/api/v1/area-reports/index.js`, `functions/api/v1/area-summary/index.js` | Cloudflare D1 `area_reports` | **No** (flagged off) | Unit tests passing | Run `0002_area_district.sql` migration on prod D1 after owner approval |
+| **F24: Farmer Reminder & Crop Care Scheduler** | Timely follow-up inspection reminders for diagnosed diseases and manual crop-care scheduling; works 100% offline via IndexedDB | **Implemented and verified** | `src/features/reminders/index.jsx`, `src/features/reminders/remindersStore.js`, `src/features/reminders/RemindersPage.jsx`, `src/features/reminders/FollowUpCard.jsx`, `src/features/reminders/DueBanner.jsx` | None (Local-First IndexedDB DB v2) | IndexedDB (`STORES.REMINDERS`) | **Yes** | 24 unit tests in `reminders/__tests__`, 38 E2E viewport checks | Integrated on branch `feat/f24-reminders` |
 | **User-Guided Diseased Leaf Crop** | Allows farmer to zoom/crop the diseased section of the leaf before scanning | **Implemented and verified** | `src/features/user_guided_crop/CropScreen.jsx` | None (HTML5 Canvas) | None | **Yes** | Component tests passing | Optimize touch handles for narrow screens (< 360px) |
 
 ---
@@ -42,6 +43,7 @@
 6. **F14 Measured Reliability Bands** (Empirical Wilson score confidence bands)
 7. **F16 Scan History** (Bangla-formatted IndexedDB scan records)
 8. **User-Guided Leaf Crop** (Canvas-based crop box selection)
+9. **F24 Farmer Reminder & Crop Care Scheduler** (Offline-first IndexedDB reminder lifecycle, follow-up card, due banner, manual scheduling)
 
 ### 2. Incomplete or Partially Implemented Features
 1. **F20 Farmer Feedback:** Frontend button exists; backend signed POST endpoint and modal need integration.

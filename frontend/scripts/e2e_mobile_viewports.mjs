@@ -9,7 +9,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import net from 'node:net';
-import http from 'node:http';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
@@ -164,7 +163,6 @@ async function main() {
 
     // 1. TEST ISSUE-002: GPS Access on Homepage
     console.log(`\n--- Test 1: Zero GPS auto-request on Homepage (ISSUE-002) ---`);
-    let geolocationCalled = false;
     await page.evaluateOnNewDocument(() => {
       window.__geoCalls = 0;
       if (navigator.geolocation) {
@@ -192,6 +190,7 @@ async function main() {
     console.log(`\n--- Test 2: Mobile Viewport Layout & Overflow Verification (ISSUE-001) ---`);
     const routesToTest = [
       { path: '#/', label: 'Home Tab' },
+      { path: '#/reminders', label: 'Reminders Tab (F24)' },
       { path: '?features=weatherReport#/weather', label: 'Weather Tab' },
       { path: '#/profile', label: 'Area/Crop Tab' },
       { path: '#/history', label: 'History Tab' },
@@ -282,7 +281,7 @@ async function main() {
 
         const storedProfile = await page.evaluate(async () => {
           return new Promise((resolve) => {
-            const req = indexedDB.open('agroleaf', 1);
+            const req = indexedDB.open('agroleaf');
             req.onsuccess = (e) => {
               const db = e.target.result;
               try {
@@ -309,6 +308,113 @@ async function main() {
     } else {
       console.log('  (District change button not found; checking if already set or default rendered)');
     }
+
+    // 5. TEST F24: Farmer Reminders & Crop Care Lifecycle
+    console.log(`\n--- Test 5: Farmer Reminders & Crop Care Lifecycle (F24) ---`);
+    await page.goto(`${baseUrl}/#/reminders`, { waitUntil: 'networkidle2' });
+    await new Promise((r) => setTimeout(r, 800));
+
+    // Open Add Reminder Modal
+    const addBtnClicked = await page.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button'));
+      const newBtn = btns.find((b) => b.innerText.includes('নতুন স্মরণবার্তা') || b.innerText.includes('New Reminder'));
+      if (newBtn) {
+        newBtn.click();
+        return true;
+      }
+      return false;
+    });
+    assert(addBtnClicked, 'Reminders page renders "+ নতুন স্মরণবার্তা" button and opens modal');
+
+    await new Promise((r) => setTimeout(r, 400));
+
+    // Select suggested preset activity
+    const presetSelected = await page.evaluate(() => {
+      const modalBtns = Array.from(document.querySelectorAll('div[role="dialog"] button'));
+      const preset = modalBtns.find((b) => b.innerText.includes('লক্ষণ পর্যবেক্ষণ') || b.innerText.includes('পুনর্নিরীক্ষণ'));
+      if (preset) {
+        preset.click();
+        return true;
+      }
+      return false;
+    });
+    assert(presetSelected, 'Selected activity preset in reminder modal');
+
+    // Submit reminder
+    const savedSuccess = await page.evaluate(() => {
+      const submitBtn = Array.from(document.querySelectorAll('div[role="dialog"] button[type="submit"]'))[0];
+      if (submitBtn) {
+        submitBtn.click();
+        return true;
+      }
+      return false;
+    });
+    assert(savedSuccess, 'Saved reminder successfully');
+
+    await new Promise((r) => setTimeout(r, 800));
+
+    // Verify reminder appears in list and in IndexedDB
+    const reminderInList = await page.evaluate(() => {
+      const text = document.body.innerText;
+      return text.includes('লক্ষণ পর্যবেক্ষণ') || text.includes('পুনর্নিরীক্ষণ');
+    });
+    assert(reminderInList, 'New reminder appears in active reminders list');
+
+    // Verify record in IndexedDB reminders store
+    const storedReminders = await page.evaluate(async () => {
+      return new Promise((resolve) => {
+        const req = indexedDB.open('agroleaf');
+        req.onsuccess = (e) => {
+          const db = e.target.result;
+          try {
+            const tx = db.transaction('reminders', 'readonly');
+            const store = tx.objectStore('reminders');
+            const getReq = store.getAll();
+            getReq.onsuccess = () => resolve(getReq.result || []);
+            getReq.onerror = () => resolve([]);
+          } catch {
+            resolve([]);
+          }
+        };
+        req.onerror = () => resolve([]);
+      });
+    });
+    assert(storedReminders.length >= 1, `Reminder record verified in IndexedDB (count=${storedReminders.length})`);
+
+    // Complete the reminder (click the card action button "✓ সম্পন্ন")
+    const completedClicked = await page.evaluate(() => {
+      const doneBtn = Array.from(document.querySelectorAll('button')).find(
+        (b) => b.innerText.includes('✓') && (b.innerText.includes('সম্পন্ন') || b.innerText.includes('Done'))
+      );
+      if (doneBtn) {
+        doneBtn.click();
+        return true;
+      }
+      return false;
+    });
+    assert(completedClicked, 'Marked reminder as completed via "✓ সম্পন্ন" button');
+
+    await new Promise((r) => setTimeout(r, 800));
+
+    // Verify completed tab
+    const switchedTab = await page.evaluate(() => {
+      const compTab = Array.from(document.querySelectorAll('button')).find(
+        (b) => b.innerText.includes('সম্পন্ন কাজ') || b.innerText.includes('Completed')
+      );
+      if (compTab) {
+        compTab.click();
+        return true;
+      }
+      return false;
+    });
+    assert(switchedTab, 'Switched to Completed tab');
+    await new Promise((r) => setTimeout(r, 800));
+
+    const inCompletedTab = await page.evaluate(() => {
+      const text = document.body.innerText;
+      return text.includes('সম্পন্ন হয়েছে') || text.includes('Completed') || text.includes('পুনরায় সক্রিয়');
+    });
+    assert(inCompletedTab, 'Reminder moved to Completed tab cleanly');
 
   } finally {
     await browser.close();

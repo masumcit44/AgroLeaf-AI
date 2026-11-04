@@ -14,6 +14,7 @@ export const FEATURES = {
   feedback: false, // F20
   help: true, // F22
   areaMap: false, // F23
+  reminders: true, // F24
   user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };
 

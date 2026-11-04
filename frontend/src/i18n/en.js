@@ -10,6 +10,7 @@ export default {
   navWeather: "Weather",
   navMap: "Map",
   navProfile: "Area & Crop",
+  navReminders: "Reminders",
   navFeatureTabs: "Features",
   langSwitch: "বাংলা",
 

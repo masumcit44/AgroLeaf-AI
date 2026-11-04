@@ -10,6 +10,7 @@ export default {
   navWeather: "আবহাওয়া",
   navMap: "মানচিত্র",
   navProfile: "এলাকা ও ফসল",
+  navReminders: "স্মরণবার্তা",
   navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
 

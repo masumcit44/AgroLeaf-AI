@@ -10,6 +10,7 @@ export const ROUTES = {
   PROFILE: '#/profile',
   MAP: '#/map',
   WEATHER: '#/weather',
+  REMINDERS: '#/reminders',
 };
 
 function normalizeHash(hash) {

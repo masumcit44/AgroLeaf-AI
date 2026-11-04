@@ -8,17 +8,20 @@ import * as actionPlan from './actionPlan/index.jsx';
 import * as feedback from './feedback/index.jsx';
 import * as help from './help/index.jsx';
 import * as areaMap from './areaMap/index.jsx';
+import * as reminders from './reminders/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
 export const SLOT_LAYOUT = {
   app: [['pwa', pwa.PwaStatus]],
   home: [
     ['pwa', pwa.InstallPrompt],
+    ['reminders', reminders.DueRemindersBanner],
     ['history', history.HistoryLink],
   ],
   result: [
     ['reliability', reliability.ReliabilityNote],
     ['actionPlan', actionPlan.ActionPlan],
+    ['reminders', reminders.FollowUpReminder],
     ['weather', weather.WeatherChips],
     ['history', history.SaveToHistory],
     ['feedback', feedback.FeedbackButton],
@@ -33,4 +36,5 @@ export const FEATURE_ROUTES = {
   '#/profile': ['profile', profile.ProfilePage],
   '#/weather': ['weather', WeatherPage],
   '#/map': ['areaMap', areaMap.MapPage],
+  '#/reminders': ['reminders', reminders.RemindersPage],
 };

@@ -25,7 +25,7 @@ describe('feature tabs', () => {
   });
 
   it('shows Home plus one tab per released feature page', () => {
-    expect(visibleTabs().map((t) => t.route)).toEqual(['#/', '#/history', '#/weather', '#/profile']);
+    expect(visibleTabs().map((t) => t.route)).toEqual(['#/', '#/reminders', '#/history', '#/weather', '#/profile']);
   });
 
   it('hides the tab of a feature that is off, and the whole bar when only Home is left', () => {
@@ -33,6 +33,7 @@ describe('feature tabs', () => {
     expect(visibleTabs().map((t) => t.route)).not.toContain('#/weather');
     FEATURES.history = false;
     FEATURES.profile = false;
+    FEATURES.reminders = false;
     expect(render('#/')).toBe('');
   });
 

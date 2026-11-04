@@ -4,13 +4,14 @@
 import { openDB } from 'idb';
 
 export const DB_NAME = 'agroleaf';
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 export const STORES = {
   DEVICE: 'device',
   PROFILE: 'profile',
   HISTORY: 'history',
   OUTBOX: 'outbox',
   WEATHER: 'weather_cache',
+  REMINDERS: 'reminders',
 };
 
 let dbPromise = null;
@@ -18,15 +19,25 @@ let dbPromise = null;
 export function getDb() {
   if (!dbPromise) {
     dbPromise = openDB(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        db.createObjectStore(STORES.DEVICE);
-        db.createObjectStore(STORES.PROFILE);
-        const history = db.createObjectStore(STORES.HISTORY, { keyPath: 'id' });
-        history.createIndex('created_at', 'created_at');
-        history.createIndex('field_label', 'field_label');
-        const outbox = db.createObjectStore(STORES.OUTBOX, { keyPath: 'id' });
-        outbox.createIndex('created_at', 'created_at');
-        db.createObjectStore(STORES.WEATHER);
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          db.createObjectStore(STORES.DEVICE);
+          db.createObjectStore(STORES.PROFILE);
+          const history = db.createObjectStore(STORES.HISTORY, { keyPath: 'id' });
+          history.createIndex('created_at', 'created_at');
+          history.createIndex('field_label', 'field_label');
+          const outbox = db.createObjectStore(STORES.OUTBOX, { keyPath: 'id' });
+          outbox.createIndex('created_at', 'created_at');
+          db.createObjectStore(STORES.WEATHER);
+        }
+        if (oldVersion < 2) {
+          if (!db.objectStoreNames.contains(STORES.REMINDERS)) {
+            const reminders = db.createObjectStore(STORES.REMINDERS, { keyPath: 'id' });
+            reminders.createIndex('due_date', 'due_date');
+            reminders.createIndex('status', 'status');
+            reminders.createIndex('disease_id', 'disease_id');
+          }
+        }
       },
     });
   }
