@@ -42,6 +42,7 @@ PORTRAIT_PHOTO = "documentation/photos/portrait.jpg"
 SHOT_UPLOAD = "documentation/screenshots/release/01_home.png"
 SHOT_RESULT = "documentation/screenshots/release/02_result_blast.png"
 SHOT_NOT_SURE = "documentation/screenshots/release/03_not_sure.png"
+SHOT_VOICE = "documentation/screenshots/release/04_voice_assistant.png"
 
 NOTES = [
     "A farmer sees spots on a leaf. They ask whoever is nearby, often the pesticide seller. "
@@ -351,7 +352,7 @@ def slide_solution(prs, repo):
     shots = [
         (SHOT_UPLOAD, [("Upload a photo", LATIN)]),
         (SHOT_RESULT, [("Bangla result + audio", LATIN)]),
-        (SHOT_NOT_SURE, [("Not sure: ", LATIN), ("নিশ্চিত নই", BANGLA), (" · 16123", LATIN)]),
+        (SHOT_VOICE, [("Ask by voice, hear Bengali", LATIN)]),
     ]
     positions = [0.85, 4.89, 8.93]
     for position, (relative, caption) in zip(positions, shots):
@@ -592,10 +593,10 @@ def slide_impact(prs):
     background(slide)
     title(slide, "Useful, and honest about its limits.", wide=True)
     rows = [
-        "No AI-written pesticide doses",
-        "16123 hand-off — charges may apply",
+        "“Not sure” + 16123 — never a pesticide dose",
+        "Bengali voice: 122 recorded answers",
         "Photo never leaves the phone",
-        "“Not sure” when the model does not know",
+        "Works offline after the first visit",
     ]
     positions = [(0.85, 1.72), (6.85, 1.72), (0.85, 3.02), (6.85, 3.02)]
     for (x, y), text in zip(positions, rows):
