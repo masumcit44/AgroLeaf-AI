@@ -23,6 +23,7 @@ export default {
     'explainableAi.techLatency': 'অন-ডিভাইস ওভারহেড: < ১ মিলি-সেকেন্ড (১x১ কনভোলিউশন, ০.২৫% ফ্লপস)',
     'explainableAi.techDisclaimer': 'গুরুত্বপূর্ণ সতর্কবার্তা: এই Heatmap মডেলের Prediction Attribution (সিদ্ধান্তের নির্ভরতা) নির্দেশ করে; এটি স্বয়ংক্রিয় ক্ষত সেগমেন্টেশন বা কনফার্মড লিশন ম্যাপ নয়।',
     'explainableAi.canvasUnavailable': 'ছবির প্রিভিউ তৈরি করা যায়নি।',
+    'explainableAi.camUnavailable': 'এই ছবির জন্য AI হাইলাইট তৈরি করা যায়নি। মূল রোগ নির্ণয়ের ফলাফল দেখতে পারবেন। আরও ভালো ফলাফলের জন্য ব্রাউজার রিফ্রেশ করে পুনরায় চেষ্টা করুন।',
   },
   en: {
     'explainableAi.cardTitle': 'Where Did AI Focus?',
@@ -45,5 +46,6 @@ export default {
     'explainableAi.techLatency': 'On-Device Overhead: < 1 ms (1x1 Conv, 0.25% FLOPs)',
     'explainableAi.techDisclaimer': 'Scientific Note: This heatmap visualizes model prediction attribution (decision importance), not autonomous ground-truth lesion segmentation.',
     'explainableAi.canvasUnavailable': 'Unable to render image preview.',
+    'explainableAi.camUnavailable': 'AI Highlight could not be generated for this image. The disease prediction result is still available. If this persists, refresh the browser and try again.',
   },
 };

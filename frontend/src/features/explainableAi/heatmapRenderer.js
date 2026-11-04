@@ -2,49 +2,98 @@
 // Bilinear upsampling and Turbo/Thermal colormapping for CAM heatmaps.
 
 /**
- * Returns RGBA tuple for normalized value in [0, 1] using perceptually uniform thermal palette.
- * Low values (<0.15) have alpha=0 (transparent) so healthy leaf tissue remains natural.
- * High values (>0.65) transition to vibrant red with user-controlled opacity.
+ * Returns RGBA tuple for normalized value in [0, 1] using high-contrast thermal palettes.
+ *
+ * Supports two distinct modes:
+ * 1. 'overlay' (default): Designed for blending over leaf photography.
+ *    - Low values (<0.18) are transparent (alpha=0) to keep healthy tissue crisp.
+ *    - Lesion attribution (>=0.18) transitions from Warm Amber to Intense Crimson,
+ *      providing maximum visual contrast against green rice leaves (Delta E > 40).
+ *    - Alpha scales dynamically with baseAlpha (opacity slider).
+ *
+ * 2. 'heatmap': Designed for standalone "AI Highlight" view.
+ *    - Full continuous thermal spectrum from Deep Navy/Indigo (cold) to Crimson (hot).
+ *    - Fully opaque (alpha=255) so there are zero pitch-black or missing areas.
  *
  * @param {number} val - Normalized attribution value in [0, 1]
  * @param {number} baseAlpha - Maximum alpha for peak values (0.0 - 1.0)
+ * @param {'overlay'|'heatmap'} mode - Palette mode
  * @returns {[number, number, number, number]} [r, g, b, a] in 0-255 range
  */
-export function valueToRgba(val, baseAlpha = 0.65) {
+export function valueToRgba(val, baseAlpha = 0.65, mode = 'overlay') {
   const v = Math.max(0, Math.min(1, Number(val) || 0));
 
-  // Background threshold: below 0.15 is transparent
-  if (v < 0.15) {
+  if (mode === 'heatmap') {
+    // Continuous full-spectrum thermal Grad-CAM palette (Alpha = 255)
+    let r;
+    let g;
+    let b;
+    if (v < 0.25) {
+      // Deep Indigo/Blue -> Cyan: [20, 30, 110] -> [0, 185, 235]
+      const t = v / 0.25;
+      r = Math.round(20 + t * (0 - 20));
+      g = Math.round(30 + t * (185 - 30));
+      b = Math.round(110 + t * (235 - 110));
+    } else if (v < 0.50) {
+      // Cyan -> Lime / Yellow-Green: [0, 185, 235] -> [160, 220, 20]
+      const t = (v - 0.25) / 0.25;
+      r = Math.round(0 + t * 160);
+      g = Math.round(185 + t * (220 - 185));
+      b = Math.round(235 - t * 215);
+    } else if (v < 0.75) {
+      // Lime / Yellow-Green -> Bright Amber-Orange: [160, 220, 20] -> [255, 140, 0]
+      const t = (v - 0.50) / 0.25;
+      r = Math.round(160 + t * (255 - 160));
+      g = Math.round(220 - t * (220 - 140));
+      b = Math.round(20 - t * 20);
+    } else {
+      // Bright Amber-Orange -> Vivid Fire Red / Crimson: [255, 140, 0] -> [235, 20, 20]
+      const t = (v - 0.75) / 0.25;
+      r = Math.round(255 - t * 20);
+      g = Math.round(140 - t * 120);
+      b = Math.round(0 + t * 20);
+    }
+    return [r, g, b, 255];
+  }
+
+  // mode === 'overlay': High-contrast lesion attribution over green leaf
+  // Background threshold: below 0.18 is transparent
+  if (v < 0.18) {
     return [0, 0, 0, 0];
   }
 
-  // Alpha scales smoothly from 0.2 at threshold to baseAlpha at peak
-  const normV = (v - 0.15) / 0.85;
-  const alpha = Math.round(Math.min(255, Math.max(0, (0.25 + normV * (baseAlpha - 0.25)) * 255)));
+  // Normalized position within active lesion range
+  const normV = (v - 0.18) / 0.82;
 
-  let r, g, b;
+  // Responsive alpha scaling driven directly by user opacity slider (baseAlpha)
+  const effectiveAlpha = Math.round(
+    Math.min(255, Math.max(30, (0.35 + normV * 0.65) * baseAlpha * 255))
+  );
 
-  if (v < 0.35) {
-    // Deep Cyan to Sea Green: [0, 160, 220] -> [30, 210, 170]
-    const t = (v - 0.15) / 0.20;
-    r = Math.round(0 + t * 30);
-    g = Math.round(160 + t * 50);
-    b = Math.round(220 - t * 50);
-  } else if (v < 0.65) {
-    // Greenish Yellow to Golden Amber: [30, 210, 170] -> [255, 200, 0]
-    const t = (v - 0.35) / 0.30;
-    r = Math.round(30 + t * 225);
-    g = Math.round(210 - t * 10);
-    b = Math.round(170 - t * 170);
+  let r;
+  let g;
+  let b;
+  if (normV < 0.40) {
+    // Warm Amber / Golden Yellow: [255, 210, 15] -> [255, 155, 0]
+    const t = normV / 0.40;
+    r = 255;
+    g = Math.round(210 - t * 55);
+    b = Math.round(15 - t * 15);
+  } else if (normV < 0.75) {
+    // Bright Orange: [255, 155, 0] -> [250, 75, 10]
+    const t = (normV - 0.40) / 0.35;
+    r = Math.round(255 - t * 5);
+    g = Math.round(155 - t * 80);
+    b = Math.round(0 + t * 10);
   } else {
-    // Bright Orange to Deep Crimson: [255, 200, 0] -> [235, 30, 20]
-    const t = (v - 0.65) / 0.35;
-    r = Math.round(255 - t * 20);
-    g = Math.round(200 - t * 170);
-    b = Math.round(0 + t * 20);
+    // Intense Fire Red / Crimson: [250, 75, 10] -> [230, 20, 20]
+    const t = (normV - 0.75) / 0.25;
+    r = Math.round(250 - t * 20);
+    g = Math.round(75 - t * 55);
+    b = Math.round(10 + t * 10);
   }
 
-  return [r, g, b, alpha];
+  return [r, g, b, effectiveAlpha];
 }
 
 /**
@@ -101,11 +150,14 @@ export function calculateSourceCropMapping(origW, origH, modelCropSize = 320, re
   const origCropW = Math.round(modelCropSize / scale);
   const origCropH = Math.round(modelCropSize / scale);
 
+  const safeCropX = Math.max(0, Math.min(origW - 1, origCropX));
+  const safeCropY = Math.max(0, Math.min(origH - 1, origCropY));
+
   return {
-    cropX: Math.max(0, origCropX),
-    cropY: Math.max(0, origCropY),
-    cropW: Math.min(origW, origCropW),
-    cropH: Math.min(origH, origCropH),
+    cropX: safeCropX,
+    cropY: safeCropY,
+    cropW: Math.max(1, Math.min(origW - safeCropX, origCropW)),
+    cropH: Math.max(1, Math.min(origH - safeCropY, origCropH)),
     scale,
   };
 }
@@ -113,13 +165,13 @@ export function calculateSourceCropMapping(origW, origH, modelCropSize = 320, re
 /**
  * Renders CAM grid into RGBA ImageData array for HTML5 canvas.
  */
-export function generateHeatmapRgba(upsampledGrid, width, height, opacity = 0.65) {
+export function generateHeatmapRgba(upsampledGrid, width, height, opacity = 0.65, mode = 'overlay') {
   const totalPixels = width * height;
   const rgba = new Uint8ClampedArray(totalPixels * 4);
 
   for (let i = 0; i < totalPixels; i++) {
     const val = upsampledGrid[i];
-    const [r, g, b, a] = valueToRgba(val, opacity);
+    const [r, g, b, a] = valueToRgba(val, opacity, mode);
     const offset = i * 4;
     rgba[offset] = r;
     rgba[offset + 1] = g;

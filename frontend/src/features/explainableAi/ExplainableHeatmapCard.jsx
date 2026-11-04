@@ -80,11 +80,14 @@ export function ExplainableHeatmapCard({ scan, context }) {
       const imgData = ctx.createImageData(width, height);
       const data = imgData.data;
 
-      const activeAlpha = activeView === 'heatmap' ? 0.95 : opacity;
+      // heatmap mode: full-spectrum thermal palette (fully opaque)
+      // overlay mode: amber→crimson high-contrast palette over green leaf
+      const renderMode = activeView === 'heatmap' ? 'heatmap' : 'overlay';
+      const activeAlpha = activeView === 'heatmap' ? 1.0 : opacity;
 
       for (let i = 0; i < width * height; i++) {
         const val = upsampled[i];
-        const [r, g, b, a] = valueToRgba(val, activeAlpha);
+        const [r, g, b, a] = valueToRgba(val, activeAlpha, renderMode);
         const idx = i * 4;
         data[idx] = r;
         data[idx + 1] = g;
@@ -108,6 +111,9 @@ export function ExplainableHeatmapCard({ scan, context }) {
   if (!isResultContext) {
     return null;
   }
+
+  // CAM unavailable — no data, degraded, or PWA cache miss (old model)
+  const camUnavailable = !camResult || camResult.isDegraded;
 
   // Explanation text depending on diagnosis
   let explanationText = t('explainableAi.explanationSimple');
@@ -138,6 +144,19 @@ export function ExplainableHeatmapCard({ scan, context }) {
           </div>
         </div>
       </div>
+
+      {/* CAM Unavailable Fallback — honest message, no fake heatmap */}
+      {camUnavailable && !isNotSure && targetClassKey !== 'healthy' && (
+        <div
+          data-testid="cam-unavailable-notice"
+          className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900 leading-relaxed"
+        >
+          <p className="font-semibold mb-1">
+            {lang === 'bn' ? '⚠️ AI হাইলাইট পাওয়া যায়নি' : '⚠️ AI Highlight Unavailable'}
+          </p>
+          <p>{t('explainableAi.camUnavailable')}</p>
+        </div>
+      )}
 
       {/* 2. Interactive 3-Way Segmented View Tabs */}
       <div
@@ -231,11 +250,11 @@ export function ExplainableHeatmapCard({ scan, context }) {
           <span className="font-bold text-gray-700">{t('explainableAi.legendTitle')}</span>
           <span>{t('explainableAi.legendHigh')}</span>
         </div>
-        {/* Continuous gradient bar */}
+        {/* Continuous gradient bar — matches overlay colormap: amber → orange → crimson */}
         <div
           className="w-full h-3 rounded-full border border-gray-300 shadow-2xs"
           style={{
-            background: 'linear-gradient(to right, rgba(0,160,220,0.4) 0%, rgba(30,210,170,0.6) 25%, rgba(255,200,0,0.7) 55%, rgba(235,30,20,0.85) 100%)',
+            background: 'linear-gradient(to right, rgba(255,210,15,0.5) 0%, rgba(255,155,0,0.7) 40%, rgba(250,75,10,0.85) 72%, rgba(230,20,20,0.95) 100%)',
           }}
           aria-hidden="true"
         />

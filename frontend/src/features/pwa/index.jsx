@@ -9,7 +9,7 @@ import { isFeatureOn } from '../flags.js';
 import { loadModel } from '../../ml/loadModel.js';
 import { MODEL_PARTS, CALIBRATION_URL } from '../../ml/config.js';
 import { getAudioManifest } from '../../lib/audioManifest.js';
-import { AUDIO_CACHE_NAME, MODEL_CACHE_NAME, ORT_ASSETS } from './cacheConfig.js';
+import { AUDIO_CACHE_NAME, MODEL_CACHE_NAME, LEGACY_MODEL_CACHE_NAMES, ORT_ASSETS } from './cacheConfig.js';
 
 const BACK_ONLINE_MS = 4000;
 const OFFLINE_READY_MS = 6000;
@@ -23,6 +23,22 @@ function isStandalone() {
     );
   } catch {
     return false;
+  }
+}
+
+/**
+ * Evict stale legacy model caches so returning users get the CAM-enhanced ONNX
+ * model (rice-effb0-v10-320.onnx with cam_maps output) instead of the old
+ * single-output model that caused blank heatmaps (F11 rendering fix).
+ */
+async function evictLegacyModelCaches() {
+  if (typeof caches === 'undefined') return;
+  for (const name of LEGACY_MODEL_CACHE_NAMES) {
+    try {
+      await caches.delete(name);
+    } catch {
+      // Best-effort; failure here does not block the app.
+    }
   }
 }
 
@@ -316,6 +332,9 @@ function PwaStatusBanner() {
         if (cancelled) return;
         await waitForController();
         if (cancelled) return;
+        // Evict legacy model caches first so returning users get the
+        // CAM-enhanced model (cam_maps output for F11 heatmap) immediately.
+        await evictLegacyModelCaches();
         // Warm the runtime caches; only the small audio cache gates the
         // "offline ready" notice, so the model download keeps running.
         warmModelCache();

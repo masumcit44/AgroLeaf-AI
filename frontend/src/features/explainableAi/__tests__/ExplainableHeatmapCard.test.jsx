@@ -51,7 +51,7 @@ describe('ExplainableHeatmapCard Component', () => {
     expect(html).toContain('id="heatmap-opacity-slider"');
     expect(html).toContain('স্বচ্ছতা (Opacity)');
 
-    // Legend
+    // Legend — updated to amber-crimson palette
     expect(html).toContain('কম প্রভাব');
     expect(html).toContain('বেশি প্রভাব');
 
@@ -63,6 +63,9 @@ describe('ExplainableHeatmapCard Component', () => {
     expect(html).toContain('বিচারক ও বিজ্ঞানীদের জন্য প্রযুক্তিগত বিবরণ');
     expect(html).toContain('EfficientNet-B0 v10');
     expect(html).toContain('Exact In-Graph Class Activation Mapping');
+
+    // No CAM-unavailable notice when CAM data is present
+    expect(html).not.toContain('data-testid="cam-unavailable-notice"');
   });
 
   it('renders correctly in English for healthy leaf', () => {
@@ -101,9 +104,13 @@ describe('ExplainableHeatmapCard Component', () => {
 
     expect(html).toContain('AI কোন অংশে নজর দিয়েছে?');
     expect(html).toContain('পাতাটির কোনো নির্দিষ্ট অংশে রোগের পর্যাপ্ত স্পষ্ট প্যাটার্ন শনাক্ত করা যায়নি');
+    // not_sure: CAM unavailable notice should NOT show (not a "disease" scan)
+    expect(html).not.toContain('data-testid="cam-unavailable-notice"');
   });
 
-  it('handles null camMaps gracefully without crashing', () => {
+  it('shows cam-unavailable notice when confident disease scan has null camMaps (PWA cache miss)', () => {
+    // This simulates a returning user with the old model cached:
+    // camMaps is null because old model had no cam_maps output.
     const scan = {
       classKey: 'sheath_blight',
       isConfident: true,
@@ -113,7 +120,26 @@ describe('ExplainableHeatmapCard Component', () => {
 
     const html = renderWithI18n(<ExplainableHeatmapCard context="result" scan={scan} />, 'bn');
 
+    // Card must still render (prediction result available)
     expect(html).toContain('data-testid="explainable-heatmap-card"');
     expect(html).toContain('AI কোন অংশে নজর দিয়েছে?');
+
+    // Farmer-friendly CAM unavailable notice must appear
+    expect(html).toContain('data-testid="cam-unavailable-notice"');
+    expect(html).toContain('এই ছবির জন্য AI হাইলাইট তৈরি করা যায়নি');
+  });
+
+  it('shows cam-unavailable notice for English scan with null camMaps', () => {
+    const scan = {
+      classKey: 'blast',
+      isConfident: true,
+      decision: { status: 'confident', top: { key: 'blast', prob: 0.78 } },
+      camMaps: null,
+    };
+
+    const html = renderWithI18n(<ExplainableHeatmapCard context="result" scan={scan} />, 'en');
+
+    expect(html).toContain('data-testid="cam-unavailable-notice"');
+    expect(html).toContain('AI Highlight could not be generated');
   });
 });

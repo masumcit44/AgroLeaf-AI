@@ -2,7 +2,12 @@
 // Keep the cache name and URL rules in one place so the page and the service
 // worker always read and write the same Cache Storage bucket.
 
-export const MODEL_CACHE_NAME = 'agroleaf-model-cache-v1';
+export const MODEL_CACHE_NAME = 'agroleaf-model-cache-v2';
+
+// Legacy cache names that must be evicted on startup to force fresh ONNX model
+// delivery. The v10 CAM-enhanced model (cam_maps output) is incompatible with
+// the older single-output model cached under these names.
+export const LEGACY_MODEL_CACHE_NAMES = ['agroleaf-model-cache-v1'];
 
 // Same-origin model and ONNX Runtime assets are large (about 30 MB) and are
 // fetched on the first analysis, so they are runtime cached instead of precached.
