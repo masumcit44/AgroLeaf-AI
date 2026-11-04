@@ -12,6 +12,7 @@ import * as reminders from './reminders/index.jsx';
 import * as yieldRisk from './yieldRisk/index.jsx';
 import * as explainableAi from './explainableAi/index.jsx';
 import * as confidenceScore from './confidenceScore/index.jsx';
+import * as diseaseSeverity from './diseaseSeverity/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
 export const SLOT_LAYOUT = {
@@ -24,6 +25,7 @@ export const SLOT_LAYOUT = {
   result: [
     ['reliability', reliability.ReliabilityNote],
     ['confidenceScore', confidenceScore.ConfidenceScoreCard],
+    ['diseaseSeverity', diseaseSeverity.SeverityScoreCard],
     ['explainableAi', explainableAi.ExplainableHeatmapCard],
     ['actionPlan', actionPlan.ActionPlan],
     ['reminders', reminders.FollowUpReminder],
