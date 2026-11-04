@@ -594,7 +594,7 @@ export function ProfilePage({ _scan, _context }) {
                 type="checkbox"
                 checked={dateUnknown}
                 onChange={(e) => setDateUnknown(e.target.checked)}
-                className="rounded border-gray-300 text-leaf-600 focus:ring-leaf-500"
+                className="w-5 h-5 rounded border-gray-300 text-leaf-600 focus:ring-leaf-500"
               />
               <span>{t('profile.dateUnknown')}</span>
             </label>
