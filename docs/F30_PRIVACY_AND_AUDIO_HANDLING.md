@@ -56,3 +56,4 @@ When a farmer opens the Copilot for the first time:
   - Displays a clear Bengali message explaining why microphone access was requested.
   - Offers immediate fallback to text input and one-tap suggestion chips.
 - Farmers can revoke microphone permissions at any time directly through their browser site settings without affecting photo scanning or crop calendar features.
+

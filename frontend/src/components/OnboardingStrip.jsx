@@ -32,11 +32,11 @@ export default function OnboardingStrip({ className = '' }) {
       role="region"
       aria-label={t('onboardingTitle')}
     >
-      {/* Dismiss Button */}
+      {/* Dismiss Button - Accessible Touch Target */}
       <button
         type="button"
         onClick={handleDismiss}
-        className="absolute top-2.5 right-2.5 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-leaf-400"
+        className="absolute top-1 right-1 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-leaf-400"
         aria-label={t('dismiss')}
       >
         ✕

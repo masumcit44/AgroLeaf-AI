@@ -56,3 +56,4 @@ The Copilot is an assistive tool, not an absolute replacement for human agronomi
 Every Copilot card and conversational turn provides a direct, accessible phone call link:
 - 📞 **কৃষি কল সেন্টার (Krishi Call Centre):** `tel:16123` (Official DAE hotline operating 7:00 AM – 9:00 PM every day).
 - 🧑‍🌾 **ইউনিয়ন উপসহকারী কৃষি কর্মকর্তা (SAAO):** Recommended point of contact for in-field sample confirmation.
+

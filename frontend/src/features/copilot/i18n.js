@@ -50,3 +50,4 @@ export default {
     'copilot.evidenceBody': 'All guidance and pest management protocols are compiled from BRRI "Modern Rice Cultivation" and DAE BAMIS agricultural advisories.',
   },
 };
+

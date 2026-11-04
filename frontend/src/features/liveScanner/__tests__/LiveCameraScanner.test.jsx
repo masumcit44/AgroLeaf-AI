@@ -9,7 +9,7 @@ function renderWithI18n(ui, lang = 'bn') {
   return renderToString(<I18nProvider initialLang={lang}>{ui}</I18nProvider>);
 }
 
-describe('LiveCameraScanner Component: Non-blocking Guidance & Capture Freedom', () => {
+describe('LiveCameraScanner Component: Full-Screen Viewfinder & Capture Freedom', () => {
   beforeEach(() => {
     vi.stubGlobal('navigator', {
       mediaDevices: {
@@ -22,12 +22,13 @@ describe('LiveCameraScanner Component: Non-blocking Guidance & Capture Freedom',
     vi.unstubAllGlobals();
   });
 
-  it('renders scanner dialog container and accessible role', () => {
+  it('renders scanner dialog container and accessible role with full-screen dynamic height', () => {
     const html = renderWithI18n(<LiveCameraScanner onCapture={() => {}} onClose={() => {}} />, 'bn');
 
     expect(html).toContain('role="dialog"');
     expect(html).toContain('data-testid="live-camera-scanner"');
-    expect(html).toContain('লাইভ ক্যামেরা গাইড');
+    expect(html).toContain('data-testid="scanner-viewfinder"');
+    expect(html).toContain('100dvh');
     expect(html).toContain('data-testid="scanner-capture-btn"');
   });
 
@@ -43,6 +44,6 @@ describe('LiveCameraScanner Component: Non-blocking Guidance & Capture Freedom',
     const html = renderWithI18n(<LiveCameraScanner onCapture={() => {}} onClose={() => {}} />, 'bn');
 
     expect(html).toContain('data-testid="scanner-capture-btn"');
-    expect(html).not.toContain('ছবি তোলা যাবে না');
+    expect(html).not.toContain('লক');
   });
 });

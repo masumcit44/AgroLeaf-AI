@@ -85,3 +85,4 @@ In the farmer voice flow:
 - If the browser does not support `SpeechSynthesis` or the device is on mute:
   - The answer is rendered in large, readable typography with clean bullet points and emojis.
   - A subtle icon displays that audio is unmuted / unavailable without crashing or throwing errors.
+

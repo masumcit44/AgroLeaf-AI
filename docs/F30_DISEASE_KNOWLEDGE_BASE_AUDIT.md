@@ -96,3 +96,4 @@ The knowledge base is structured as hierarchical JSON in `frontend/src/features/
 1. `disease_specific`: Class key mapped to standard farmer questions (`treatment`, `fertilizer`, `water`, `organic`, `spread`, `safety`).
 2. `general_faq`: Stage timing, seed treatment, weather advisory rules, PPE protocols, emergency contacts.
 3. `helpline`: Direct dial 16123 integration.
+

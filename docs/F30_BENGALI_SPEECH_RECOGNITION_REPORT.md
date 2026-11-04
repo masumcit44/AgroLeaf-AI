@@ -92,3 +92,4 @@ If the speech recognition engine fails or is unavailable, the UI must never bloc
 - **Cost:** \$0.00 (Zero external API usage).
 - **Security & Privacy:** Ephemeral client-side capture; no voice recordings stored or transmitted to external servers.
 - **Latency:** Instant local recognition pipeline.
+

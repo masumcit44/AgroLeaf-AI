@@ -12,14 +12,14 @@ export default function TabBar({ currentRoute, onNavigate }) {
   return (
     <nav
       aria-label={t('navFeatureTabs')}
-      className="w-full border-t border-gray-200/80"
+      className="w-full border-t border-gray-200/80 bg-white"
       data-testid="feature-tabs"
     >
-      <ul className="max-w-xl mx-auto flex items-stretch justify-between px-1">
+      <ul className="max-w-xl mx-auto flex items-stretch justify-start sm:justify-between px-1 overflow-x-auto scrollbar-none gap-0.5 sm:gap-1">
         {tabs.map((tab) => {
           const active = currentRoute === tab.route;
           return (
-            <li key={tab.route} className="flex-1 min-w-0">
+            <li key={tab.route} className="flex-1 min-w-[62px] sm:min-w-0 shrink-0 sm:shrink">
               <a
                 href={tab.route}
                 onClick={(e) => {
@@ -34,7 +34,7 @@ export default function TabBar({ currentRoute, onNavigate }) {
                 } focus-visible:outline-2 focus-visible:outline-leaf-700`}
               >
                 <span className="text-base leading-none" aria-hidden="true">{tab.icon}</span>
-                <span className="mt-0.5 truncate max-w-full">{t(tab.labelKey)}</span>
+                <span className="mt-0.5 truncate max-w-full text-center">{t(tab.labelKey)}</span>
               </a>
             </li>
           );
