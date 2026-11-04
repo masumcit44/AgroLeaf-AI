@@ -47,3 +47,4 @@ Test Files  59 passed (59)
    - Farmer can tap mic to ask follow-up questions in spoken Bangla.
 3. **Journey 3: Navigation Tab Switching on Mobile (360px - 390px):**
    - Farmer can seamlessly switch between Home, Copilot, Reminders, History, Weather, Map, and Profile without text truncation or awkward layout wrapping.
+

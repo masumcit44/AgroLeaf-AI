@@ -29,3 +29,4 @@ Running real-time image analysis in a mobile web browser can easily cause batter
   2. `stream.getTracks().forEach(track => track.stop())` immediately releases the camera hardware and turns off the device camera indicator light.
   3. `video.srcObject = null` frees the media pipeline.
 - Zero memory leakage observed across 50 consecutive open/close cycles in automated stress testing.
+

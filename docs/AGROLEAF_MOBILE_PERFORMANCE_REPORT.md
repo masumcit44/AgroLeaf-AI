@@ -36,3 +36,4 @@ dist/assets/ort-wasm-simd-threaded-qh98TCA_.wasm  14,848.85 kB │ gzip: 3,878.2
 - Camera stream: Hardware composited in GPU layer (`<video>` hardware acceleration).
 - Background guidance loop: Throttled to $7$ FPS on offscreen downsampled $160 \times 160$ canvas with `willReadFrequently: true`.
 - Zero background audio or camera drain when leaving scan modal.
+

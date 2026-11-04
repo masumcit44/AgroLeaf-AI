@@ -30,3 +30,4 @@
 - **Camera Shutter Button:** $80 \times 80$px circular button with $56 \times 56$px inner core.
 - **Voice Copilot Mic Button:** $72 \times 72$px circular button with pulse ring.
 - **Border Radii:** `rounded-2xl` (16px) for cards, `rounded-full` for chips and circular actions.
+

@@ -72,3 +72,4 @@ In WebKit on iOS:
    - Add `viewport-fit=cover`.
 4. **Advisory Guidance Preservation:**
    - Guidance remains strictly non-blocking. Shutter is always active once camera stream is live.
+

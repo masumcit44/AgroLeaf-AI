@@ -33,3 +33,4 @@ Bangladeshi farmers often feel alienated by dense paragraphs of English or acade
    - Instead of: *"এই রোগের চিকিৎসায় বাংলাদেশ ধান গবেষণা ইনস্টিটিউট কর্তৃক অনুমোদিত বালাইনাশক প্রয়োগ করা যাইতে পারে..."*
    - Used: *"জরুরি করণীয়: প্রতি লিটার পানিতে ট্রুপার ০.৭৫ গ্রাম মিশিয়ে শেষ বিকেলে স্প্রে করুন।"*
 3. **Pictogram & Icon Reinforcement:** Paired all critical agronomic steps with recognizable symbols (💊 Medicine, 🌾 Fertilizer, 💧 Water, 📞 16123).
+

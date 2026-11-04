@@ -59,3 +59,4 @@ Validated in `src/features/liveScanner/__tests__/cameraFraming.test.js`:
 - Asymmetric feature point test confirms points outside $sx \dots sx+sw$ return `false` for capture inclusion.
 - Centered leaf features return `true`.
 - Zero distortion or stretching; native optical resolution is fully preserved.
+

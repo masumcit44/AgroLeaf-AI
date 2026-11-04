@@ -30,3 +30,4 @@ For mobile viewport validation, the environment uses:
    - Evaluated across 320px (SE), 360px (Galaxy A), 375px (iPhone mini), 390px (iPhone 14), 412px (Pixel), and 430px (Pro Max).
 3. **Oxlint Static Code Engine**:
    - Sub-second verification of syntax, dead imports, hooks rules, and accessibility-impacting code bugs.
+

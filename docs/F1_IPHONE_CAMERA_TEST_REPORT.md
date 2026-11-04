@@ -53,3 +53,4 @@ For testing on physical iPhone 14 hardware (Safari / Add to Home Screen PWA):
 ## 3. Physical Hardware Sign-off Status
 - **Automated Viewport & Geometry Verification:** PASSED ✅
 - **Physical iPhone 14 Hardware Verification:** PENDING USER PHYSICAL TEST (Protocol provided above).
+

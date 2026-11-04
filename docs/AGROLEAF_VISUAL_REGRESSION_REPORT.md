@@ -28,3 +28,4 @@ All primary application routes and modals were audited across the representative
 2. **Dynamic Island & Notch Clipping:** Verified `pt-[max(0.75rem, env(safe-area-inset-top))]` ensures camera header and close button never collide with iPhone 14 Dynamic Island.
 3. **Home Indicator Bar Collision:** Verified `pb-[max(1.75rem, env(safe-area-inset-bottom))]` provides comfortable thumb clearance above the home swipe line.
 4. **Bengali Diacritics Clipping:** Verified all heading fonts use `leading-tight` ($1.25$) or `leading-snug` ($1.375$) with adequate vertical padding, avoiding clipped tops of উ-কার, ঈ-কার, and মাত্রা.
+

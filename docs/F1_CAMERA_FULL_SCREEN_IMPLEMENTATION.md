@@ -60,3 +60,4 @@ video.autoplay = true;
 ### 2.3 Safe Stream Constraints
 - Avoided rigid `min: 720` constraints that trigger WebKit `OverconstrainedError`.
 - Requested ideal portrait dimensions (`width: { ideal: 1080 }, height: { ideal: 1920 }`) with graceful fallback to standard sensor resolutions.
+
