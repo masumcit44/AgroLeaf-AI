@@ -40,3 +40,9 @@ Thumbs.db
 .dev.vars
 .dev.vars.*
 frontend/e2e-logs/
+
+# Buildathon decks contain the builder's personal photo: keep them local
+documentation/submission/variants/*.pptx
+documentation/submission/variants/*.pdf
+documentation/submission/variants/previews/
+documentation/submission/AgroLeaf_AI_Buildathon_Final.*
