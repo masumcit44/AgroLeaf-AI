@@ -11,19 +11,19 @@
 
 | Feature ID & Name | Category | Status | Branch / Worktree | Latest Commit / Checkpoint | Test Status | Next Action |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **F1: Image Pipeline & Preprocessing** | Core AI | **Implemented & Verified** | `deploy/candidate-ready` | `69a48dd` | 13/13 unit tests pass | F1 Advanced camera upgrade |
-| **F1 Advanced: Live Guided Camera Scanner** | Mobile CV | **Researched & Ready for Impl** | `deploy/candidate-ready` | Audit complete | Pending architecture impl | Build on-device live video frame analyzer |
+| **F1: Image Pipeline & Preprocessing** | Core AI | **Implemented & Verified** | `deploy/candidate-ready` | `69a48dd` | 13/13 unit tests pass | Maintained |
+| **F1 Advanced: Live Guided Camera Scanner** | Mobile CV | **Implemented & Verified** | `deploy/candidate-ready` | `49d4e4e` | 8/8 tests pass | Production deployed |
 | **F5–F7: Bangla Voice Audio Advisory** | Accessibility | **Implemented & Verified** | `deploy/candidate-ready` | `a0f865a` | 6/6 audio tests pass | Maintain offline audio cache |
 | **F8 / F8 v2: Weather & Crop Disease Analysis** | Weather / BAMIS | **Implemented & Verified** | `deploy/candidate-ready` | `faa1d17` | 33/33 tests pass | Maintain Open-Meteo edge proxy |
 | **F9: Progressive Web App (Offline PWA)** | Infrastructure | **Implemented & Verified** | `deploy/candidate-ready` | `758ed02` | 6/6 PWA tests pass | Model Cache v2 verified in build |
 | **F10: This-Week Action Plan** | Advisory | **Implemented & Verified** | `deploy/candidate-ready` | `e4058b9` | 5/5 tests pass | Preserved chemical safety guidelines |
 | **F11: Explainable AI Heatmap** | Explainable AI | **Implemented, Fixed & Verified** | `deploy/candidate-ready` | `758ed02` | 24/24 XAI tests pass | In production, visual regression verified |
-| **F14: Photo History (Before/After Tracking)** | Crop Care | **Architecture Audited** | `deploy/candidate-ready` | IndexedDB schema ready | Integration tests needed | Distinguish cleanly from Confidence Score |
-| **Confidence Score (Calibrated Prob)** | AI Uncertainty | **Module Built, Integrating** | `deploy/candidate-ready` | Working tree | Tests in progress | Integrate into ResultScreen |
+| **F14: Photo History (Before/After Tracking)** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | Working tree | 19/19 tests pass | Feature complete |
+| **Confidence Score (Calibrated Prob)** | AI Uncertainty | **Implemented & Verified** | `deploy/candidate-ready` | `e5df981` | 7/7 tests pass | In production |
 | **F24: Farmer Reminder & Crop Care Scheduler** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | `73787c1` | 24/24 reminder tests pass | Preserved offline IndexedDB v2 |
 | **F26: Yield Impact Estimation & Risk** | Agronomy / Risk | **Implemented & Verified** | `deploy/candidate-ready` | `fb4e042` | 15/15 yield tests pass | BAMIS dynamic risk validated |
+| **F31: Disease Severity Scoring** | Quantitative AI| **Ready for Implementation** | `deploy/candidate-ready` | Next Milestone | Designing lesion mask & IRRI tables | Begin Phase 4 implementation |
 | **F30: AI-Powered Disease Q&A (Voice Copilot)**| Voice Assistant | **Requirements Recovered** | Planning phase | Design finalized | Free-only local RAG planned | Curate BRRI/DAE Q&A knowledge base |
-| **F31: Disease Severity Scoring** | Quantitative AI| **Requirements Recovered** | Planning phase | Design finalized | Lesion segmentation planned | Calibrate disease-specific severity tables |
 | **F32: Outbreak Early Warning & Neighbor Alert**| Community Intel | **Requirements Recovered** | Planning phase | Design finalized | Central aggregation planned | Build privacy-preserving area rollup |
 
 ---
