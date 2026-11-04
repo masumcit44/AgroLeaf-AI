@@ -1,18 +1,53 @@
 // Free-only deterministic on-device agricultural RAG & Intent Matching Engine
 // Evaluates farmer spoken queries against verified BRRI/DAE knowledge base.
 // Zero paid APIs, zero cloud inference dependencies, sub-5ms latency.
+// Strictly adheres to Bangla Response Language Policy (100% Bangla answers in BN mode).
 
 import { AGRICULTURAL_KB } from './data/agricultural_kb.js';
 
-// Normalization & tokenization helper
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Normalization & tokenization helper.
+ * Strips Unicode noise, zero-width characters, Bengali & Western punctuation.
+ */
 export function normalizeQuery(query) {
   if (!query || typeof query !== 'string') return '';
   return query
     .toLowerCase()
     .normalize('NFC')
-    .replace(/[।?!.,;:’'"()\-—_]/g, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '') // Strip zero-width joiners/spaces
+    .replace(/[।?!.,;:’'"()\-—_/\\`~@#$%^&*+=[\]{}|<>]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Helper: checks if a word root or inflected token exists in the normalized string.
+ * Supports common Bengali inflections (-র, -ের, -ে, -কে, -তে).
+ * Prevents false prefix collisions (e.g. "আমার" colliding with "আম").
+ */
+function hasStemToken(normalizedText, stem) {
+  if (!normalizedText || !stem) return false;
+  // Inflection pattern: stem followed optionally by Bengali case endings or English suffix
+  const pattern = new RegExp(`(^|\\s)${escapeRegex(stem)}(র|ের|ে|য়|কে|তে|er|s)?(\\s|$)`, 'i');
+  return pattern.test(normalizedText);
+}
+
+/**
+ * Helper: checks if any of the given keywords exist as token or phrase
+ */
+function containsKeyword(normalizedText, keywords) {
+  for (const kw of keywords) {
+    if (kw.includes(' ')) {
+      if (normalizedText.includes(kw)) return true;
+    } else {
+      if (hasStemToken(normalizedText, kw)) return true;
+    }
+  }
+  return false;
 }
 
 // Banned / Highly Hazardous Agrochemicals
@@ -33,13 +68,12 @@ const BANNED_CHEMICAL_KEYWORDS = [
   'dieldrin',
 ];
 
-// Out-of-Domain Non-Rice Entities
-const OUT_OF_DOMAIN_KEYWORDS = [
+// Out-of-Domain Non-Rice Entities (Stems checked with inflection support)
+const OUT_OF_DOMAIN_STEMS = [
   'আলু',
   'গম',
   'ভুট্টা',
   'পাট',
-  'আম',
   'লিচু',
   'পেঁয়াজ',
   'মরিচ',
@@ -54,94 +88,204 @@ const OUT_OF_DOMAIN_KEYWORDS = [
   'ছাগল',
   'ডালিম',
   'কলা',
+  'আপেল',
+  'কমলা',
+  'চা গাছ',
+  'তামাক',
   'নির্বাচন',
   'রাজনীতি',
   'সিনেমা',
-  'টাকা',
-  'ঋণ',
-  'ব্যাংক',
+  'টাকা ঋণ',
+  'ব্যাংক ঋণ',
   'ক্রিকেট',
   'ফুটবল',
   'potato',
   'wheat',
   'maize',
-  'mango',
   'tomato',
-  'fish',
-  'cattle',
   'poultry',
+  'chicken',
 ];
 
-// Disease Keyword Lexicon
+// Disease Keyword Lexicon with dialect, colloquial & Banglish aliases
 const DISEASE_LEXICON = {
-  blast: ['ব্লাস্ট', 'ব্লাষ্ট', 'বলাস্ট', 'blast', 'মাকু', 'শীষ ব্লাস্ট', 'পাতা ব্লাস্ট'],
-  brown_spot: ['বাদামী দাগ', 'বাদামি দাগ', 'বাদামী ফোটা', 'বাদামি ফোটা', 'brown spot', 'brown', 'তিলের মতো'],
-  leaf_smut: ['লিফ স্মাট', 'স্মাট', 'smut', 'ন্যারো ব্রাউন', 'ন্যারো', 'narrow brown', 'সরু দাগ'],
-  tungro: ['টুংরো', 'টুংরু', 'tungro', 'সবুজ পাতা ফড়িং', 'ফড়িং', 'বেঁটে', 'গাছ খর্ব'],
-  sheath_blight: ['খোল পোড়া', 'খোলপোড়া', 'sheath blight', 'sheath', 'সাপের খোলস', 'কাণ্ডের খোল'],
-  bacterial_leaf_blight: ['ব্যাকটেরিয়াল পাতা পোড়া', 'পাতা পোড়া', 'বিএলবি', 'blb', 'ব্যাকটেরিয়া', 'bacterial', 'ক্রিসেক'],
-  leaf_scald: ['পাতা ঝলসানো', 'ঝলসানো', 'scald', 'leaf scald', 'সেদ্ধ পাতা'],
-  healthy: ['সুস্থ', 'ভালো ধান', 'রোগমুক্ত', 'তাজা', 'healthy', 'সবুজ ধান'],
+  blast: [
+    'ব্লাস্ট', 'ব্লাষ্ট', 'বলাস্ট', 'ব্লাস্ত', 'মাকু দাগ', 'শীষ ব্লাস্ট', 'পাতা ব্লাস্ট', 'ব্লাস্ট রোগ',
+    'blast', 'blast rog', 'maku dag', 'shish blast', 'pata blast',
+  ],
+  brown_spot: [
+    'বাদামি দাগ', 'বাদামী দাগ', 'বাদামি ফোটা', 'বাদামী ফোটা', 'ব্রাউন স্পট', 'ব্রাউনস্পট', 'তিলের মতো', 'বাদামি রোগ',
+    'পাতায় দাগ', 'পাতায় দাগ', 'পাতার দাগ',
+    'brown spot', 'brownspot', 'badami dag', 'tiler moto', 'patay dag', 'patar dag', 'dag dekha',
+  ],
+  leaf_smut: [
+    'লিফ স্মাট', 'লিফস্মাট', 'স্মাট', 'কালো দাগ', 'ছাই দাগ', 'ন্যারো ব্রাউন', 'সরু দাগ',
+    'leaf smut', 'leafsmut', 'smut', 'kalo dag', 'narrow brown',
+  ],
+  tungro: [
+    'টুংরো', 'টুংগ্রো', 'টংরো', 'টুংরু', 'সবুজ পাতা ফড়িং', 'পাতা ফড়িং', 'বেঁটে রোগ', 'গাছ খর্ব', 'টুংরো রোগ',
+    'tungro', 'tungru', 'tongro', 'sobuj pata foring', 'bente rog',
+  ],
+  sheath_blight: [
+    'খোল পোড়া', 'খোলপোড়া', 'শীথ ব্লাইট', 'শীথব্লাইট', 'শিথ ব্লাইট', 'সাপের খোলস', 'কাণ্ডের খোল', 'খোল পচা',
+    'sheath blight', 'sheathblight', 'khol pora', 'kholpora', 'shith blight',
+  ],
+  other_rice: [
+    'পামরি', 'হিসপা', 'মাজরা', 'গান্ধি পোকা', 'ব্যাকটেরিয়াল পাতা পোড়া', 'বিএলবি', 'পাতা ঝলসানো',
+    'hispa', 'pamri', 'majra', 'blb', 'bacterial blight',
+  ],
+  healthy: [
+    'সুস্থ ধান', 'ভালো ধান', 'রোগমুক্ত', 'তাজা ধান', 'কোনো রোগ নেই', 'সুস্থ পাতা', 'সুস্থ',
+    'healthy', 'bhalo dhan', 'shustho', 'rog mukto',
+  ],
 };
 
-// Intent Keyword Lexicon with priority weights
+// Priority-ordered Intent Lexicon
 const INTENT_LEXICON = {
+  comparison: [
+    'পার্থক্য', 'আলাদা', 'ভিন্ন', 'তুলনা', 'বনাম',
+    'difference', 'compare', 'comparison', 'vs', 'alada', 'parthokko',
+  ],
+  safety: [
+    'মাস্ক', 'গ্লাভস', 'সতর্কতা', 'সাবধানতা', 'গায়ে লাগলে', 'ক্ষতিকর', 'বিষাক্ত',
+    'safety', 'ppe', 'caution', 'mask', 'gloves',
+  ],
+  progression: [
+    'বাড়ছে', 'বাড়ছে', 'বেশি হচ্ছে', 'ছড়াচ্ছে', 'ছড়াচ্ছে', 'খারাপ হচ্ছে', 'পাতা শুকিয়ে যাচ্ছে', 'পাতা শুকিয়ে যাচ্ছে',
+    'barche', 'beshi hocche', 'chorae', 'kharap hocche',
+  ],
+  follow_up_scan: [
+    'আবার ছবি', 'কবে ছবি', 'পুনরায় স্ক্যান', 'পুনরায় স্ক্যান', 'আবার স্ক্যান', 'ফলো আপ', 'কয়দিন পর', 'কদিন পর',
+    'ছবি তুলব', 'ছবি তুলবো', 'কবে ছবি তুলব', 'আবার কবে',
+    'abar photo', 'kobe chobi', 'abar scan', 'koy din por', 'next scan', 'follow up', 'kobe photo', 'photo tulbo', 'abar kobe',
+  ],
+  treatment: [
+    'কী করব', 'কি করব', 'কী করণীয়', 'কি করণীয়', 'কী করণীয়', 'উপায় কী', 'উপায় কী', 'প্রতিকার', 'দমন', 'চিকিৎসা',
+    'ওষুধ', 'ঔষধ', 'কীটনাশক', 'ছত্রাকনাশক', 'বালাইনাশক', 'বিষ', 'স্প্রে', 'ছিটাব', 'ছিটাবো', 'ছিটানো', 'ডোজ',
+    'ki korbo', 'kivabe domon korbo', 'protikar', 'treatment', 'remedy', 'spray', 'medicine', 'dose', 'chitao',
+  ],
   organic: [
-    'জৈব', 'প্রাকৃতিক', 'ভেষজ', 'ভেষজনাশক', 'গোবর', 'গোমূত্র', 'নিম', 'ছাই', 'ট্রাইকোডার্মা', 'organic', 'natural', 'home made',
+    'জৈব', 'প্রাকৃতিক', 'ভেষজ', 'ভেষজনাশক', 'গোবর', 'গোমূত্র', 'নিম পাতা', 'নিম', 'ছাই', 'ট্রাইকোডার্মা',
+    'organic', 'natural', 'home made', 'neem', 'gobor', 'trichoderma',
   ],
   fertilizer: [
     'ইউরিয়া', 'নাইট্রোজেন', 'পটাশ', 'এমওপি', 'দস্তা', 'জিংক', 'জিপসাম', 'টিএসপি', 'ডিএপি',
-    'সার', 'সার দেওয়া', 'খাবার', 'urea', 'potash', 'fertilizer', 'zinc',
+    'সার', 'সার দেওয়া', 'খাবার', 'urea', 'potash', 'fertilizer', 'zinc', 'sar',
   ],
   water: [
-    'পানি', 'জল', 'সেচ', 'শুকানো', 'নিষ্কাশন', 'ড্রেন', 'রস', 'জলাবদ্ধতা', 'water', 'irrigation', 'drainage',
+    'পানি', 'জল', 'সেচ', 'শুকানো', 'নিষ্কাশন', 'ড্রেন', 'রস', 'জলাবদ্ধতা', 'পানি কি রাখব',
+    'water', 'irrigation', 'drainage', 'pani', 'sech',
   ],
   spread: [
-    'ছড়ায়', 'ছড়াবে', 'ছোঁয়াচে', 'বিস্তার', 'সংক্রামক', 'অন্য গাছে', 'নষ্ট হবে', 'বিপদ', 'ক্ষতি', 'মারাত্মক',
-    'spread', 'danger', 'contagious',
+    'ছড়ায়', 'ছড়াবে', 'ছোঁয়াচে', 'বিস্তার', 'সংক্রামক', 'অন্য গাছে', 'নষ্ট হবে', 'বিপদ', 'ক্ষতি', 'মারাত্মক', 'মহামারী', 'কীভাবে হয়', 'কীভাবে হয়',
+    'spread', 'danger', 'contagious', 'chorae', 'chorabe', 'kivabe hoy',
   ],
   symptoms: [
-    'লক্ষণ', 'চেনার উপায়', 'উপসর্গ', 'কেমন দেখায়', 'চিহ্ন', 'কিভাবে বুঝব', 'সিম্পটম', 'symptom', 'sign',
+    'লক্ষণ', 'চেনার উপায়', 'উপসর্গ', 'কেমন দেখায়', 'চিহ্ন', 'কিভাবে বুঝব', 'সিম্পটম', 'কেন হয়', 'কেন হয়', 'কারণ', 'কেন',
+    'symptom', 'sign', 'lokkhon', 'chinar upay', 'kemon dekhay', 'keno hoy', 'karon', 'keno',
   ],
   prevention: [
-    'প্রতিরোধ', 'আগের সতর্কতা', 'বীজ শোধন', 'পরবর্তী মৌসুম', 'ভবিষ্যতে', 'আগে থেকে', 'prevention', 'preventive',
-  ],
-  safety: [
-    'সতর্কতা', 'সাবধানতা', 'মাস্ক', 'বিষাক্ত', 'গ্লাভস', 'গায়ে লাগলে', 'ক্ষতিকর', 'safety', 'ppe', 'caution',
+    'প্রতিরোধ', 'আগের সতর্কতা', 'বীজ শোধন', 'পরবর্তী মৌসুম', 'ভবিষ্যতে', 'আগে থেকে',
+    'prevention', 'preventive', 'protirodh', 'seed treatment',
   ],
   weather: [
-    'বৃষ্টি', 'কুয়াশা', 'মেঘ', 'রোদ', 'তাপমাত্রা', 'আবহাওয়া', 'শিশির', 'বাতাস', 'ঝড়', 'rain', 'weather',
+    'বৃষ্টি', 'কুয়াশা', 'মেঘ', 'রোদ', 'তাপমাত্রা', 'আবহাওয়া', 'শিশির', 'বাতাস', 'ঝড়',
+    'rain', 'weather', 'bristi', 'kuwasha', 'rode',
   ],
   helpline: [
-    'কল', 'ফোন', 'নম্বর', '১৬১২৩', '16123', 'অফিসার', 'help', 'helpline',
-  ],
-  treatment: [
-    'ওষুধ', 'ঔষধ', 'কীটনাশক', 'ছত্রাকনাশক', 'বালাইনাশক', 'বিষ', 'স্প্রে', 'ছিটাব', 'ছিটাবো', 'ছিটানো',
-    'চিকিৎসা', 'medicine', 'spray', 'chemical', 'fungicide', 'treatment', 'dose', 'ডোজ',
+    'কল', 'ফোন', 'নম্বর', '১৬১২৩', '16123', 'অফিসার',
+    'help', 'helpline', 'call', 'phone', 'officer',
   ],
 };
 
-// Extract explicitly mentioned disease from query
-function detectExplicitDisease(normalizedText) {
+/**
+ * Checks if the user is genuinely asking about Mango (আম)
+ * Guarantees that pronouns (আমার, আমি, আমাদের) NEVER match as mango!
+ */
+function isGenuineMangoInquiry(normalizedText) {
+  // If the sentence contains rice context, it is NEVER mango
+  if (
+    normalizedText.includes('ধান') ||
+    normalizedText.includes('ধানে') ||
+    normalizedText.includes('ব্লাস্ট') ||
+    normalizedText.includes('টুংরো') ||
+    normalizedText.includes('খোল') ||
+    normalizedText.includes('পাতায়') ||
+    normalizedText.includes('পাতায়') ||
+    normalizedText.includes('dhan') ||
+    normalizedText.includes('rice')
+  ) {
+    return false;
+  }
+
+  // Check for genuine mango plant phrases
+  const mangoPhrases = ['আম গাছ', 'আমগাছ', 'আমের', 'আমবাগান', 'কাঁচা আম', 'পাকা আম', 'mango tree', 'mango'];
+  for (const mp of mangoPhrases) {
+    if (normalizedText.includes(mp)) return true;
+  }
+
+  // Standalone token "আম" or "mango"
+  const tokens = normalizedText.split(/\s+/).filter(Boolean);
+  for (const tok of tokens) {
+    if (tok === 'আম' || tok === 'mango') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Extracts explicitly mentioned diseases from the query.
+ * Returns array of matched disease keys.
+ */
+function detectExplicitDiseases(normalizedText) {
+  const matches = [];
+
   for (const [diseaseKey, keywords] of Object.entries(DISEASE_LEXICON)) {
-    for (const kw of keywords) {
-      if (normalizedText.includes(kw)) {
-        return diseaseKey;
+    if (containsKeyword(normalizedText, keywords)) {
+      if (!matches.includes(diseaseKey)) {
+        matches.push(diseaseKey);
       }
     }
   }
-  return null;
+
+  return matches;
 }
 
-// Detect Intent from query
+/**
+ * Detect Intent from query using priority weights
+ */
 function detectIntent(normalizedText) {
+  // P1: Check comparison first
+  if (containsKeyword(normalizedText, INTENT_LEXICON.comparison)) {
+    return 'comparison';
+  }
+
+  // P2: Check safety/PPE
+  if (containsKeyword(normalizedText, INTENT_LEXICON.safety)) {
+    return 'safety';
+  }
+
+  // P3: Check progression/worsening
+  if (containsKeyword(normalizedText, INTENT_LEXICON.progression)) {
+    return 'progression';
+  }
+
+  // P4: Check follow-up scan
+  if (containsKeyword(normalizedText, INTENT_LEXICON.follow_up_scan)) {
+    return 'follow_up_scan';
+  }
+
   let bestIntent = null;
   let maxMatches = 0;
 
   for (const [intentKey, keywords] of Object.entries(INTENT_LEXICON)) {
     let matches = 0;
     for (const kw of keywords) {
-      if (normalizedText.includes(kw)) {
+      if (kw.includes(' ')) {
+        if (normalizedText.includes(kw)) matches += 2; // multi-word phrase bonus
+      } else if (hasStemToken(normalizedText, kw)) {
         matches += 1;
       }
     }
@@ -159,12 +303,12 @@ function detectIntent(normalizedText) {
  *
  * @param {string} rawQuery - Farmer spoken or typed query (in Bangla or Banglish)
  * @param {string|null} activeScanDisease - Active scan class key (e.g. 'blast', 'brown_spot')
- * @returns {Object} Structured agronomic answer
+ * @returns {Object} Structured agronomic answer guaranteed in natural Bangla
  */
 export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
   const normalized = normalizeQuery(rawQuery);
 
-  // 1. Empty query check
+  // 1. Empty / Incomplete Query Check
   if (!normalized) {
     return {
       intent: 'empty',
@@ -179,6 +323,36 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     };
   }
 
+  // Incomplete pronoun check (e.g. user just said "আমার" or "আমি")
+  if (normalized === 'আমার' || normalized === 'আমি' || normalized === 'আমাদের' || normalized === 'amar') {
+    return {
+      intent: 'incomplete_query',
+      diseaseKey: activeScanDisease,
+      titleBn: 'আপনার সম্পূর্ণ প্রশ্নটি বলুন',
+      textBn: 'আপনার সম্পূর্ণ প্রশ্নটি বলুন বা লিখুন। যেমন: "আমার ধানে ব্লাস্ট হয়েছে, এখন কী করব?" অথবা "আমার ধানের পাতায় বাদামি দাগ কেন?"।',
+      voiceBn: 'আপনার পুরো প্রশ্নটি একসাথে বলুন। যেমন আমার ধানে ব্লাস্ট হয়েছে এখন কি করব।',
+      suggestedFollowups: ['আমার ধানে ব্লাস্ট হয়েছে', 'আমার ধানের পাতায় দাগ', 'কী ওষুধ দিতে হবে?'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.9,
+    };
+  }
+
+  // Incomplete "আমার ধান" check
+  if (normalized === 'আমার ধান' || normalized === 'amar dhan') {
+    return {
+      intent: 'incomplete_query',
+      diseaseKey: activeScanDisease,
+      titleBn: 'ধানের কী সমস্যা হয়েছে?',
+      textBn: 'আপনার ধানের কী সমস্যা হয়েছে তা বলুন বা আক্রান্ত পাতার ছবি স্ক্যান করুন। যেমন: পাতায় দাগ আছে কিনা, গাছ হলুদ হয়েছে কিনা বা কী ওষুধ দিতে চান।',
+      voiceBn: 'আপনার ধানের কি সমস্যা হয়েছে বলুন। পাতায় দাগ আছে কিনা বা কি ওষুধ দিতে চান।',
+      suggestedFollowups: ['পাতায় বাদামি দাগ আছে', 'ব্লাস্ট রোগের ওষুধ কী?', 'টুংরো হলে কী করব?'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.9,
+    };
+  }
+
   // 2. Prohibited / Banned Chemicals Filter
   for (const bannedKw of BANNED_CHEMICAL_KEYWORDS) {
     if (normalized.includes(bannedKw)) {
@@ -190,7 +364,7 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
         textBn: bannedInfo.text_bn,
         voiceBn: bannedInfo.voice_bn,
         safetyNote: '⚠️ প্যারাকুয়াট বা নিষিদ্ধ বিষ প্রয়োগ আইনত দণ্ডনীয় এবং জীবনঘাতী।',
-        suggestedFollowups: ['অনুমোদিত ওষুধ কী কী?', 'জৈব উপায়ে কী করব?', '১৬১২৩ নম্বরে কথা বলতে চাই'],
+        suggestedFollowups: ['অনুমোদিত ওষুধ কী কী?', 'জৈব উপায়ে কী করব?', '১৬১২৩ নম্বরে কল করতে চাই'],
         isAbstention: false,
         helplinePrompt: true,
         confidence: 1.0,
@@ -199,14 +373,30 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
   }
 
   // 3. Out of Domain Non-Rice Guardrail Filter
-  for (const oodKw of OUT_OF_DOMAIN_KEYWORDS) {
-    if (normalized.includes(oodKw)) {
+  // First check specific genuine mango inquiry
+  if (isGenuineMangoInquiry(normalized)) {
+    return {
+      intent: 'out_of_domain_abstention',
+      diseaseKey: null,
+      titleBn: 'ধান ব্যতীত অন্যান্য ফসল (তথ্য সীমাবদ্ধতা)',
+      textBn: 'আপনি "আম" সম্পর্কে জানতে চেয়েছেন। এগ্রোলিফ এআই বর্তমানে শুধুমাত্র বাংলাদেশের ধানের রোগ ও পরিচর্যা সম্পর্কে তথ্য দিতে পারে। অন্যান্য ফসলের সঠিক পরামর্শ পেতে কৃষি কল সেন্টারে ১৬১২৩ নম্বরে যোগাযোগ করতে পারেন। কলের বর্তমান চার্জ আগে যাচাই করুন।',
+      voiceBn: 'এগ্রোলিফ এআই বর্তমানে শুধু ধানের রোগ ও পরামর্শ দিতে পারে। অন্যান্য ফসলের তথ্যের জন্য দয়া করে কৃষি কল সেন্টার ১৬১২৩ নম্বরে যোগাযোগ করুন।',
+      suggestedFollowups: ['ধানের ব্লাস্ট রোগের ওষুধ কী?', 'টুংরো হলে কী করব?', '১৬১২৩ হেল্পলাইনে কল করুন'],
+      isAbstention: true,
+      helplinePrompt: true,
+      confidence: 0.95,
+    };
+  }
+
+  // Check general out-of-domain keywords (using inflection stem matching)
+  for (const oodStem of OUT_OF_DOMAIN_STEMS) {
+    if (containsKeyword(normalized, [oodStem])) {
       return {
         intent: 'out_of_domain_abstention',
         diseaseKey: null,
         titleBn: 'ধান ব্যতীত অন্যান্য ফসল (তথ্য সীমাবদ্ধতা)',
-        textBn: `আপনি "${oodKw}" সম্পর্কে জানতে চেয়েছেন। এগ্রোলিফ এআই বর্তমানে শুধুমাত্র বাংলাদেশের ধানের রোগ ও পরিচর্যা সম্পর্কে তথ্য দিতে পারে। অন্যান্য ফসলের সঠিক পরামর্শ পেতে কৃষি কল সেন্টারে ১৬১২৩ নম্বরে বিনামূল্যে কল করুন।`,
-        voiceBn: 'এগ্রোলিফ এআই বর্তমানে শুধু ধানের রোগ ও পরামর্শ দিতে পারে। অন্যান্য ফসলের তথ্যের জন্য দয়া করে কৃষি কল সেন্টার ১৬১২৩ নম্বরে কল করুন।',
+        textBn: `আপনি "${oodStem}" সম্পর্কে জানতে চেয়েছেন। এগ্রোলিফ এআই বর্তমানে শুধুমাত্র বাংলাদেশের ধানের রোগ ও পরিচর্যা সম্পর্কে তথ্য দিতে পারে। অন্যান্য ফসলের সঠিক পরামর্শ পেতে কৃষি কল সেন্টারে ১৬১২৩ নম্বরে যোগাযোগ করতে পারেন। কলের বর্তমান চার্জ আগে যাচাই করুন।`,
+        voiceBn: 'এগ্রোলিফ এআই বর্তমানে শুধু ধানের রোগ ও পরামর্শ দিতে পারে। অন্যান্য তথ্যের জন্য কৃষি কল সেন্টার ১৬১২৩ নম্বরে যোগাযোগ করুন।',
         suggestedFollowups: ['ধানের ব্লাস্ট রোগের ওষুধ কী?', 'টুংরো হলে কী করব?', '১৬১২৩ হেল্পলাইনে কল করুন'],
         isAbstention: true,
         helplinePrompt: true,
@@ -215,49 +405,107 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     }
   }
 
-  // 4. Disease resolution (explicit query mention takes precedence, then active scan context)
-  const explicitDisease = detectExplicitDisease(normalized);
-  const resolvedDisease = explicitDisease || activeScanDisease || null;
-
-  // 5. Intent detection
+  // 4. Disease resolution (multi-disease detection for comparisons)
+  const explicitDiseases = detectExplicitDiseases(normalized);
   const detectedIntent = detectIntent(normalized);
 
-  // 6. Handle General FAQs if no specific disease applies or if user asked generic FAQ
-  if (detectedIntent === 'helpline') {
-    const faq = AGRICULTURAL_KB.general_faqs.helpline;
+  // Check Comparison Intent (either intent is comparison OR two diseases are named)
+  if (detectedIntent === 'comparison' || explicitDiseases.length >= 2) {
+    if (
+      (explicitDiseases.includes('blast') && explicitDiseases.includes('brown_spot')) ||
+      (explicitDiseases.includes('blast') && (normalized.includes('ব্রাউন') || normalized.includes('brown')))
+    ) {
+      const comp = AGRICULTURAL_KB.comparisons.blast_vs_brown_spot;
+      return {
+        intent: 'comparison',
+        diseaseKey: 'blast_vs_brown_spot',
+        titleBn: comp.title_bn,
+        textBn: comp.text_bn,
+        voiceBn: comp.voice_bn,
+        suggestedFollowups: ['ব্লাস্টের ওষুধ কী?', 'বাদামী দাগের ওষুধ কী?', 'ইউরিয়া কি বন্ধ রাখব?'],
+        isAbstention: false,
+        helplinePrompt: false,
+        confidence: 0.95,
+      };
+    }
+
+    if (
+      (explicitDiseases.includes('blast') && explicitDiseases.includes('sheath_blight')) ||
+      (explicitDiseases.includes('blast') && normalized.includes('খোল'))
+    ) {
+      const comp = AGRICULTURAL_KB.comparisons.blast_vs_sheath_blight;
+      return {
+        intent: 'comparison',
+        diseaseKey: 'blast_vs_sheath_blight',
+        titleBn: comp.title_bn,
+        textBn: comp.text_bn,
+        voiceBn: comp.voice_bn,
+        suggestedFollowups: ['ব্লাস্টের ওষুধ কী?', 'খোল পোড়ার ওষুধ কী?', 'পানি কি নিষ্কাশন করব?'],
+        isAbstention: false,
+        helplinePrompt: false,
+        confidence: 0.95,
+      };
+    }
+
+    // Generic comparison
+    const comp = AGRICULTURAL_KB.comparisons.general_comparison;
     return {
-      intent: 'helpline',
-      diseaseKey: resolvedDisease,
-      titleBn: faq.title_bn,
-      textBn: faq.text_bn,
-      voiceBn: faq.voice_bn,
-      suggestedFollowups: ['কী ওষুধ দেব?', 'সার দেওয়া যাবে?', 'পানি ব্যবস্থাপনা?'],
+      intent: 'comparison',
+      diseaseKey: explicitDiseases[0] || activeScanDisease || null,
+      titleBn: comp.title_bn,
+      textBn: comp.text_bn,
+      voiceBn: comp.voice_bn,
+      suggestedFollowups: ['ব্লাস্ট রোগের ওষুধ কী?', 'বাদামী দাগের ওষুধ কী?', 'খোল পোড়া হলে কী করব?'],
       isAbstention: false,
-      helplinePrompt: true,
-      confidence: 1.0,
+      helplinePrompt: false,
+      confidence: 0.9,
     };
   }
 
-  if (detectedIntent === 'weather') {
-    const faq = AGRICULTURAL_KB.general_faqs.weather_spray;
+  // 5. Follow-up Scan intent
+  if (detectedIntent === 'follow_up_scan') {
+    const diseaseKey = explicitDiseases[0] || activeScanDisease || 'blast';
+    const diseaseObj = AGRICULTURAL_KB.diseases[diseaseKey];
+    const followUpData = diseaseObj?.follow_up_scan || AGRICULTURAL_KB.general_faqs.follow_up_scan;
+
     return {
-      intent: 'weather',
-      diseaseKey: resolvedDisease,
-      titleBn: faq.title_bn,
-      textBn: faq.text_bn,
-      voiceBn: faq.voice_bn,
-      suggestedFollowups: ['কী ওষুধ দেব?', 'সার দেওয়া যাবে?', '১৬১২৩ নম্বরে কল'],
+      intent: 'follow_up_scan',
+      diseaseKey,
+      titleBn: 'পুনরায় ছবি তোলা ও পর্যবেক্ষণ (ফলো-আপ)',
+      textBn: followUpData.text_bn,
+      voiceBn: followUpData.voice_bn,
+      suggestedFollowups: ['কী ওষুধ দিতে হবে?', 'সার কি দেওয়া যাবে?', 'পানি ব্যবস্থাপনা?'],
       isAbstention: false,
       helplinePrompt: false,
       confidence: 0.95,
     };
   }
 
+  // 6. Disease Progression / Worsening intent
+  if (detectedIntent === 'progression') {
+    const diseaseKey = explicitDiseases[0] || activeScanDisease || 'brown_spot';
+    if (AGRICULTURAL_KB.diseases[diseaseKey]?.progression) {
+      const prog = AGRICULTURAL_KB.diseases[diseaseKey].progression;
+      return {
+        intent: 'progression',
+        diseaseKey,
+        titleBn: `${AGRICULTURAL_KB.diseases[diseaseKey].name_bn} - রোগ বা দাগ বেড়ে যাওয়ার করণীয়`,
+        textBn: prog.text_bn,
+        voiceBn: prog.voice_bn,
+        suggestedFollowups: ['কী ওষুধ দিতে হবে?', 'সার কি দেওয়া যাবে?', '১৬১২৩ নম্বরে কল দিন'],
+        isAbstention: false,
+        helplinePrompt: false,
+        confidence: 0.9,
+      };
+    }
+  }
+
+  // 7. General FAQs (Safety, Weather, Helpline)
   if (detectedIntent === 'safety') {
     const faq = AGRICULTURAL_KB.general_faqs.safety_ppe;
     return {
       intent: 'safety',
-      diseaseKey: resolvedDisease,
+      diseaseKey: explicitDiseases[0] || activeScanDisease || null,
       titleBn: faq.title_bn,
       textBn: faq.text_bn,
       voiceBn: faq.voice_bn,
@@ -268,12 +516,44 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     };
   }
 
-  // 7. Resolve with Disease Knowledge Base
+  if (detectedIntent === 'weather') {
+    const faq = AGRICULTURAL_KB.general_faqs.weather_spray;
+    return {
+      intent: 'weather',
+      diseaseKey: explicitDiseases[0] || activeScanDisease || null,
+      titleBn: faq.title_bn,
+      textBn: faq.text_bn,
+      voiceBn: faq.voice_bn,
+      suggestedFollowups: ['কী ওষুধ দেব?', 'সার দেওয়া যাবে?', '১৬১২৩ নম্বরে কল'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.95,
+    };
+  }
+
+  if (detectedIntent === 'helpline') {
+    const faq = AGRICULTURAL_KB.general_faqs.helpline;
+    return {
+      intent: 'helpline',
+      diseaseKey: explicitDiseases[0] || activeScanDisease || null,
+      titleBn: faq.title_bn,
+      textBn: faq.text_bn,
+      voiceBn: faq.voice_bn,
+      suggestedFollowups: ['কী ওষুধ দেব?', 'সার দেওয়া যাবে?', 'পানি ব্যবস্থাপনা?'],
+      isAbstention: false,
+      helplinePrompt: true,
+      confidence: 1.0,
+    };
+  }
+
+  // 8. Primary Disease Resolution
+  const resolvedDisease = explicitDiseases[0] || activeScanDisease || null;
+
   if (resolvedDisease && AGRICULTURAL_KB.diseases[resolvedDisease]) {
     const diseaseObj = AGRICULTURAL_KB.diseases[resolvedDisease];
     const diseaseName = diseaseObj.name_bn;
 
-    // Check if a specific intent was identified
+    // Check specific intent or fallback to treatment / action
     const intentKey = (detectedIntent && diseaseObj[detectedIntent]) ? detectedIntent : 'treatment';
     const intentData = diseaseObj[intentKey] || diseaseObj.treatment;
 
@@ -302,8 +582,8 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     };
   }
 
-  // 8. If intent was detected (e.g. 'treatment') but no disease context is present
-  if (detectedIntent === 'treatment' || detectedIntent === 'fertilizer' || detectedIntent === 'water') {
+  // 9. If intent was detected (e.g. treatment/fertilizer) but disease context is missing
+  if (detectedIntent === 'treatment' || detectedIntent === 'fertilizer' || detectedIntent === 'water' || detectedIntent === 'symptoms') {
     return {
       intent: 'need_disease_context',
       diseaseKey: null,
@@ -317,7 +597,7 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
     };
   }
 
-  // 9. Honest Abstention Fallback (No hallucination)
+  // 10. Honest Abstention Fallback (No hallucination, guaranteed natural Bangla)
   const abs = AGRICULTURAL_KB.abstention;
   return {
     intent: 'honest_abstention',

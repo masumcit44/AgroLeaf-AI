@@ -1,6 +1,7 @@
 // Browser-native Free-Only Speech Recognition (STT) and Speech Synthesis (TTS) service
 // Uses standard W3C Web Speech API with 'bn-BD' dialect.
 // Zero external paid APIs, zero tracking, ephemeral client-side lifecycle.
+// Adheres strictly to the Bangla Response Language Policy (never falls back to English speech).
 
 export function isSpeechRecognitionSupported() {
   if (typeof window === 'undefined') return false;
@@ -10,6 +11,40 @@ export function isSpeechRecognitionSupported() {
 export function isSpeechSynthesisSupported() {
   if (typeof window === 'undefined') return false;
   return Boolean(window.speechSynthesis && typeof window.SpeechSynthesisUtterance !== 'undefined');
+}
+
+/**
+ * Selects the best genuine Bengali voice from the browser's available voice list.
+ * Priority: 1. bn-BD (Bangladeshi Bangla) -> 2. bn-IN (Indian Bangla) -> 3. starts with 'bn'.
+ * If no Bengali voice is found, returns null (never falls back to English!).
+ *
+ * @param {SpeechSynthesisVoice[]} [voices]
+ * @returns {SpeechSynthesisVoice|null}
+ */
+export function selectBestBengaliVoice(voices = null) {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+  const voiceList = voices || window.speechSynthesis.getVoices() || [];
+  if (voiceList.length === 0) return null;
+
+  // 1. Exact Bangladeshi Bengali
+  const bnBd = voiceList.find(
+    (v) => v.lang === 'bn-BD' || v.lang === 'bn_BD'
+  );
+  if (bnBd) return bnBd;
+
+  // 2. Indian Bengali (phonetically standard for agricultural terms)
+  const bnIn = voiceList.find(
+    (v) => v.lang === 'bn-IN' || v.lang === 'bn_IN'
+  );
+  if (bnIn) return bnIn;
+
+  // 3. General Bengali prefix
+  const bnGeneral = voiceList.find(
+    (v) => v.lang && v.lang.toLowerCase().startsWith('bn')
+  );
+  if (bnGeneral) return bnGeneral;
+
+  return null;
 }
 
 /**
@@ -25,7 +60,7 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
   if (!isSpeechRecognitionSupported()) {
     return {
       start: () => {
-        if (onError) onError('আপনার ব্রাউজারে ভয়েস রেকর্ডিং সাপোর্ট নেই। লিখে প্রশ্ন করুন।', 'unsupported');
+        if (onError) onError('আপনার ব্রাউজারে ভয়েস রেকর্ডিং সাপোর্ট নেই। নিচে লিখে প্রশ্ন করুন।', 'unsupported');
       },
       stop: () => {},
       abort: () => {},
@@ -66,15 +101,17 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
   };
 
   recognition.onerror = (event) => {
-    let messageBn = 'কথা বুঝতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+    let messageBn = 'কথা বুঝতে সমস্যা হয়েছে। বাটনে চাপ দিয়ে আবার বলুন।';
     const code = event.error;
 
     if (code === 'not-allowed' || code === 'service-not-allowed') {
-      messageBn = 'মাইক্রোফোনের অনুমতি বন্ধ আছে। ব্রাউজার সেটিংসে অনুমতি চালু করুন অথবা লিখে প্রশ্ন করুন।';
+      messageBn = 'মাইক্রোফোনের অনুমতি বন্ধ আছে। ব্রাউজার সেটিংসে অনুমতি চালু করুন অথবা নিচে লিখে প্রশ্ন করুন।';
     } else if (code === 'no-speech') {
       messageBn = 'কোনো কথা শোনা যায়নি। বাটনে চাপ দিয়ে আবার স্পষ্ট করে বলুন।';
     } else if (code === 'network') {
-      messageBn = 'ইন্টারনেট সমস্যা। নেটওয়ার্ক চেক করুন অথবা নিচে লিখে প্রশ্ন করুন।';
+      messageBn = 'ইন্টারনেট সংযোগে সমস্যা হচ্ছে। সংযোগ চেক করুন অথবা নিচে লিখে প্রশ্ন করুন।';
+    } else if (code === 'audio-capture') {
+      messageBn = 'মাইক্রোফোন পাওয়া যায়নি। অনুগ্রহ করে অডিও ডিভাইস চেক করুন।';
     }
 
     if (onError) onError(messageBn, code);
@@ -90,7 +127,6 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
       try {
         recognition.start();
       } catch {
-        // Can throw if already active
         if (onStateChange) onStateChange('listening');
       }
     },
@@ -112,16 +148,20 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
 }
 
 /**
- * Speaks Bengali text using native SpeechSynthesis
+ * Speaks Bengali text using native SpeechSynthesis.
+ * Enforces Bengali voice lock: if no genuine Bengali voice is available on device,
+ * gracefully cancels speech and invokes onVoiceUnavailable callback rather than
+ * outputting garbled English phonemes.
  *
  * @param {string} text - Bengali text to read aloud
  * @param {Object} options
- * @param {Function} options.onStart - Callback when speech begins
- * @param {Function} options.onEnd - Callback when speech concludes
- * @param {Function} options.onError - Callback on synthesis failure
+ * @param {Function} [options.onStart] - Callback when speech begins
+ * @param {Function} [options.onEnd] - Callback when speech concludes
+ * @param {Function} [options.onError] - Callback on synthesis failure
+ * @param {Function} [options.onVoiceUnavailable] - Callback if Bengali voice is missing
  * @returns {Function} Stop audio playback function
  */
-export function speakUtterance(text, { onStart, onEnd, onError } = {}) {
+export function speakUtterance(text, { onStart, onEnd, onError, onVoiceUnavailable } = {}) {
   if (!isSpeechSynthesisSupported() || !text) {
     if (onEnd) onEnd();
     return () => {};
@@ -130,15 +170,24 @@ export function speakUtterance(text, { onStart, onEnd, onError } = {}) {
   try {
     window.speechSynthesis.cancel();
 
+    const voices = window.speechSynthesis.getVoices();
+    const bnVoice = selectBestBengaliVoice(voices);
+
+    // If voices are empty or no Bengali voice is found, try once to see if getVoices hasn't loaded
+    if (!bnVoice && voices.length > 0) {
+      // Confirmed voices loaded but zero Bengali voice available
+      if (onVoiceUnavailable) {
+        onVoiceUnavailable();
+      }
+      if (onEnd) onEnd();
+      return () => {};
+    }
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'bn-BD';
-    utterance.rate = 0.92;
+    utterance.rate = 0.90; // Slightly measured pace for rural farmer comprehension
     utterance.pitch = 1.0;
 
-    const voices = window.speechSynthesis.getVoices();
-    const bnVoice = voices.find(
-      (v) => v.lang === 'bn-BD' || v.lang === 'bn_BD' || v.lang.startsWith('bn')
-    );
     if (bnVoice) {
       utterance.voice = bnVoice;
     }

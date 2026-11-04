@@ -15,14 +15,16 @@ export default function FarmerCopilotCard({ scan }) {
   // Active scan disease context
   const activeDisease = scan?.classKey || null;
 
-  // State
+  // Voice & Copilot State
   const [voiceState, setVoiceState] = useState('idle'); // 'idle' | 'listening' | 'processing' | 'speaking'
   const [transcript, setTranscript] = useState('');
+  const [pendingConfirmation, setPendingConfirmation] = useState(null); // String awaiting confirmation
   const [queryText, setQueryText] = useState('');
   const [showTextInput, setShowTextInput] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [copilotResponse, setCopilotResponse] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [ttsUnavailable, setTtsUnavailable] = useState(false);
 
   // References
   const recognizerRef = useRef(null);
@@ -45,15 +47,17 @@ export default function FarmerCopilotCard({ scan }) {
 
       setVoiceState('processing');
       setErrorMessage(null);
+      setPendingConfirmation(null);
 
-      // Deterministic Local RAG Query
+      // Deterministic Grounded Agricultural RAG Query
       const answer = queryAgriculturalCopilot(question, activeDisease);
       setCopilotResponse(answer);
 
-      // Auto-read response aloud if synthesis is supported
+      // Auto-read response aloud in Bengali if synthesis is supported
       if (isSpeechSynthesisSupported() && answer?.voiceBn) {
         setVoiceState('speaking');
         setIsAudioPlaying(true);
+        setTtsUnavailable(false);
 
         stopPlaybackRef.current = speakUtterance(answer.voiceBn, {
           onStart: () => {
@@ -67,6 +71,11 @@ export default function FarmerCopilotCard({ scan }) {
           onError: () => {
             setIsAudioPlaying(false);
             setVoiceState('idle');
+          },
+          onVoiceUnavailable: () => {
+            setIsAudioPlaying(false);
+            setVoiceState('idle');
+            setTtsUnavailable(true);
           },
         });
       } else {
@@ -97,6 +106,7 @@ export default function FarmerCopilotCard({ scan }) {
 
     setErrorMessage(null);
     setTranscript('');
+    setPendingConfirmation(null);
 
     // Check browser support
     if (!isSpeechRecognitionSupported()) {
@@ -104,7 +114,7 @@ export default function FarmerCopilotCard({ scan }) {
       setErrorMessage(
         lang === 'en'
           ? 'Voice recognition is not supported on this browser. Please type your question.'
-          : 'আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই। দয়া করে লিখে প্রশ্ন করুন।'
+          : 'আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই। দয়া করে নিচে লিখে প্রশ্ন করুন।'
       );
       return;
     }
@@ -114,8 +124,17 @@ export default function FarmerCopilotCard({ scan }) {
         onResult: (text, isFinal) => {
           setTranscript(text);
           setQueryText(text);
+
           if (isFinal) {
-            handleProcessQuery(text);
+            const clean = text.trim();
+            // If the transcript is very short (1 token) or ambiguous, request confirmation
+            const tokens = clean.split(/\s+/).filter(Boolean);
+            if (tokens.length <= 1 && (tokens[0] === 'আমার' || tokens[0] === 'আমি' || tokens[0] === 'আম')) {
+              setPendingConfirmation(clean);
+              setVoiceState('idle');
+            } else {
+              handleProcessQuery(clean);
+            }
           }
         },
         onError: (errBn) => {
@@ -147,6 +166,7 @@ export default function FarmerCopilotCard({ scan }) {
 
     setIsAudioPlaying(true);
     setVoiceState('speaking');
+    setTtsUnavailable(false);
 
     stopPlaybackRef.current = speakUtterance(copilotResponse.voiceBn, {
       onStart: () => {
@@ -160,6 +180,11 @@ export default function FarmerCopilotCard({ scan }) {
       onError: () => {
         setIsAudioPlaying(false);
         setVoiceState('idle');
+      },
+      onVoiceUnavailable: () => {
+        setIsAudioPlaying(false);
+        setVoiceState('idle');
+        setTtsUnavailable(true);
       },
     });
   };
@@ -186,8 +211,8 @@ export default function FarmerCopilotCard({ scan }) {
       data-testid="farmer-copilot-card"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-leaf-700 via-leaf-800 to-leaf-900 px-4 py-3 text-white flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+      <div className="bg-gradient-to-r from-leaf-700 via-leaf-800 to-leaf-900 px-4 py-3.5 text-white flex items-center justify-between">
+        <div className="flex items-center space-x-2.5">
           <span className="text-2xl" role="img" aria-label="assistant">
             🌾
           </span>
@@ -197,14 +222,14 @@ export default function FarmerCopilotCard({ scan }) {
             </h3>
             <p className="text-xs text-leaf-100">
               {lang === 'en'
-                ? 'Ask questions in spoken Bangla'
+                ? 'Ask questions in spoken Bangla, listen to answers'
                 : 'মুখে বাংলায় প্রশ্ন করুন, উত্তর শুনুন'}
             </p>
           </div>
         </div>
 
         {activeDisease && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-leaf-100 text-leaf-900">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-leaf-100 text-leaf-900 shadow-sm">
             {activeDisease}
           </span>
         )}
@@ -212,7 +237,7 @@ export default function FarmerCopilotCard({ scan }) {
 
       <div className="p-4 sm:p-5">
         {/* Main Voice Button Section */}
-        <div className="flex flex-col items-center justify-center my-2 text-center">
+        <div className="flex flex-col items-center justify-center my-3 text-center">
           <div className="relative">
             {/* Pulsing ring when listening */}
             {voiceState === 'listening' && (
@@ -232,7 +257,7 @@ export default function FarmerCopilotCard({ scan }) {
                   ? 'কথা থামান'
                   : 'কথা বলতে চাপুন'
               }
-              className={`relative z-10 flex items-center justify-center w-20 h-20 rounded-full shadow-lg transition-all transform active:scale-95 focus:outline-none focus:ring-4 ${
+              className={`relative z-10 flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-lg transition-all transform active:scale-95 focus:outline-none focus:ring-4 ${
                 voiceState === 'listening'
                   ? 'bg-red-600 text-white ring-red-300 animate-pulse'
                   : voiceState === 'speaking'
@@ -241,16 +266,16 @@ export default function FarmerCopilotCard({ scan }) {
               }`}
             >
               {voiceState === 'listening' ? (
-                <svg className="w-10 h-10 animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-10 h-10 sm:w-12 sm:h-12 animate-bounce" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
                   <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                 </svg>
               ) : voiceState === 'speaking' ? (
-                <span className="text-3xl" role="img" aria-label="speaker">
+                <span className="text-3xl sm:text-4xl" role="img" aria-label="speaker">
                   🔊
                 </span>
               ) : (
-                <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
                   <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                 </svg>
@@ -259,29 +284,65 @@ export default function FarmerCopilotCard({ scan }) {
           </div>
 
           {/* Status Label */}
-          <p className="mt-3 text-sm font-semibold text-gray-800">
+          <p className="mt-3.5 text-sm font-bold text-gray-800">
             {voiceState === 'listening'
-              ? '🎙️ শুনছি... এখন কথা বলুন'
+              ? '🎙️ শুনছি... আপনার প্রশ্ন বলুন'
               : voiceState === 'processing'
-              ? '⏳ উত্তর প্রস্তুত হচ্ছে...'
+              ? '⏳ আপনার প্রশ্ন বুঝে নিচ্ছি...'
               : voiceState === 'speaking'
               ? '🔊 উত্তর বলা হচ্ছে... (থামাতে বাটনে চাপুন)'
-              : '👉 মাইকে চাপ দিয়ে বাংলায় প্রশ্ন করুন'}
+              : '👉 মাইকে চাপ দিয়ে বাংলায় কথা বলুন'}
           </p>
 
           {/* Transcript feedback while speaking */}
           {transcript && (
-            <p className="mt-1 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700 italic max-w-xs truncate">
+            <p className="mt-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700 italic max-w-sm truncate border border-gray-200">
               "{transcript}"
             </p>
           )}
         </div>
+
+        {/* Transcript Confirmation Prompt (for ambiguous/short speech) */}
+        {pendingConfirmation && (
+          <div className="mt-3 p-3.5 bg-leaf-50 border border-leaf-300 rounded-xl text-center shadow-sm">
+            <p className="text-xs font-semibold text-gray-600 mb-1">আপনি কি বলতে চেয়েছেন?</p>
+            <p className="text-sm font-bold text-leaf-950 mb-3">"{pendingConfirmation}"</p>
+            <div className="flex justify-center space-x-2">
+              <button
+                type="button"
+                onClick={() => handleProcessQuery(pendingConfirmation)}
+                className="px-3 py-1.5 rounded-lg bg-leaf-700 text-white text-xs font-bold hover:bg-leaf-800 shadow-sm"
+              >
+                ✓ হ্যাঁ, উত্তর দিন
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPendingConfirmation(null);
+                  setTranscript('');
+                  handleToggleMic();
+                }}
+                className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-800 text-xs font-bold hover:bg-gray-300"
+              >
+                🔄 আবার বলুন
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Error message */}
         {errorMessage && (
           <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center space-x-2">
             <span>⚠️</span>
             <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* TTS Unavailable Notification */}
+        {ttsUnavailable && (
+          <div className="mt-2.5 p-2.5 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-xs flex items-center space-x-2">
+            <span>ℹ️</span>
+            <span>আপনার ডিভাইসে বাংলা ভয়েস প্লেব্যাক সুবিধা পাওয়া যায়নি। উত্তরটি নিচে পড়ে নিন।</span>
           </div>
         )}
 
@@ -313,7 +374,7 @@ export default function FarmerCopilotCard({ scan }) {
               )}
             </div>
 
-            <p className="text-sm leading-relaxed text-gray-800 font-medium">
+            <p className="text-sm leading-relaxed text-gray-800 font-medium whitespace-pre-line">
               {copilotResponse.textBn}
             </p>
 
@@ -325,15 +386,15 @@ export default function FarmerCopilotCard({ scan }) {
               </div>
             )}
 
-            {/* Emergency Helpline Prompt */}
+            {/* Emergency Helpline Prompt (with verified neutral tariff phrasing) */}
             {copilotResponse.helplinePrompt && (
-              <div className="mt-3 pt-2 border-t border-amber-200 flex items-center justify-between">
+              <div className="mt-3 pt-2.5 border-t border-amber-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <span className="text-xs text-amber-950 font-bold">
-                  কৃষি কল সেন্টার (বিনামূল্যে):
+                  কৃষি কল সেন্টার ১৬১২৩-এ যোগাযোগ করতে পারেন (কলের বর্তমান চার্জ আগে যাচাই করুন):
                 </span>
                 <a
                   href="tel:16123"
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-600 text-white hover:bg-green-700 shadow-sm transition-colors"
+                  className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-green-600 text-white hover:bg-green-700 shadow-sm transition-colors w-max"
                 >
                   📞 ১৬১২৩ কল করুন
                 </a>
@@ -373,7 +434,7 @@ export default function FarmerCopilotCard({ scan }) {
               onClick={() => setShowTextInput(!showTextInput)}
               className="text-xs text-leaf-800 font-semibold hover:underline flex items-center space-x-1"
             >
-              <span>{showTextInput ? '▲ টাইপ বন্ধ করুন' : '⌨️ লিখে প্রশ্ন করতে চান?'}</span>
+              <span>{showTextInput ? '▲ টাইপ বন্ধ করুন' : '⌨️ অথবা বাংলায়/Banglish-এ লিখুন'}</span>
             </button>
 
             {copilotResponse && (
@@ -383,10 +444,11 @@ export default function FarmerCopilotCard({ scan }) {
                   setCopilotResponse(null);
                   setTranscript('');
                   setQueryText('');
+                  setPendingConfirmation(null);
                   stopSpeech();
                   setIsAudioPlaying(false);
                 }}
-                className="text-xs text-gray-500 hover:text-gray-700"
+                className="text-xs text-gray-500 hover:text-gray-700 font-medium"
               >
                 🔄 নতুন প্রশ্ন
               </button>
@@ -404,7 +466,7 @@ export default function FarmerCopilotCard({ scan }) {
               />
               <button
                 type="submit"
-                className="px-3 py-1.5 bg-leaf-700 hover:bg-leaf-800 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
+                className="px-3.5 py-1.5 bg-leaf-700 hover:bg-leaf-800 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
               >
                 পাঠান
               </button>

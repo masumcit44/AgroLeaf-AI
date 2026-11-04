@@ -32,7 +32,7 @@ export default function CopilotPage() {
           সকল তথ্য ও বালাই ব্যবস্থাপনা বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI)-এর "আধুনিক ধানের চাষ" এবং কৃষি সম্প্রসারণ অধিদপ্তরের (DAE) বামিস নির্দেশিকা অনুযায়ী সংকলিত।
         </p>
         <div className="pt-1 flex items-center justify-between text-leaf-800 font-semibold">
-          <span>টোল-ফ্রি হেল্পলাইন: ১৬১২৩</span>
+          <span>কৃষি কল সেন্টার: ১৬১২৩ (কলের বর্তমান চার্জ প্রযোজ্য হতে পারে)</span>
           <a href="tel:16123" className="underline hover:text-leaf-950">
             কল করুন →
           </a>
@@ -41,4 +41,3 @@ export default function CopilotPage() {
     </main>
   );
 }
-

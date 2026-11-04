@@ -37,7 +37,7 @@ describe('F30 FarmerCopilotCard Component', () => {
   it('renders typed input fallback option', () => {
     const html = renderWithI18n(<FarmerCopilotCard />);
 
-    expect(html).toContain('লিখে প্রশ্ন করতে চান?');
+    expect(html).toContain('বাংলায়/Banglish-এ লিখুন');
   });
 
   it('renders bilingual content when English language is selected', () => {
