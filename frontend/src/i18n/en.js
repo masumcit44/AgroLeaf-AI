@@ -12,6 +12,7 @@ export default {
   navProfile: "Area & Crop",
   navReminders: "Reminders",
   navCopilot: "Copilot",
+  moreAnalysis: "More analysis (severity, highlighted area, yield risk)",
   navFeatureTabs: "Features",
   langSwitch: "বাংলা",
 

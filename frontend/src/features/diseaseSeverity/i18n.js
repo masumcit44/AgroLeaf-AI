@@ -2,7 +2,7 @@
 // Every key must start with 'diseaseSeverity.' (enforced by tests).
 export default {
   bn: {
-    'diseaseSeverity.badge': 'F31: রোগের তীব্রতা পরিমাপ ও ক্ষয়ক্ষতি মূল্যায়ন',
+    'diseaseSeverity.badge': 'রোগের তীব্রতা পরিমাপ ও ক্ষয়ক্ষতি মূল্যায়ন',
     'diseaseSeverity.title': 'রোগের তীব্রতা',
     'diseaseSeverity.metricAffectedArea': 'আক্রান্ত পাতার ক্ষেত্রফল',
     'diseaseSeverity.metricIrriScale': 'ইরি (IRRI) স্কেল',
@@ -29,7 +29,7 @@ export default {
     'diseaseSeverity.helplinePrompt': 'সরাসরি কৃষি পরামর্শের জন্য ১৬১২৩ নম্বরে বিনামূল্যে কল করুন।',
   },
   en: {
-    'diseaseSeverity.badge': 'F31: Disease Severity Scoring & Impact Assessment',
+    'diseaseSeverity.badge': 'Disease Severity Scoring & Impact Assessment',
     'diseaseSeverity.title': 'Disease Severity',
     'diseaseSeverity.metricAffectedArea': 'Affected Leaf Area',
     'diseaseSeverity.metricIrriScale': 'IRRI Scale',

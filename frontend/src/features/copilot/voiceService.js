@@ -162,63 +162,122 @@ export function createSpeechRecognizer({ onResult, onError, onStateChange } = {}
  * @returns {Function} Stop audio playback function
  */
 export function speakUtterance(text, { onStart, onEnd, onError, onVoiceUnavailable } = {}) {
-  if (!isSpeechSynthesisSupported() || !text) {
+  const chunks = splitForSpeech(cleanTextForSpeech(text));
+  if (!isSpeechSynthesisSupported() || chunks.length === 0) {
     if (onEnd) onEnd();
     return () => {};
   }
 
-  try {
-    window.speechSynthesis.cancel();
+  let stopped = false;
+  let ended = false;
+  const finish = () => {
+    if (ended) return;
+    ended = true;
+    if (onEnd) onEnd();
+  };
 
-    const voices = window.speechSynthesis.getVoices();
+  window.speechSynthesis.cancel(); // never overlap with an earlier answer
+
+  // The voice list loads asynchronously (empty on the first call in Chrome and on many
+  // Android phones). Speaking before it loads, or without an explicit Bengali voice, makes the
+  // browser use its default voice: Bengali text read with English pronunciation. So wait for
+  // the list, and speak only with a genuine Bengali voice.
+  waitForVoices().then((voices) => {
+    if (stopped) return;
     const bnVoice = selectBestBengaliVoice(voices);
-
-    // If voices are empty or no Bengali voice is found, try once to see if getVoices hasn't loaded
-    if (!bnVoice && voices.length > 0) {
-      // Confirmed voices loaded but zero Bengali voice available
-      if (onVoiceUnavailable) {
-        onVoiceUnavailable();
-      }
-      if (onEnd) onEnd();
-      return () => {};
+    if (!bnVoice) {
+      if (onVoiceUnavailable) onVoiceUnavailable();
+      finish();
+      return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'bn-BD';
-    utterance.rate = 0.90; // Slightly measured pace for rural farmer comprehension
-    utterance.pitch = 1.0;
-
-    if (bnVoice) {
+    chunks.forEach((chunk, i) => {
+      const utterance = new SpeechSynthesisUtterance(chunk);
       utterance.voice = bnVoice;
-    }
-
-    utterance.onstart = () => {
-      if (onStart) onStart();
-    };
-
-    utterance.onend = () => {
-      if (onEnd) onEnd();
-    };
-
-    utterance.onerror = (e) => {
-      if (onError) onError(e);
-      if (onEnd) onEnd();
-    };
-
-    window.speechSynthesis.speak(utterance);
-
-    return () => {
-      try {
-        window.speechSynthesis.cancel();
-      } catch {
-        // Safe no-op
-      }
-    };
-  } catch (err) {
+      utterance.lang = bnVoice.lang;
+      utterance.rate = 0.90; // Slightly measured pace for rural farmer comprehension
+      utterance.pitch = 1.0;
+      if (i === 0) utterance.onstart = () => onStart && onStart();
+      if (i === chunks.length - 1) utterance.onend = finish;
+      utterance.onerror = (e) => {
+        if (stopped || e?.error === 'interrupted' || e?.error === 'canceled') return finish();
+        if (onError) onError(e);
+        finish();
+      };
+      window.speechSynthesis.speak(utterance);
+    });
+  }).catch((err) => {
     if (onError) onError(err);
-    if (onEnd) onEnd();
-    return () => {};
+    finish();
+  });
+
+  return () => {
+    stopped = true;
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // Safe no-op
+    }
+    finish();
+  };
+}
+
+/** Resolves with the browser's voice list, waiting up to `timeoutMs` for it to load. */
+export function waitForVoices(timeoutMs = 2000) {
+  return new Promise((resolve) => {
+    const synth = window.speechSynthesis;
+    const now = synth.getVoices();
+    if (now && now.length > 0) return resolve(now);
+    let done = false;
+    const settle = () => {
+      if (done) return;
+      done = true;
+      synth.removeEventListener?.('voiceschanged', settle);
+      resolve(synth.getVoices() || []);
+    };
+    synth.addEventListener?.('voiceschanged', settle);
+    setTimeout(settle, timeoutMs);
+  });
+}
+
+/**
+ * Text as it should be heard: no URLs, markdown symbols, source/citation lines or bracketed
+ * references. The written answer on screen is not changed.
+ */
+export function cleanTextForSpeech(text) {
+  if (!text) return '';
+  return String(text)
+    .split('\n')
+    .filter((line) => !/^\s*(উৎস|তথ্যসূত্র|সূত্র|source|sources|reference)s?\s*[:：]/i.test(line))
+    .join('\n')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/[*_#>`|~]+/g, ' ')
+    .replace(/\[(\d+|[০-৯]+)\]/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+}
+
+/**
+ * Chrome stops a single utterance after ~15 s, so long answers are split at sentence ends
+ * (।, ?, !, ., new line) into pieces of at most `maxLen` characters, spoken one after another.
+ */
+export function splitForSpeech(text, maxLen = 180) {
+  if (!text) return [];
+  const sentences = text.split(/(?<=[।?!.\n])\s*/).map((s) => s.trim()).filter(Boolean);
+  const chunks = [];
+  let current = '';
+  for (const s of sentences) {
+    if (current && (current + ' ' + s).length > maxLen) {
+      chunks.push(current);
+      current = s;
+    } else {
+      current = current ? `${current} ${s}` : s;
+    }
   }
+  if (current) chunks.push(current);
+  return chunks;
 }
 
 export function stopSpeech() {

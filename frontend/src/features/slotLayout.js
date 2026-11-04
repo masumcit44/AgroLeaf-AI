@@ -16,6 +16,10 @@ import * as diseaseSeverity from './diseaseSeverity/index.jsx';
 import * as copilot from './copilot/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
+// Result-screen features shown inside the collapsed "more analysis" section: useful detail, but
+// not needed to act (the reliability card already gives confidence; the copilot has its own tab).
+export const RESULT_SECONDARY = new Set(['confidenceScore', 'diseaseSeverity', 'explainableAi', 'yieldRisk', 'copilot']);
+
 export const SLOT_LAYOUT = {
   app: [['pwa', pwa.PwaStatus]],
   home: [

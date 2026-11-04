@@ -2,7 +2,7 @@
 // Every key must start with 'copilot.' (enforced by tests).
 export default {
   bn: {
-    'copilot.badge': 'F30: ভয়েস সহকারী',
+    'copilot.badge': 'ভয়েস সহকারী',
     'copilot.title': 'এগ্রোলিফ ভয়েস সহকারী',
     'copilot.subtitle': 'মুখে বাংলায় প্রশ্ন করুন, উত্তর শুনুন',
     'copilot.micTapPrompt': 'কথা বলতে চাপুন',
@@ -26,7 +26,7 @@ export default {
     'copilot.evidenceBody': 'সকল তথ্য ও বালাই ব্যবস্থাপনা বাংলাদেশ ধান গবেষণা ইনস্টিটিউট (BRRI)-এর "আধুনিক ধানের চাষ" এবং কৃষি সম্প্রসারণ অধিদপ্তরের (DAE) বামিস নির্দেশিকা অনুযায়ী সংকলিত।',
   },
   en: {
-    'copilot.badge': 'F30: Voice Copilot',
+    'copilot.badge': 'Voice Copilot',
     'copilot.title': 'AgroLeaf Voice Copilot',
     'copilot.subtitle': 'Ask questions in spoken Bangla, listen to answers',
     'copilot.micTapPrompt': 'Tap to speak',

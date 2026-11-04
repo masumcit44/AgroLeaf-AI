@@ -528,7 +528,10 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
         {ttsUnavailable && (
           <div className="mt-2.5 p-2.5 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-xs flex items-center space-x-2">
             <span>ℹ️</span>
-            <span>আপনার ডিভাইসে বাংলা ভয়েস প্লেব্যাক সুবিধা পাওয়া যায়নি। উত্তরটি নিচে পড়ে নিন।</span>
+            <span>
+              এই ফোন/ব্রাউজারে বাংলা কণ্ঠ নেই, তাই ইংরেজি উচ্চারণে না পড়ে শোনানো বন্ধ রাখা হয়েছে। উত্তরটি নিচে পড়ে নিন।
+              অ্যান্ড্রয়েডে: সেটিংস → ভাষা ও ইনপুট → টেক্সট-টু-স্পিচ → Google → বাংলা ভয়েস ডাউনলোড করুন।
+            </span>
           </div>
         )}
 

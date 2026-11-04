@@ -12,6 +12,7 @@ export default {
   navProfile: "এলাকা ও ফসল",
   navReminders: "স্মরণবার্তা",
   navCopilot: "ভয়েস সহকারী",
+  moreAnalysis: "আরও বিশ্লেষণ (তীব্রতা, ছবির কোন অংশ, ফলন ঝুঁকি)",
   navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
 
