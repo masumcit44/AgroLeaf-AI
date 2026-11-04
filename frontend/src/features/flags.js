@@ -21,17 +21,31 @@ export const PRODUCTION_HOST = 'agroleaf-ai.pages.dev';
 const STORAGE_KEY = 'agroleaf_features';
 
 function previewOverrides() {
-  if (typeof window === 'undefined' || window.location.hostname === PRODUCTION_HOST) return [];
+  if (typeof window === 'undefined' || window.location.hostname === PRODUCTION_HOST) {
+    return { enabled: [], disabled: [] };
+  }
   try {
     const fromUrl = new URLSearchParams(window.location.search).get('features');
     if (fromUrl !== null) localStorage.setItem(STORAGE_KEY, fromUrl);
-    return (localStorage.getItem(STORAGE_KEY) || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const raw = (localStorage.getItem(STORAGE_KEY) || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const enabled = [];
+    const disabled = [];
+    for (const item of raw) {
+      if (item.startsWith('!') || item.startsWith('-')) {
+        disabled.push(item.slice(1));
+      } else {
+        enabled.push(item);
+      }
+    }
+    return { enabled, disabled };
   } catch {
-    return [];
+    return { enabled: [], disabled: [] };
   }
 }
 
 export function isFeatureOn(name) {
   if (!(name in FEATURES)) return false;
-  return FEATURES[name] || previewOverrides().includes(name);
+  const { enabled, disabled } = previewOverrides();
+  if (disabled.includes(name)) return false;
+  return Boolean(FEATURES[name] || enabled.includes(name));
 }

@@ -267,7 +267,7 @@ async function runFlagOff(browser) {
   const context = await browser.createBrowserContext();
   const page = await context.newPage();
   await page.setViewport({ width: 390, height: 844 });
-  await page.goto(`${BASE}/`, { waitUntil: 'networkidle0', timeout: 90000 });
+  await page.goto(`${BASE}/?features=!pwa`, { waitUntil: 'networkidle0', timeout: 90000 });
   await waitForAppShell(page);
   await sleep(1500);
 

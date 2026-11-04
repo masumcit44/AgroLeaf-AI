@@ -38,6 +38,16 @@ describe('feature flags', () => {
     vi.stubGlobal('window', { location: { hostname: PRODUCTION_HOST, search: '?features=feedback' } });
     expect(isFeatureOn('feedback')).toBe(false);
   });
+
+  it('preview testers can switch a released feature off with ?features=!feature, production cannot', () => {
+    const store = {};
+    vi.stubGlobal('localStorage', { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } });
+    vi.stubGlobal('window', { location: { hostname: 'feat-x.agroleaf-ai.pages.dev', search: '?features=!pwa' } });
+    expect(isFeatureOn('pwa')).toBe(false);
+    expect(isFeatureOn('history')).toBe(true);
+    vi.stubGlobal('window', { location: { hostname: PRODUCTION_HOST, search: '?features=!pwa' } });
+    expect(isFeatureOn('pwa')).toBe(true);
+  });
 });
 
 describe('feature slots', () => {

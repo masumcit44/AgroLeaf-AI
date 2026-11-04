@@ -81,7 +81,7 @@ export function getStageAdvisory(stageId) {
     seedling: {
       bn: 'চারা অবস্থায় ব্লাস্ট (লিফ ব্লাস্ট) রোগের ঝুঁকি বেশি থাকে। কুয়াশাচ্ছন্ন বা শীতল আবহাওয়ায় বীজতলায় রাতে স্বচ্ছ পলিথিন দিয়ে ঢেকে রাখা ও সকালে জমা শিশির ঝরিয়ে দেওয়ার পরামর্শ দেয় ব্রি।',
       en: 'Seedlings are highly susceptible to leaf blast. During cold or foggy conditions, BRRI recommends covering nursery beds with clear polythene overnight and gently sweeping morning dew.',
-      source: 'BRRI Adhunik Dhaner Chash (2020, p. 55)',
+      source: 'BRRI Adhunik Dhaner Chash (2020)',
     },
     tillering: {
       bn: 'কুশি গজানোর সময় অতিরিক্ত ইউরিয়া সারের ব্যবহার এবং ঘন রোপণ খোল পোড়া ও ব্যাকটেরিয়াজনিত পাতা পোড়ার বিস্তার দ্রুত করে। সুষম সার (বিশেষ করে পর্যাপ্ত পটাশ) নিশ্চিত করুন।',
@@ -96,7 +96,7 @@ export function getStageAdvisory(stageId) {
     ripening: {
       bn: 'ধান পাকার সময় জমি থেকে ধীরে ধীরে পানি সরিয়ে ফেলুন (ফসল কাটার ১০-১৫ দিন পূর্বে)। জমি অতিরিক্ত স্যাঁতসেঁতে থাকলে শীথ রট বা ছত্রাকের সংক্রমণ ছড়াতে পারে।',
       en: 'Gradually drain standing water from fields 10-15 days before harvest. Excessive moisture during ripening prolongs humidity and encourages secondary fungal infection.',
-      source: 'BRRI Adhunik Dhaner Chash (2020, p. 38)',
+      source: 'BRRI Adhunik Dhaner Chash (2020)',
     },
   };
 
