@@ -1,5 +1,7 @@
 # AgroLeaf AI — Final Features & Manual Testing
 
+**USER MANUAL ACCEPTANCE: PASS** — T1–T11 checked and passed by the owner (5 Nov 2026).
+
 Candidate: https://deploy-candidate-ready.agroleaf-ai.pages.dev (branch `deploy/candidate-ready`)
 Production (unchanged until you approve): https://agroleaf-ai.pages.dev
 Repo: https://github.com/masumcit44/AgroLeaf-AI

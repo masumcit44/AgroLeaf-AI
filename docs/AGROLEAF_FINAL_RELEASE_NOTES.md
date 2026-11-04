@@ -1,24 +1,36 @@
-# AgroLeaf AI — Release Notes (candidate 8f2fa1b, 4 Nov 2026)
+# AgroLeaf AI — Final Release Notes (5 Nov 2026 release)
 
-Status: **candidate only** (`deploy/candidate-ready`). Production unchanged until the owner
-approves promotion to `main`.
+**USER MANUAL ACCEPTANCE: PASS** (owner ran T1–T11 in `docs/AGROLEAF_FINAL_FEATURES_AND_MANUAL_TESTING.md`)
+Production: https://agroleaf-ai.pages.dev · Repo: https://github.com/masumcit44/AgroLeaf-AI
+Release = fast-forward of `main` from `698e1ec` to the accepted candidate (`deploy/candidate-ready`).
+Previous production is tagged `prod-before-final-2026-11-05` (rollback point).
 
-## Changes in this candidate
-- **Voice:** Bengali answers are no longer read with an English voice. The app waits for the
-  phone's voices, uses only a real Bengali voice, and otherwise shows a Bangla message with
-  install steps instead of speaking. Long answers are read fully; links and source lines are skipped.
-- **Simpler result screen:** essentials first; deferred analysis removed from the first view (about half the scrolling).
-- Developer feature IDs removed from on-screen labels.
-- **Focused product:** yield impact, disease severity, AI heatmap and the extra confidence card
-  are deferred (switched off, code kept); the voice assistant lives only in its own tab;
-  5 tabs (profile opens from Home). Result screen ~3.8 phone screens at 360 px.
+## Retained (farmer journey)
+Leaf scan (v10, on device) · "not sure" abstention · Bangla result + recorded Bengali voice ·
+reliability level · this-week plan · 16123 help · fake-pesticide warning · Bengali voice
+assistant (122 recorded answers) · pesticide-dose safety filter · history · reminders ·
+weather + GPS · offline.
+
+## Deferred (flag off, code kept)
+Yield-loss estimate, disease severity, AI heatmap, extra confidence card, outbreak map, feedback.
+
+## Main changes since the previous production
+- Bengali voice assistant with pre-recorded bn-BD answers (no English voice ever reads Bangla).
+- Spoken "আম/আমার" confusion and planner mis-routing fixed.
+- Safety filter: no pesticide names or spray/seed-treatment doses in any answer.
+- Simplified UI: 5 tabs; result screen about half as long.
+
+## Verification
+509/509 automated tests, lint clean, production build OK (all files < 25 MiB); candidate and
+production checked in a browser; owner acceptance on phones: PASS.
 
 ## Known limitations
-- Bengali voice for free-form Copilot answers depends on the device having a Bengali voice
-  (usually Android with Google TTS; usually not Windows desktop or iPhone).
-- Not yet re-audited: live camera, reminders, yield risk, copilot answer quality, outbreak warning,
-  security of new endpoints (see AGROLEAF_FINAL_PRODUCT_AUDIT.md).
+Planner-generated (dynamic) answers are spoken only where the phone has a Bengali voice;
+F14 reliability bands are measured on the validation set (in-sample); model is v10 (accuracy
+and limits on the in-app Accuracy page); disease text not yet reviewed by an agronomist.
 
-## Promote to production (owner approval required)
-From the integration worktree: `git push origin deploy/candidate-ready:main` after the manual
-checklist passes; then confirm https://agroleaf-ai.pages.dev serves the new `assets/index-*.js`.
+## Rollback
+`git push origin prod-before-final-2026-11-05:main` is NOT allowed (no force). Instead:
+`git revert -m 1` is not applicable to a fast-forward, so revert the range:
+`git revert --no-edit 698e1ec..<release-sha>` on main, push, and wait for Cloudflare to rebuild;
+or, fastest, roll back in Cloudflare Pages → agroleaf-ai → Deployments → previous production.
