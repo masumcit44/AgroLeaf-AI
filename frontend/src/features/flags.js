@@ -15,11 +15,11 @@ export const FEATURES = {
   help: true, // F22
   areaMap: false, // F23
   reminders: true, // F24
-  yieldRisk: true, // F26 yield impact & dynamic risk intelligence
-  explainableAi: true, // F11 explainable AI heatmap & disease highlighting
-  confidenceScore: true, // Calibrated confidence score badge & retake guidance
+  yieldRisk: false, // DEFERRED 4 Nov (simplification; code kept) // F26 yield impact & dynamic risk intelligence
+  explainableAi: false, // DEFERRED 4 Nov (simplification; code kept) // F11 explainable AI heatmap & disease highlighting
+  confidenceScore: false, // DEFERRED 4 Nov (simplification; code kept) // Calibrated confidence score badge & retake guidance
   liveScanner: true, // F1 Advanced Intelligent Live Guided Camera Scanner
-  diseaseSeverity: true, // F31 Disease Severity Scoring & Quantitative Impact Assessment
+  diseaseSeverity: false, // DEFERRED 4 Nov (simplification; code kept) // F31 Disease Severity Scoring & Quantitative Impact Assessment
   copilot: true, // F30 AI-Powered Disease Q&A (Voice-First Farmer Copilot)
   user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };

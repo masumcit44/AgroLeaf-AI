@@ -33,7 +33,7 @@ export const SLOT_LAYOUT = {
     ['diseaseSeverity', diseaseSeverity.SeverityScoreCard],
     ['explainableAi', explainableAi.ExplainableHeatmapCard],
     ['actionPlan', actionPlan.ActionPlan],
-    ['copilot', copilot.FarmerCopilotCard],
+    // copilot: its own tab (🎙️); not repeated on the result screen
     ['reminders', reminders.FollowUpReminder],
     ['yieldRisk', yieldRisk.YieldRiskCard],
     ['weather', weather.WeatherChips],

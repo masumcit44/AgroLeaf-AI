@@ -9,7 +9,7 @@ export const TABS = [
   { route: ROUTES.HISTORY, icon: '🗂️', labelKey: 'navHistory', feature: 'history' },
   { route: ROUTES.WEATHER, icon: '🌤️', labelKey: 'navWeather', feature: 'weather' },
   { route: ROUTES.MAP, icon: '🗺️', labelKey: 'navMap', feature: 'areaMap' },
-  { route: ROUTES.PROFILE, icon: '📍', labelKey: 'navProfile', feature: 'profile' },
+  // Profile: opened from Home (district line "এডিট করুন" + GPS button); no tab of its own
 ];
 
 export function visibleTabs() {

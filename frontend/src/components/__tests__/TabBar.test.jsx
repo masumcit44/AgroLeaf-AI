@@ -25,7 +25,7 @@ describe('feature tabs', () => {
   });
 
   it('shows Home plus one tab per released feature page', () => {
-    expect(visibleTabs().map((t) => t.route)).toEqual(['#/', '#/copilot', '#/reminders', '#/history', '#/weather', '#/profile']);
+    expect(visibleTabs().map((t) => t.route)).toEqual(['#/', '#/copilot', '#/reminders', '#/history', '#/weather']);
   });
 
   it('hides the tab of a feature that is off, and the whole bar when only Home is left', () => {
