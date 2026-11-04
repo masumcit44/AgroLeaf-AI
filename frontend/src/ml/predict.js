@@ -43,6 +43,7 @@ export async function predictLeaf(canvas, onProgress) {
 
   const outputTensor = results[outputName];
   const logits = Array.from(outputTensor.data);
+  const camTensor = results['cam_maps'];
 
   // 5. Apply temperature scaling + softmax
   const temp = calibration.temperature || 1.0;
@@ -78,5 +79,9 @@ export async function predictLeaf(canvas, onProgress) {
     ms,
     calibration,
     decision,
+    camMaps: camTensor ? {
+      data: Array.from(camTensor.data),
+      dims: camTensor.dims,
+    } : null,
   };
 }

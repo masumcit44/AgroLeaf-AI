@@ -17,6 +17,7 @@
 | **ISSUE-004** | Reevaluate Purpose of Farmer Profile (F21) | Medium | P2 | Implemented & Verified | `writing-plans`, `backend-architect` | `feat/farmer-mobile-ux` | Implemented (Local-first & frictionless) |
 | **ISSUE-005** | F24 Reminder Missing Interval Labels & Action Button | High | P1 | Verified & Fixed | `systematic-debugging`, `react-modernization` | `fix/f24-reminder-ui` | Verified & Deployed to Production |
 | **FEATURE-F26** | F26 Yield Impact Estimation & Dynamic Risk Intelligence | High | P1 | Implemented & Verified | `computer-vision-expert`, `accessibility-compliance` | `feat/f26-yield-risk` | 100% Tested (42/42 files passing) |
+| **FEATURE-F11** | F11 Explainable AI Heatmap & Disease Highlighting | High | P1 | Implemented & Verified | `computer-vision-expert`, `accessibility-compliance` | `feat/f11-explainable-ai` | 100% Tested (45/45 files, 317 tests) |
 
 ---
 

@@ -16,6 +16,7 @@ export const FEATURES = {
   areaMap: false, // F23
   reminders: true, // F24
   yieldRisk: true, // F26 yield impact & dynamic risk intelligence
+  explainableAi: true, // F11 explainable AI heatmap & disease highlighting
   user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };
 

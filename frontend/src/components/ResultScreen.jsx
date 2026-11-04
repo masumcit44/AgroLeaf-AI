@@ -104,6 +104,7 @@ export default function ResultScreen({
           calibration,
           classKey: decision.top?.key ?? null,
           isConfident: Boolean(isConfident),
+          camMaps: analysisResult.camMaps,
         }}
       />
 
