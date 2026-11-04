@@ -11,6 +11,7 @@ import {
   isSpeechRecognitionSupported,
   isSpeechSynthesisSupported,
   needsTranscriptConfirmation,
+  isPlanningRequest,
 } from './voiceService.js';
 import useT from '../../i18n/useT.js';
 
@@ -115,16 +116,9 @@ export default function FarmerCopilotCard({ scan, initialPlan = null }) {
       // Check if the query is a cultivation roadmap or agricultural research question
       const slots = parseFarmingPlannerSlots(question, { ...profile, ...extraSlots });
 
-      if (
-        slots.category === 'crop_roadmap' ||
-        slots.category === 'fertilizer_planning' ||
-        slots.category === 'nutrient_education' ||
-        question.includes('চারা রোপণ') ||
-        question.includes('ধান কাটা') ||
-        question.includes('গাইডলাইন') ||
-        question.includes('পরিকল্পনা') ||
-        question.includes('সার হিসাব')
-      ) {
+      // The planner only for explicit plan/schedule requests: its slot parser labels almost every
+      // question 'crop_roadmap', which sent disease questions to a "choose your variety" prompt.
+      if (isPlanningRequest(question) && ['crop_roadmap', 'fertilizer_planning', 'nutrient_education'].includes(slots.category)) {
         abortControllerRef.current = new AbortController();
 
         try {

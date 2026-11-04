@@ -223,6 +223,11 @@ export function speakUtterance(text, { onStart, onEnd, onError, onVoiceUnavailab
   };
 }
 
+/** True only when the farmer explicitly asks for a plan, schedule or full guideline. */
+export function isPlanningRequest(question) {
+  return /(পরিকল্পনা|সময়সূচি|সময়সূচী|রোডম্যাপ|গাইডলাইন|চারা রোপণ|ধান কাটা|সার হিসাব|সম্পূর্ণ চাষ|পুরো মৌসুম|a\s*to\s*z|plan|schedule|roadmap|guideline)/i.test(question || '');
+}
+
 // Words that show the farmer is talking about rice / rice farming (Bangla and Banglish)
 const RICE_CONTEXT = /(ধান|চাল|পাতা|ব্লাস্ট|টুংরো|খোল|দাগ|সার|সেচ|বীজ|চারা|পোকা|রোগ|dhan|rice|blast|tungro)/i;
 

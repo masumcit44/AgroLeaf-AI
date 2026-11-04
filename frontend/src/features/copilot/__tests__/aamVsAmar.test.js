@@ -2,7 +2,7 @@
 // Uses the real copilot engine and the real transcript helpers (no pipeline mocks).
 import { describe, it, expect } from 'vitest';
 import { queryAgriculturalCopilot } from '../copilotEngine.js';
-import { pickBestAlternative, needsTranscriptConfirmation } from '../voiceService.js';
+import { pickBestAlternative, needsTranscriptConfirmation, isPlanningRequest } from '../voiceService.js';
 
 const isMangoAnswer = (r) => r.intent === 'out_of_domain_abstention' && /"আম"/.test(r.textBn || '');
 
@@ -41,5 +41,18 @@ describe('spoken transcript handling', () => {
     expect(needsTranscriptConfirmation('')).toBe(true);
     expect(needsTranscriptConfirmation('আমার ধানে ব্লাস্ট হয়েছে')).toBe(false);
     expect(needsTranscriptConfirmation('dhane blast')).toBe(false);
+  });
+});
+
+describe('planner routing', () => {
+  it('disease and simple care questions are answered directly, not sent to the planner', () => {
+    for (const q of ['টুংরো হলে কী করব?', 'আমার ধানে ব্লাস্ট হয়েছে, এখন কী করব?', 'আমার ধানের পাতায় বাদামি দাগ দেখা যাচ্ছে।', 'ইউরিয়া সার কখন দেব?']) {
+      expect(isPlanningRequest(q)).toBe(false);
+    }
+  });
+  it('explicit plan requests still go to the planner', () => {
+    for (const q of ['বোরো ধানের সম্পূর্ণ পরিকল্পনা দিন', 'সার হিসাব করে দিন', 'boro dhaner schedule']) {
+      expect(isPlanningRequest(q)).toBe(true);
+    }
   });
 });
