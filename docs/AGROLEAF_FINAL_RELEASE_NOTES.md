@@ -29,8 +29,9 @@ Planner-generated (dynamic) answers are spoken only where the phone has a Bengal
 F14 reliability bands are measured on the validation set (in-sample); model is v10 (accuracy
 and limits on the in-app Accuracy page); disease text not yet reviewed by an agronomist.
 
-## Rollback
-`git push origin prod-before-final-2026-11-05:main` is NOT allowed (no force). Instead:
-`git revert -m 1` is not applicable to a fast-forward, so revert the range:
-`git revert --no-edit 698e1ec..<release-sha>` on main, push, and wait for Cloudflare to rebuild;
-or, fastest, roll back in Cloudflare Pages → agroleaf-ai → Deployments → previous production.
+## Rollback (never force-push)
+- Fastest: Cloudflare dashboard → Pages → agroleaf-ai → Deployments → previous production
+  deployment → "Rollback to this deployment".
+- In git: on `main`, `git revert --no-edit prod-before-final-2026-11-05..HEAD`, then
+  `git push origin main`; Cloudflare rebuilds the old version.
+- Single feature: switch its flag off in `frontend/src/features/flags.js` and push.
