@@ -9,6 +9,7 @@ import * as feedback from './feedback/index.jsx';
 import * as help from './help/index.jsx';
 import * as areaMap from './areaMap/index.jsx';
 import * as reminders from './reminders/index.jsx';
+import * as yieldRisk from './yieldRisk/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
 export const SLOT_LAYOUT = {
@@ -22,6 +23,7 @@ export const SLOT_LAYOUT = {
     ['reliability', reliability.ReliabilityNote],
     ['actionPlan', actionPlan.ActionPlan],
     ['reminders', reminders.FollowUpReminder],
+    ['yieldRisk', yieldRisk.YieldRiskCard],
     ['weather', weather.WeatherChips],
     ['history', history.SaveToHistory],
     ['feedback', feedback.FeedbackButton],

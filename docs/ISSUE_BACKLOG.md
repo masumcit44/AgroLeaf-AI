@@ -15,6 +15,8 @@
 | **ISSUE-002** | Remove GPS Location Access from Homepage | High | P0 | Verified & Fixed | `systematic-debugging`, `backend-security-coder` | `feat/farmer-mobile-ux` | Verified Pass (0 GPS calls) |
 | **ISSUE-003** | Farmer-Friendly UI & Progressive Disclosure Redesign | Medium | P1 | Verified & Fixed | `react-modernization`, `accessibility-compliance` | `feat/farmer-mobile-ux` | Verified Pass (Touch targets >=44px) |
 | **ISSUE-004** | Reevaluate Purpose of Farmer Profile (F21) | Medium | P2 | Implemented & Verified | `writing-plans`, `backend-architect` | `feat/farmer-mobile-ux` | Implemented (Local-first & frictionless) |
+| **ISSUE-005** | F24 Reminder Missing Interval Labels & Action Button | High | P1 | Verified & Fixed | `systematic-debugging`, `react-modernization` | `fix/f24-reminder-ui` | Verified & Deployed to Production |
+| **FEATURE-F26** | F26 Yield Impact Estimation & Dynamic Risk Intelligence | High | P1 | Implemented & Verified | `computer-vision-expert`, `accessibility-compliance` | `feat/f26-yield-risk` | 100% Tested (42/42 files passing) |
 
 ---
 
