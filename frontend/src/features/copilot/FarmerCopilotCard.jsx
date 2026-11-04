@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { queryAgriculturalCopilot } from './copilotEngine.js';
+import { runAgriculturalResearch, parseFarmingPlannerSlots } from './researchPlannerEngine.js';
+import { savePlan } from './plannerStore.js';
+import { saveReminder } from '../reminders/remindersStore.js';
+import { getProfile } from '../profile/profileStore.js';
 import {
   createSpeechRecognizer,
   speakUtterance,
@@ -9,26 +13,42 @@ import {
 } from './voiceService.js';
 import useT from '../../i18n/useT.js';
 
-export default function FarmerCopilotCard({ scan }) {
+export default function FarmerCopilotCard({ scan, initialPlan = null }) {
   const { lang } = useT();
 
   // Active scan disease context
   const activeDisease = scan?.classKey || null;
 
-  // Voice & Copilot State
+  // Voice & Planner State
   const [voiceState, setVoiceState] = useState('idle'); // 'idle' | 'listening' | 'processing' | 'speaking'
   const [transcript, setTranscript] = useState('');
-  const [pendingConfirmation, setPendingConfirmation] = useState(null); // String awaiting confirmation
+  const [pendingConfirmation, setPendingConfirmation] = useState(null);
   const [queryText, setQueryText] = useState('');
-  const [showTextInput, setShowTextInput] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [copilotResponse, setCopilotResponse] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [ttsUnavailable, setTtsUnavailable] = useState(false);
+
+  // Research & Plan State
+  const [researchStage, setResearchStage] = useState(null); // { stage, message_bn }
+  const [copilotResponse, setCopilotResponse] = useState(null);
+  const [activePlan, setActivePlan] = useState(initialPlan);
+  const [clarificationState, setClarificationState] = useState(null); // { slotNeeded, titleBn, textBn, chips }
+  const [planSavedSuccess, setPlanSavedSuccess] = useState(false);
+  const [activeReminders, setActiveReminders] = useState({}); // taskId -> reminderId
+  const [expandedStages, setExpandedStages] = useState({ 0: true }); // Open first stage by default
+
+  // Sync initialPlan if provided or updated externally
+  useEffect(() => {
+    if (initialPlan) {
+      setActivePlan(initialPlan);
+      // scroll to plan
+    }
+  }, [initialPlan]);
 
   // References
   const recognizerRef = useRef(null);
   const stopPlaybackRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -36,139 +56,22 @@ export default function FarmerCopilotCard({ scan }) {
       if (recognizerRef.current) {
         recognizerRef.current.abort();
       }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
       stopSpeech();
     };
   }, []);
 
-  // Answer handler
-  const handleProcessQuery = useCallback(
-    (question) => {
-      if (!question || !question.trim()) return;
+  // Voice synthesis helper
+  const speakText = useCallback((textToSpeak) => {
+    if (!isSpeechSynthesisSupported() || !textToSpeak) return;
 
-      setVoiceState('processing');
-      setErrorMessage(null);
-      setPendingConfirmation(null);
-
-      // Deterministic Grounded Agricultural RAG Query
-      const answer = queryAgriculturalCopilot(question, activeDisease);
-      setCopilotResponse(answer);
-
-      // Auto-read response aloud in Bengali if synthesis is supported
-      if (isSpeechSynthesisSupported() && answer?.voiceBn) {
-        setVoiceState('speaking');
-        setIsAudioPlaying(true);
-        setTtsUnavailable(false);
-
-        stopPlaybackRef.current = speakUtterance(answer.voiceBn, {
-          onStart: () => {
-            setIsAudioPlaying(true);
-            setVoiceState('speaking');
-          },
-          onEnd: () => {
-            setIsAudioPlaying(false);
-            setVoiceState('idle');
-          },
-          onError: () => {
-            setIsAudioPlaying(false);
-            setVoiceState('idle');
-          },
-          onVoiceUnavailable: () => {
-            setIsAudioPlaying(false);
-            setVoiceState('idle');
-            setTtsUnavailable(true);
-          },
-        });
-      } else {
-        setVoiceState('idle');
-      }
-    },
-    [activeDisease]
-  );
-
-  // Voice recognition trigger
-  const handleToggleMic = () => {
-    // If speaking, stop playback
-    if (isAudioPlaying || voiceState === 'speaking') {
-      stopSpeech();
-      setIsAudioPlaying(false);
-      setVoiceState('idle');
-      return;
-    }
-
-    // If already listening, stop
-    if (voiceState === 'listening') {
-      if (recognizerRef.current) {
-        recognizerRef.current.stop();
-      }
-      setVoiceState('idle');
-      return;
-    }
-
-    setErrorMessage(null);
-    setTranscript('');
-    setPendingConfirmation(null);
-
-    // Check browser support
-    if (!isSpeechRecognitionSupported()) {
-      setShowTextInput(true);
-      setErrorMessage(
-        lang === 'en'
-          ? 'Voice recognition is not supported on this browser. Please type your question.'
-          : 'আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই। দয়া করে নিচে লিখে প্রশ্ন করুন।'
-      );
-      return;
-    }
-
-    try {
-      recognizerRef.current = createSpeechRecognizer({
-        onResult: (text, isFinal) => {
-          setTranscript(text);
-          setQueryText(text);
-
-          if (isFinal) {
-            const clean = text.trim();
-            // If the transcript is very short (1 token) or ambiguous, request confirmation
-            const tokens = clean.split(/\s+/).filter(Boolean);
-            if (tokens.length <= 1 && (tokens[0] === 'আমার' || tokens[0] === 'আমি' || tokens[0] === 'আম')) {
-              setPendingConfirmation(clean);
-              setVoiceState('idle');
-            } else {
-              handleProcessQuery(clean);
-            }
-          }
-        },
-        onError: (errBn) => {
-          setErrorMessage(errBn);
-          setVoiceState('idle');
-        },
-        onStateChange: (st) => {
-          setVoiceState(st);
-        },
-      });
-
-      recognizerRef.current.start();
-    } catch {
-      setVoiceState('idle');
-      setShowTextInput(true);
-    }
-  };
-
-  // Replay speech response
-  const handleReplayAudio = () => {
-    if (!copilotResponse?.voiceBn) return;
-
-    if (isAudioPlaying) {
-      stopSpeech();
-      setIsAudioPlaying(false);
-      setVoiceState('idle');
-      return;
-    }
-
-    setIsAudioPlaying(true);
     setVoiceState('speaking');
+    setIsAudioPlaying(true);
     setTtsUnavailable(false);
 
-    stopPlaybackRef.current = speakUtterance(copilotResponse.voiceBn, {
+    stopPlaybackRef.current = speakUtterance(textToSpeak, {
       onStart: () => {
         setIsAudioPlaying(true);
         setVoiceState('speaking');
@@ -187,18 +90,233 @@ export default function FarmerCopilotCard({ scan }) {
         setTtsUnavailable(true);
       },
     });
+  }, []);
+
+  // Main Query Handler (supports both single-turn Q&A and A-to-Z Research Planning)
+  const handleProcessQuery = useCallback(
+    async (question, extraSlots = {}) => {
+      if (!question || !question.trim()) return;
+
+      setVoiceState('processing');
+      setErrorMessage(null);
+      setPendingConfirmation(null);
+      setClarificationState(null);
+      setPlanSavedSuccess(false);
+
+      // Fetch saved profile for automatic context hydration
+      let profile = {};
+      try {
+        profile = (await getProfile()) || {};
+      } catch {
+        profile = {};
+      }
+
+      // Check if the query is a cultivation roadmap or agricultural research question
+      const slots = parseFarmingPlannerSlots(question, { ...profile, ...extraSlots });
+
+      if (
+        slots.category === 'crop_roadmap' ||
+        slots.category === 'fertilizer_planning' ||
+        slots.category === 'nutrient_education' ||
+        question.includes('চারা রোপণ') ||
+        question.includes('ধান কাটা') ||
+        question.includes('গাইডলাইন') ||
+        question.includes('পরিকল্পনা') ||
+        question.includes('সার হিসাব')
+      ) {
+        abortControllerRef.current = new AbortController();
+
+        try {
+          const researchResult = await runAgriculturalResearch(question, {
+            profile: { ...profile, ...extraSlots },
+            scan: { classKey: activeDisease },
+            lang,
+            onProgress: (prog) => {
+              setResearchStage(prog);
+            },
+            abortSignal: abortControllerRef.current.signal,
+          });
+
+          setResearchStage(null);
+
+          if (researchResult.isClarification) {
+            setClarificationState(researchResult);
+            setVoiceState('idle');
+            if (researchResult.voiceBn) speakText(researchResult.voiceBn);
+            return;
+          }
+
+          if (researchResult.isPlan) {
+            setActivePlan(researchResult.plan);
+            setCopilotResponse(null);
+            setVoiceState('idle');
+            if (researchResult.plan.overview.voice_summary_bn) {
+              speakText(researchResult.plan.overview.voice_summary_bn);
+            }
+            return;
+          }
+
+          if (researchResult.isEducational || researchResult.isAbstention) {
+            setCopilotResponse(researchResult);
+            setActivePlan(null);
+            setVoiceState('idle');
+            if (researchResult.voiceBn) speakText(researchResult.voiceBn);
+            return;
+          }
+        } catch (err) {
+          console.error('[Copilot Research Error]', err);
+          setResearchStage(null);
+        }
+      }
+
+      // Fallback: Immediate Deterministic RAG Query
+      const answer = queryAgriculturalCopilot(question, activeDisease);
+      setCopilotResponse(answer);
+      setActivePlan(answer?.plan || null);
+      setVoiceState('idle');
+
+      if (answer?.voiceBn) {
+        speakText(answer.voiceBn);
+      }
+    },
+    [activeDisease, lang, speakText]
+  );
+
+  // Voice recognition trigger
+  const handleToggleMic = () => {
+    if (isAudioPlaying || voiceState === 'speaking') {
+      stopSpeech();
+      setIsAudioPlaying(false);
+      setVoiceState('idle');
+      return;
+    }
+
+    if (voiceState === 'listening') {
+      if (recognizerRef.current) {
+        recognizerRef.current.stop();
+      }
+      setVoiceState('idle');
+      return;
+    }
+
+    setErrorMessage(null);
+    setTranscript('');
+    setPendingConfirmation(null);
+
+    if (!isSpeechRecognitionSupported()) {
+      setErrorMessage(
+        lang === 'en'
+          ? 'Voice recognition is not supported on this browser. Please type your question.'
+          : 'আপনার ব্রাউজারে ভয়েস সাপোর্ট নেই। দয়া করে নিচে লিখে প্রশ্ন করুন।'
+      );
+      return;
+    }
+
+    try {
+      const recognizer = createSpeechRecognizer({
+        lang: 'bn-BD',
+        onStart: () => {
+          setVoiceState('listening');
+        },
+        onResult: (text, isFinal) => {
+          setTranscript(text);
+          setQueryText(text);
+
+          if (isFinal) {
+            const clean = text.trim();
+            const tokens = clean.split(/\s+/).filter(Boolean);
+            if (tokens.length <= 1 && (tokens[0] === 'আমার' || tokens[0] === 'আমি' || tokens[0] === 'আম')) {
+              setPendingConfirmation(clean);
+              setVoiceState('idle');
+            } else {
+              handleProcessQuery(clean);
+            }
+          }
+        },
+        onError: (errBn) => {
+          setVoiceState('idle');
+          setErrorMessage(errBn);
+        },
+        onEnd: () => {
+          if (voiceState === 'listening') {
+            setVoiceState('idle');
+          }
+        },
+      });
+
+      recognizerRef.current = recognizer;
+      recognizer.start();
+    } catch {
+      setVoiceState('idle');
+      setErrorMessage('ভয়েস রেকর্ডার চালু করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    }
+  };
+
+  // Replay speech
+  const handleReplayVoice = () => {
+    const textToSpeak = activePlan?.overview?.voice_summary_bn || copilotResponse?.voiceBn;
+    if (textToSpeak) {
+      speakText(textToSpeak);
+    }
   };
 
   // Submit typed query
   const handleSubmitTypedQuery = (e) => {
     e.preventDefault();
-    if (!queryText.trim()) return;
-    setTranscript(queryText);
-    handleProcessQuery(queryText);
+    if (queryText.trim()) {
+      handleProcessQuery(queryText.trim());
+    }
+  };
+
+  // Toggle stage accordion
+  const toggleStage = (idx) => {
+    setExpandedStages((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  // Activate F24 reminder for a specific task
+  const handleActivateReminder = async (task) => {
+    if (!task || !task.due_date) return;
+
+    if (activeReminders[task.task_id]) {
+      // Toggle off
+      const copy = { ...activeReminders };
+      delete copy[task.task_id];
+      setActiveReminders(copy);
+      return;
+    }
+
+    try {
+      const saved = await saveReminder({
+        title: task.title_bn,
+        description: task.description_bn || task.title_bn,
+        due_date: task.due_date,
+        due_time: '09:00',
+        source: 'crop_plan',
+        disease_id: null,
+      });
+
+      setActiveReminders((prev) => ({ ...prev, [task.task_id]: saved.id }));
+    } catch (err) {
+      console.error('[Reminder Error]', err);
+    }
+  };
+
+  // Save full plan to IndexedDB
+  const handleSaveCurrentPlan = async () => {
+    if (!activePlan) return;
+    try {
+      await savePlan(activePlan);
+      setPlanSavedSuccess(true);
+    } catch (err) {
+      console.error('[Save Plan Error]', err);
+    }
   };
 
   // Quick suggestion chips
   const quickQuestions = [
+    'আমি আজ BRRI dhan28 রোপণ করেছি, এখন কী করব?',
+    'পটাশ আর ইউরিয়ার কাজ কী?',
+    'আমি কোন পর্যায়ে কী সার দেব?',
     'কী ওষুধ দেব?',
     'সার দেওয়া যাবে?',
     'পানি ব্যবস্থাপনা কেমন হবে?',
@@ -222,24 +340,24 @@ export default function FarmerCopilotCard({ scan }) {
             </h3>
             <p className="text-xs text-leaf-100">
               {lang === 'en'
-                ? 'Ask questions in spoken Bangla, listen to answers'
+                ? 'Ask questions in spoken Bangla'
                 : 'মুখে বাংলায় প্রশ্ন করুন, উত্তর শুনুন'}
             </p>
           </div>
         </div>
 
         {activeDisease && (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-leaf-100 text-leaf-900 shadow-sm">
-            {activeDisease}
+          <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-white/20 text-white backdrop-blur-xs flex items-center space-x-1">
+            <span>🔍</span>
+            <span>{activeDisease}</span>
           </span>
         )}
       </div>
 
       <div className="p-4 sm:p-5">
-        {/* Main Voice Button Section */}
+        {/* Prominent Microphone Center Target */}
         <div className="flex flex-col items-center justify-center my-3 text-center">
           <div className="relative">
-            {/* Pulsing ring when listening */}
             {voiceState === 'listening' && (
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
             )}
@@ -283,7 +401,6 @@ export default function FarmerCopilotCard({ scan }) {
             </button>
           </div>
 
-          {/* Status Label */}
           <p className="mt-3.5 text-sm font-bold text-gray-800">
             {voiceState === 'listening'
               ? '🎙️ শুনছি... আপনার প্রশ্ন বলুন'
@@ -294,7 +411,6 @@ export default function FarmerCopilotCard({ scan }) {
               : '👉 মাইকে চাপ দিয়ে বাংলায় কথা বলুন'}
           </p>
 
-          {/* Transcript feedback while speaking */}
           {transcript && (
             <p className="mt-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700 italic max-w-sm truncate border border-gray-200">
               "{transcript}"
@@ -302,18 +418,38 @@ export default function FarmerCopilotCard({ scan }) {
           )}
         </div>
 
-        {/* Transcript Confirmation Prompt (for ambiguous/short speech) */}
+        {/* Permanently Visible Text Input Bar */}
+        <form onSubmit={handleSubmitTypedQuery} className="mt-3 mb-2 flex space-x-2">
+          <input
+            type="text"
+            value={queryText}
+            onChange={(e) => setQueryText(e.target.value)}
+            placeholder="আপনার ধান চাষ বা সমস্যার কথা লিখুন বা বলুন..."
+            className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-leaf-500 shadow-xs"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2.5 bg-leaf-700 hover:bg-leaf-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors flex items-center space-x-1"
+          >
+            <span>পাঠান</span>
+            <span>➔</span>
+          </button>
+        </form>
+
+        {/* Single Ambiguous Token Confirmation */}
         {pendingConfirmation && (
-          <div className="mt-3 p-3.5 bg-leaf-50 border border-leaf-300 rounded-xl text-center shadow-sm">
-            <p className="text-xs font-semibold text-gray-600 mb-1">আপনি কি বলতে চেয়েছেন?</p>
-            <p className="text-sm font-bold text-leaf-950 mb-3">"{pendingConfirmation}"</p>
-            <div className="flex justify-center space-x-2">
+          <div className="mt-3 p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 space-y-2">
+            <p className="font-semibold">
+              ⚠️ আপনি বলেছেন: <span className="font-bold underline">"{pendingConfirmation}"</span>। পুরো প্রশ্নটি কি
+              সম্পন্ন হয়েছে?
+            </p>
+            <div className="flex space-x-2">
               <button
                 type="button"
                 onClick={() => handleProcessQuery(pendingConfirmation)}
-                className="px-3 py-1.5 rounded-lg bg-leaf-700 text-white text-xs font-bold hover:bg-leaf-800 shadow-sm"
+                className="px-3 py-1.5 rounded-lg bg-leaf-700 text-white text-xs font-bold hover:bg-leaf-800"
               >
-                ✓ হ্যাঁ, উত্তর দিন
+                হ্যাঁ, উত্তর দিন
               </button>
               <button
                 type="button"
@@ -326,6 +462,56 @@ export default function FarmerCopilotCard({ scan }) {
               >
                 🔄 আবার বলুন
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Progressive Clarification Drawer */}
+        {clarificationState && (
+          <div className="mt-3 p-3.5 bg-emerald-50 border border-emerald-300 rounded-xl text-xs text-emerald-950 space-y-2">
+            <p className="font-bold text-sm text-emerald-900">🌾 {clarificationState.titleBn}</p>
+            <p className="text-xs text-gray-700 font-medium">{clarificationState.textBn}</p>
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {clarificationState.chips.map((chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => {
+                    handleProcessQuery(`${queryText || 'ধান চাষ'} ${chip}`, {
+                      variety_id: chip.toLowerCase().replace(/\s+/g, '_'),
+                    });
+                  }}
+                  className="px-3 py-1.5 rounded-full text-xs bg-white text-leaf-800 font-bold border border-emerald-400 hover:bg-emerald-100 shadow-2xs"
+                >
+                  👉 {chip}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Asynchronous Research Progress Bar */}
+        {researchStage && (
+          <div className="mt-3 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold flex items-center space-x-1.5">
+                <span className="animate-spin inline-block">⏳</span>
+                <span>{researchStage.message_bn}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (abortControllerRef.current) abortControllerRef.current.abort();
+                  setResearchStage(null);
+                  setVoiceState('idle');
+                }}
+                className="text-xs text-red-600 hover:underline font-bold"
+              >
+                বাতিল করুন
+              </button>
+            </div>
+            <div className="w-full bg-blue-200 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-blue-600 h-1.5 rounded-full animate-pulse w-3/4" />
             </div>
           </div>
         )}
@@ -346,27 +532,17 @@ export default function FarmerCopilotCard({ scan }) {
           </div>
         )}
 
-        {/* Response Card */}
-        {copilotResponse && (
-          <div
-            className={`mt-4 p-4 rounded-xl border transition-all ${
-              copilotResponse.isAbstention
-                ? 'bg-amber-50/70 border-amber-300 text-amber-900'
-                : 'bg-leaf-50/60 border-leaf-300 text-gray-900'
-            }`}
-            data-testid="copilot-response-container"
-          >
+        {/* Standard Single-turn Q&A Response Card */}
+        {copilotResponse && !activePlan && (
+          <div className="mt-4 p-4 bg-leaf-50/70 border border-leaf-200 rounded-xl">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="font-bold text-sm text-leaf-950 flex items-center space-x-1.5">
-                <span>🌾</span>
-                <span>{copilotResponse.titleBn}</span>
-              </h4>
-
-              {/* Listen / Stop audio controls */}
-              {copilotResponse.voiceBn && isSpeechSynthesisSupported() && (
+              <span className="text-xs font-bold text-leaf-900">
+                {copilotResponse.titleBn || 'এগ্রোলিফ পরামর্শ'}
+              </span>
+              {isSpeechSynthesisSupported() && (
                 <button
                   type="button"
-                  onClick={handleReplayAudio}
+                  onClick={handleReplayVoice}
                   className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-leaf-700 hover:bg-leaf-800 text-white flex items-center space-x-1 shadow-sm transition-colors"
                 >
                   <span>{isAudioPlaying ? '⏹️ থামান' : '🔊 শুনুন'}</span>
@@ -378,7 +554,6 @@ export default function FarmerCopilotCard({ scan }) {
               {copilotResponse.textBn}
             </p>
 
-            {/* Safety Caution Note */}
             {copilotResponse.safetyNote && (
               <div className="mt-2.5 p-2 bg-amber-100/90 rounded-lg border border-amber-300 text-xs text-amber-900 font-semibold flex items-center space-x-1.5">
                 <span>🛡️</span>
@@ -386,7 +561,6 @@ export default function FarmerCopilotCard({ scan }) {
               </div>
             )}
 
-            {/* Emergency Helpline Prompt (with verified neutral tariff phrasing) */}
             {copilotResponse.helplinePrompt && (
               <div className="mt-3 pt-2.5 border-t border-amber-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <span className="text-xs text-amber-950 font-bold">
@@ -400,6 +574,222 @@ export default function FarmerCopilotCard({ scan }) {
                 </a>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Full Rich Interactive A-to-Z Crop Roadmap & Planner Presentation */}
+        {activePlan && (
+          <div className="mt-4 space-y-4">
+            {/* Plan Header Card */}
+            <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-xl space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-emerald-200 text-emerald-900 uppercase">
+                    ব্যক্তিগত ফসল পরিকল্পনা
+                  </span>
+                  <h4 className="text-base font-bold text-emerald-950 mt-1 leading-snug">
+                    {activePlan.title_bn}
+                  </h4>
+                </div>
+                {isSpeechSynthesisSupported() && (
+                  <button
+                    type="button"
+                    onClick={handleReplayVoice}
+                    className="shrink-0 px-2.5 py-1 text-xs font-bold rounded-lg bg-leaf-700 hover:bg-leaf-800 text-white flex items-center space-x-1"
+                  >
+                    <span>{isAudioPlaying ? '⏹️ থামান' : '🔊 শুনুন'}</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Field Profile Overview Pills */}
+              <div className="flex flex-wrap gap-2 text-xs text-emerald-900 pt-1">
+                <span className="px-2 py-1 bg-white rounded-lg border border-emerald-200 font-medium">
+                  🌾 জাত: <strong>{activePlan.field_profile.variety_name}</strong>
+                </span>
+                <span className="px-2 py-1 bg-white rounded-lg border border-emerald-200 font-medium">
+                  ⏳ জীবনকাল: <strong>{activePlan.field_profile.duration_days} দিন</strong>
+                </span>
+                <span className="px-2 py-1 bg-white rounded-lg border border-emerald-200 font-medium">
+                  📐 জমির পরিমাণ: <strong>{activePlan.fertilizer_plan.area_display}</strong>
+                </span>
+                <span className="px-2 py-1 bg-white rounded-lg border border-emerald-200 font-medium">
+                  🌾 সম্ভাব্য ফসল কাটা: <strong>{activePlan.field_profile.estimated_harvest_date}</strong>
+                </span>
+              </div>
+
+              {/* Immediate Action Alert */}
+              <div className="mt-2 p-2.5 bg-amber-50 border border-amber-300 rounded-lg text-xs text-amber-950 font-semibold flex items-start space-x-2">
+                <span className="text-base leading-none">👉</span>
+                <span>{activePlan.overview.immediate_action_bn}</span>
+              </div>
+            </div>
+
+            {/* Save & Management Bar */}
+            <div className="flex items-center justify-between gap-2 p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+              <button
+                type="button"
+                onClick={handleSaveCurrentPlan}
+                disabled={planSavedSuccess}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-xs transition-colors ${
+                  planSavedSuccess
+                    ? 'bg-emerald-600 text-white cursor-default'
+                    : 'bg-leaf-700 hover:bg-leaf-800 text-white'
+                }`}
+              >
+                {planSavedSuccess ? '✓ পরিকল্পনাটি সংরক্ষিত আছে' : '💾 পরিকল্পনাটি সংরক্ষণ করুন'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActivePlan(null);
+                  setCopilotResponse(null);
+                  setQueryText('');
+                }}
+                className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+              >
+                🔄 নতুন গবেষণা
+              </button>
+            </div>
+
+            {/* Chronological Roadmap Stages */}
+            <div className="space-y-2.5">
+              <h5 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                📅 পর্যায়ভিত্তিক চাষাবাদ সময়সূচি:
+              </h5>
+
+              {activePlan.roadmap.map((stage, idx) => {
+                const isOpen = Boolean(expandedStages[idx]);
+                return (
+                  <div
+                    key={stage.stage_id}
+                    className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-2xs"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleStage(idx)}
+                      className="w-full px-3.5 py-3 text-left bg-gray-50/80 hover:bg-gray-100 flex items-center justify-between text-xs sm:text-sm font-bold text-gray-900"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="px-2 py-0.5 rounded-full text-2xs font-extrabold bg-leaf-100 text-leaf-800">
+                          {idx + 1}
+                        </span>
+                        <span>{stage.stage_name_bn}</span>
+                        <span className="text-2xs font-normal text-gray-500">
+                          ({stage.start_date} হতে {stage.end_date})
+                        </span>
+                      </div>
+                      <span>{isOpen ? '▲' : '▼'}</span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="p-3.5 space-y-3 text-xs bg-white">
+                        <p className="text-2xs text-gray-500 font-semibold italic">
+                          মূল নজর: {stage.key_focus_bn}
+                        </p>
+
+                        <div className="space-y-2">
+                          {stage.tasks.map((task) => {
+                            const isRemindActive = Boolean(activeReminders[task.task_id]);
+                            return (
+                              <div
+                                key={task.task_id}
+                                className="p-2.5 rounded-lg border border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+                              >
+                                <div>
+                                  <p className="font-bold text-gray-900">{task.title_bn}</p>
+                                  <p className="text-2xs text-gray-600 mt-0.5">{task.description_bn}</p>
+                                  <span className="inline-block mt-1 text-2xs font-semibold text-leaf-700">
+                                    সম্ভাব্য তারিখ: {task.due_date}
+                                  </span>
+                                </div>
+
+                                {task.can_remind && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleActivateReminder(task)}
+                                    className={`shrink-0 px-2.5 py-1 rounded-md text-2xs font-bold transition-colors ${
+                                      isRemindActive
+                                        ? 'bg-emerald-600 text-white'
+                                        : 'bg-leaf-100 hover:bg-leaf-200 text-leaf-900 border border-leaf-300'
+                                    }`}
+                                  >
+                                    {isRemindActive ? '✓ স্মরণবার্তা সক্রিয়' : '⏰ স্মরণবার্তা চালু করুন'}
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Fertilizer Schedule Matrix */}
+            <div className="p-3.5 bg-leaf-50/60 border border-leaf-200 rounded-xl space-y-2 text-xs">
+              <h5 className="font-bold text-leaf-950 flex items-center space-x-1.5">
+                <span>🌱</span>
+                <span>সারের সঠিক মাত্রা ও প্রয়োগের সময় (বার্ক FRG-2024 নির্দেশিকা):</span>
+              </h5>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-2xs">
+                  <thead>
+                    <tr className="border-b border-leaf-200 text-leaf-900 font-bold">
+                      <th className="py-1">সারের নাম</th>
+                      <th className="py-1">পরিমাণ (কেজি)</th>
+                      <th className="py-1">প্রয়োগের সময়</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-leaf-100 text-gray-800">
+                    {activePlan.fertilizer_plan.basal_dose.map((item) => (
+                      <tr key={item.fertilizer_name_bn}>
+                        <td className="py-1 font-medium">{item.fertilizer_name_bn}</td>
+                        <td className="py-1 font-bold">{item.amount_kg} কেজি</td>
+                        <td className="py-1">{item.application_time_bn}</td>
+                      </tr>
+                    ))}
+                    {activePlan.fertilizer_plan.split_doses.map((split) => (
+                      <tr key={split.split_number} className="bg-leaf-100/30">
+                        <td className="py-1 font-medium">{split.fertilizer_name_bn}</td>
+                        <td className="py-1 font-bold">{split.amount_kg} কেজি</td>
+                        <td className="py-1">{split.conditions_bn}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="pt-1.5 space-y-1 text-2xs text-amber-900 font-medium">
+                {activePlan.risks_and_cautions.prohibited_actions_bn.map((rule) => (
+                  <p key={rule}>• {rule}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* Authoritative Evidence Citations */}
+            <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-2xs text-gray-600 space-y-1">
+              <p className="font-bold text-gray-800">🏛️ যাচাইকৃত সরকারি ও আন্তর্জাতিক তথ্যসূত্র:</p>
+              <ul className="list-disc list-inside space-y-0.5">
+                {activePlan.research_metadata.sources.map((src) => (
+                  <li key={src.name_bn || src.name_en}>
+                    <a
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-leaf-800 font-semibold hover:underline"
+                    >
+                      {src.name_bn || src.name_en}
+                    </a>
+                    {src.handbook && ` (${src.handbook})`}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 
@@ -426,52 +816,28 @@ export default function FarmerCopilotCard({ scan }) {
           </div>
         </div>
 
-        {/* Typed Input Fallback Drawer */}
+        {/* Typed Input Fallback Option Label for Accessibility */}
         <div className="mt-4 pt-3 border-t border-gray-100">
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setShowTextInput(!showTextInput)}
-              className="text-xs text-leaf-800 font-semibold hover:underline flex items-center space-x-1"
-            >
-              <span>{showTextInput ? '▲ টাইপ বন্ধ করুন' : '⌨️ অথবা বাংলায়/Banglish-এ লিখুন'}</span>
-            </button>
-
+          <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
+            <span>⌨️ অথবা বাংলায়/Banglish-এ লিখুন</span>
             {copilotResponse && (
               <button
                 type="button"
                 onClick={() => {
                   setCopilotResponse(null);
+                  setActivePlan(null);
                   setTranscript('');
                   setQueryText('');
                   setPendingConfirmation(null);
                   stopSpeech();
                   setIsAudioPlaying(false);
                 }}
-                className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                className="hover:text-gray-700"
               >
                 🔄 নতুন প্রশ্ন
               </button>
             )}
           </div>
-
-          {showTextInput && (
-            <form onSubmit={handleSubmitTypedQuery} className="mt-2.5 flex space-x-2">
-              <input
-                type="text"
-                value={queryText}
-                onChange={(e) => setQueryText(e.target.value)}
-                placeholder="এখানে প্রশ্ন লিখুন (যেমন: কী ওষুধ দেব?)"
-                className="flex-1 px-3 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-leaf-500"
-              />
-              <button
-                type="submit"
-                className="px-3.5 py-1.5 bg-leaf-700 hover:bg-leaf-800 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
-              >
-                পাঠান
-              </button>
-            </form>
-          )}
         </div>
       </div>
     </div>

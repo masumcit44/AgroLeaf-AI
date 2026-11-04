@@ -4,6 +4,19 @@
 // Strictly adheres to Bangla Response Language Policy (100% Bangla answers in BN mode).
 
 import { AGRICULTURAL_KB } from './data/agricultural_kb.js';
+import {
+  parseFarmingPlannerSlots,
+  calculateBarcFertilizer,
+  buildPersonalizedRoadmap,
+  runAgriculturalResearch,
+} from './researchPlannerEngine.js';
+
+export {
+  parseFarmingPlannerSlots,
+  calculateBarcFertilizer,
+  buildPersonalizedRoadmap,
+  runAgriculturalResearch,
+};
 
 function escapeRegex(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -543,6 +556,92 @@ export function queryAgriculturalCopilot(rawQuery, activeScanDisease = null) {
       isAbstention: false,
       helplinePrompt: true,
       confidence: 1.0,
+    };
+  }
+
+  // 7.1 Complex Research & Cultivation Roadmap Query
+  if (
+    normalized.includes('ধান কাটা পর্যন্ত') ||
+    normalized.includes('কী কী করতে হবে') ||
+    normalized.includes('সম্পূর্ণ গাইডলাইন') ||
+    normalized.includes('পরিকল্পনা তৈরি') ||
+    normalized.includes('চারা রোপণ করেছি') ||
+    normalized.includes('সরাসরি বীজ বপন') ||
+    (normalized.includes('রোপণ') && (normalized.includes('কী করব') || normalized.includes('কী করণীয়')))
+  ) {
+    const slots = parseFarmingPlannerSlots(cleanQuery);
+    if (!slots.variety) {
+      return {
+        intent: 'clarification_needed',
+        slotNeeded: 'variety',
+        diseaseKey: null,
+        titleBn: 'কোন জাতের ধান চাষ করছেন?',
+        textBn: 'আপনার জন্য সম্পূর্ণ চাষাবাদ পরিকল্পনা ও সময়সূচি সাজাতে আপনি কোন জাতের ধান চাষ করছেন তা জানান (যেমন: ব্রি ধান২৮ বা ব্রি ধান২৯)।',
+        voiceBn: 'সঠিক পরিকল্পনার জন্য আপনি কোন জাতের ধান চাষ করছেন তা জানান।',
+        chips: ['ব্রি ধান২৮', 'ব্রি ধান২৯', 'ব্রি ধান৮৯', 'ব্রি ধান৪৯'],
+        isAbstention: false,
+        helplinePrompt: false,
+        confidence: 0.95,
+      };
+    }
+    const plan = buildPersonalizedRoadmap(slots, {}, activeScanDisease);
+    return {
+      intent: 'crop_roadmap',
+      isPlan: true,
+      plan,
+      diseaseKey: null,
+      titleBn: plan.title_bn,
+      textBn: `${plan.overview.summary_bn}\n\n👉 ${plan.overview.immediate_action_bn}`,
+      voiceBn: plan.overview.voice_summary_bn,
+      suggestedFollowups: ['১ম কিস্তি ইউরিয়া কবে দেব?', 'ব্লাস্ট রোগ কীভাবে আটকাব?', 'পরিকল্পনাটি সংরক্ষণ করুন'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.95,
+    };
+  }
+
+  // 7.2 Nutrient comparison / education (e.g. "পটাশ আর ইউরিয়ার কাজ কী?")
+  if (
+    (normalized.includes('পটাশ') && normalized.includes('ইউরিয়া') && (normalized.includes('কাজ') || normalized.includes('পার্থক্য'))) ||
+    normalized.includes('পটাশ আর ইউরিয়ার কাজ')
+  ) {
+    return {
+      intent: 'nutrient_education',
+      diseaseKey: null,
+      titleBn: 'ইউরিয়া ও পটাশ সারের ভূমিকা ও ব্যবহার',
+      textBn: `🌾 ইউরিয়া ও পটাশ সারের মূল কাজ:
+১. ইউরিয়া (নাইট্রোজেন): গাছের পাতা ও কুশি দ্রুত বৃদ্ধি করে এবং গাছকে ঘন সবুজ রাখে। এটি ৩ কিস্তিতে প্রয়োগ করতে হয়। ফুল ফোটার পর ইউরিয়া দিলে ধান চিটা হয়।
+২. পটাশ / এমওপি (পটাশিয়াম): গাছের কান্ড শক্ত করে, শিষ মজবুত করে এবং ব্লাস্ট ও খোল পোড়া রোগ প্রতিরোধ ক্ষমতা বৃদ্ধি করে। ৬০% শেষ চাষে এবং বাকি ৪০% সর্বোচ্চ কুশিতে দেওয়া উত্তম।`,
+      voiceBn: 'ইউরিয়া গাছের বৃদ্ধি ও কুশি বাড়ায়, আর পটাশ কান্ড শক্ত করে রোগ প্রতিরোধ বাড়ায়। ফুল ফোটার পর ইউরিয়া দেওয়া যাবে না।',
+      suggestedFollowups: ['কোন সার কখন দিতে হয়?', 'আমার জমির জন্য সার হিসাব করুন'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.95,
+    };
+  }
+
+  // 7.3 General fertilizer schedule inquiry (e.g. "আমি কোন পর্যায়ে কী সার দেব?")
+  if (
+    normalized.includes('কোন পর্যায়ে কী সার') ||
+    normalized.includes('কোন সার কখন') ||
+    (normalized.includes('সার') && normalized.includes('পর্যায়'))
+  ) {
+    const fert = calculateBarcFertilizer('boro', null, 33);
+    return {
+      intent: 'fertilizer_schedule',
+      diseaseKey: null,
+      titleBn: 'বার্ক (BARC) অনুমোদিত সার প্রয়োগের সময়সূচি',
+      textBn: `🌾 ধানে সার প্রয়োগের নিয়ম (প্রতি বিঘা / ৩৩ শতক):
+১. জমি তৈরির শেষ চাষে (Basal): ১০০% টিএসপি (${fert.tsp.totalKg} কেজি), জিপসাম (${fert.gypsum.totalKg} কেজি), দস্তা (${fert.zinc.totalKg} কেজি) ও ৬০% পটাশ (${fert.mop.basalKg} কেজি) দিন।
+২. ১ম কিস্তি ইউরিয়া (${fert.urea.split1Kg} কেজি): চারা রোপণের ১৫-২০ দিন পর (কুশি গজানোর সময়)।
+৩. ২য় কিস্তি ইউরিয়া (${fert.urea.split2Kg} কেজি) ও বাকি ৪০% পটাশ (${fert.mop.topdressKg} কেজি): রোপণের ৩০-৩৫ দিন পর।
+৪. ৩য় কিস্তি ইউরিয়া (${fert.urea.split3Kg} কেজি): কাইচথোড় আসার ৫-৭ দিন আগে।
+⚠️ সতর্কতা: ফুল ফোটার পর কখনো ইউরিয়া দেবেন না।`,
+      voiceBn: 'জমি তৈরিতে টিএসপি, জিপসাম ও পটাশ দিন। ইউরিয়া চারা লাগানোর ১৫, ৩০ এবং ৪৫ দিন পর ৩ কিস্তিতে দিন। ফুল আসার পর ইউরিয়া দেওয়া যাবে না।',
+      suggestedFollowups: ['আমার জমির জন্য সার হিসাব করুন', 'ব্লাস্ট হলে কি সার দেওয়া যাবে?'],
+      isAbstention: false,
+      helplinePrompt: false,
+      confidence: 0.95,
     };
   }
 

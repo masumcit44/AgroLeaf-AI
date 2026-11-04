@@ -34,9 +34,11 @@ describe('F30 FarmerCopilotCard Component', () => {
     expect(html).toContain('জৈব প্রতিকার কী?');
   });
 
-  it('renders typed input fallback option', () => {
+  it('renders typed input fallback option with permanently visible composer', () => {
     const html = renderWithI18n(<FarmerCopilotCard />);
 
+    expect(html).toContain('placeholder="আপনার ধান চাষ বা সমস্যার কথা লিখুন বা বলুন..."');
+    expect(html).toContain('পাঠান');
     expect(html).toContain('বাংলায়/Banglish-এ লিখুন');
   });
 
@@ -55,12 +57,23 @@ describe('F30 FarmerCopilotCard Component', () => {
 });
 
 describe('F30 CopilotPage Standalone Route Component', () => {
-  it('renders the dedicated copilot page with header, card, and BRRI evidence footer', () => {
+  it('renders the dedicated copilot page with header, tabs, card, and BRRI evidence footer', () => {
     const html = renderWithI18n(<CopilotPage />);
 
-    expect(html).toContain('এগ্রোলিফ কৃষক সহকারী');
+    expect(html).toContain('এগ্রোলিফ কৃষি গবেষণা ও চাষাবাদ পরিকল্পনাকারী');
+    expect(html).toContain('data-testid="copilot-tab-planner"');
+    expect(html).toContain('data-testid="copilot-tab-saved"');
     expect(html).toContain('বাংলাদেশ ধান গবেষণা ইনস্টিটিউট');
+    expect(html).toContain('বাংলাদেশ কৃষি গবেষণা কাউন্সিল (BARC)');
     expect(html).toContain('১৬১২৩');
     expect(html).toContain('data-testid="farmer-copilot-card"');
+  });
+
+  it('renders English title and tabs when English language is selected', () => {
+    const html = renderWithI18n(<CopilotPage />, 'en');
+
+    expect(html).toContain('AgroLeaf Agricultural Research &amp; Farming Planner');
+    expect(html).toContain('Research &amp; Planner');
+    expect(html).toContain('Saved Plans');
   });
 });

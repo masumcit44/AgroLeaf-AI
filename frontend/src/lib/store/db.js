@@ -4,7 +4,7 @@
 import { openDB } from 'idb';
 
 export const DB_NAME = 'agroleaf';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 export const STORES = {
   DEVICE: 'device',
   PROFILE: 'profile',
@@ -12,6 +12,7 @@ export const STORES = {
   OUTBOX: 'outbox',
   WEATHER: 'weather_cache',
   REMINDERS: 'reminders',
+  PLANS: 'plans',
 };
 
 let dbPromise = null;
@@ -36,6 +37,14 @@ export function getDb() {
             reminders.createIndex('due_date', 'due_date');
             reminders.createIndex('status', 'status');
             reminders.createIndex('disease_id', 'disease_id');
+          }
+        }
+        if (oldVersion < 3) {
+          if (!db.objectStoreNames.contains(STORES.PLANS)) {
+            const plans = db.createObjectStore(STORES.PLANS, { keyPath: 'id' });
+            plans.createIndex('created_at', 'created_at');
+            plans.createIndex('variety_id', 'field_profile.variety_id');
+            plans.createIndex('season', 'field_profile.season');
           }
         }
       },
