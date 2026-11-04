@@ -13,6 +13,7 @@ import * as yieldRisk from './yieldRisk/index.jsx';
 import * as explainableAi from './explainableAi/index.jsx';
 import * as confidenceScore from './confidenceScore/index.jsx';
 import * as diseaseSeverity from './diseaseSeverity/index.jsx';
+import * as copilot from './copilot/index.jsx';
 import WeatherPage from './weather/WeatherPage.jsx';
 
 export const SLOT_LAYOUT = {
@@ -28,6 +29,7 @@ export const SLOT_LAYOUT = {
     ['diseaseSeverity', diseaseSeverity.SeverityScoreCard],
     ['explainableAi', explainableAi.ExplainableHeatmapCard],
     ['actionPlan', actionPlan.ActionPlan],
+    ['copilot', copilot.FarmerCopilotCard],
     ['reminders', reminders.FollowUpReminder],
     ['yieldRisk', yieldRisk.YieldRiskCard],
     ['weather', weather.WeatherChips],
@@ -45,4 +47,5 @@ export const FEATURE_ROUTES = {
   '#/weather': ['weather', WeatherPage],
   '#/map': ['areaMap', areaMap.MapPage],
   '#/reminders': ['reminders', reminders.RemindersPage],
+  '#/copilot': ['copilot', copilot.CopilotPage],
 };

@@ -11,6 +11,7 @@ export const ROUTES = {
   MAP: '#/map',
   WEATHER: '#/weather',
   REMINDERS: '#/reminders',
+  COPILOT: '#/copilot',
 };
 
 function normalizeHash(hash) {

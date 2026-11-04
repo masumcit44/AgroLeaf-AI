@@ -56,3 +56,4 @@ We conducted a step-by-step audit across the entire image acquisition and prepro
    - Passes through the exact same PyTorch-equivalent pipeline (`preprocess.js` $\to$ Pillow Bilinear $\to$ CenterCrop $\to$ ImageNet Normalization) with zero deviation.
 4. **Immediate Non-Blocking Capture:**
    - Farmers capture when the leaf is clear to their eyes, eliminating forced-tilt contortions.
+

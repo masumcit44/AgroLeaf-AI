@@ -32,3 +32,4 @@ This caused severe UX frustration in the field:
    - Farmers can tap "গাইডেন্স লুকান / দেখান" (Hide/Show Guidance) at any time. When hidden, the camera stream and capture button remain 100% active.
 4. **Friendly, Non-Mandatory Phrasing:**
    - Revised all prompts from rigid commands into polite suggestions: e.g., "ফোনটা একটু বামে নিলে পাতাটি পরিষ্কার দেখা যেতে পারে" instead of "ফোনটা বামে নিন".
+

@@ -11,6 +11,7 @@ export default {
   navMap: "Map",
   navProfile: "Area & Crop",
   navReminders: "Reminders",
+  navCopilot: "Copilot",
   navFeatureTabs: "Features",
   langSwitch: "বাংলা",
 

@@ -24,7 +24,7 @@
 | **F24: Farmer Reminder & Crop Care Scheduler** | Crop Care | **Implemented & Verified** | `deploy/candidate-ready` | `73787c1` | 24/24 reminder tests pass | Connected to Crop Calendar |
 | **F26: Yield Impact Estimation & Risk** | Agronomy / Risk | **Implemented & Verified** | `deploy/candidate-ready` | `fb4e042` | 15/15 yield tests pass | BAMIS dynamic risk validated |
 | **F31: Disease Severity Scoring** | Quantitative AI| **Implemented & Verified** | `deploy/candidate-ready` | `a886b05` | 17/17 severity tests pass | In production |
-| **F30: AI-Powered Disease Q&A (Voice Copilot)**| Voice Assistant | **Ready for Implementation** | `deploy/candidate-ready` | Next Milestone | Free-only local RAG & Voice UI | Begin Phase 5 implementation |
+| **F30: AI-Powered Disease Q&A (Voice Copilot)**| Voice Assistant | **Implemented & Verified** | `deploy/candidate-ready` | In candidate | 22/22 copilot tests pass | Free-only local RAG & Voice UI |
 | **F32: Outbreak Early Warning & Neighbor Alert**| Community Intel | **Requirements Recovered** | Planning phase | Design finalized | Central aggregation planned | Build privacy-preserving area rollup |
 
 ---

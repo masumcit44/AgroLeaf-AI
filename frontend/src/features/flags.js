@@ -20,6 +20,7 @@ export const FEATURES = {
   confidenceScore: true, // Calibrated confidence score badge & retake guidance
   liveScanner: true, // F1 Advanced Intelligent Live Guided Camera Scanner
   diseaseSeverity: true, // F31 Disease Severity Scoring & Quantitative Impact Assessment
+  copilot: true, // F30 AI-Powered Disease Q&A (Voice-First Farmer Copilot)
   user_guided_crop: true, // focus on the diseased leaf (user-guided crop)
 };
 

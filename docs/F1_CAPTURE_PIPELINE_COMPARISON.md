@@ -27,3 +27,4 @@
 Synthetic test patterns and sample rice leaf images processed through both pathways yielded zero numeric divergence in the final `Float32Array` tensor ($L_\infty < 10^{-6}$).
 
 The model input contract is 100% preserved.
+

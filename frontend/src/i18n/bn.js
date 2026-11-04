@@ -11,6 +11,7 @@ export default {
   navMap: "মানচিত্র",
   navProfile: "এলাকা ও ফসল",
   navReminders: "স্মরণবার্তা",
+  navCopilot: "ভয়েস সহকারী",
   navFeatureTabs: "বৈশিষ্ট্য",
   langSwitch: "English",
 

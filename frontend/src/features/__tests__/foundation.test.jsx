@@ -23,7 +23,7 @@ afterEach(() => {
 
 describe('feature flags', () => {
   it('only released features are on; unbuilt ones stay off', () => {
-    const released = ['pwa', 'history', 'profile', 'weather', 'user_guided_crop', 'reliability', 'help', 'actionPlan', 'reminders', 'yieldRisk', 'explainableAi', 'confidenceScore', 'liveScanner', 'diseaseSeverity'];
+    const released = ['pwa', 'history', 'profile', 'weather', 'user_guided_crop', 'reliability', 'help', 'actionPlan', 'reminders', 'yieldRisk', 'explainableAi', 'confidenceScore', 'liveScanner', 'diseaseSeverity', 'copilot'];
     expect(featureNames.filter((n) => FEATURES[n]).sort()).toEqual([...released].sort());
     expect(isFeatureOn('not_a_feature')).toBe(false);
   });

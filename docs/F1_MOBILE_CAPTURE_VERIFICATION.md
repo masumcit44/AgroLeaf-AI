@@ -32,3 +32,4 @@ Audited across target smartphone resolutions (360px, 375px, 390px, 412px):
 2. **Animation Frame Cancellation:**
    - Analysis loop terminates cleanly on unmount (`cancelAnimationFrame`).
    - Zero memory leaks or background CPU drain after closing the camera.
+
