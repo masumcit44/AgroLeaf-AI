@@ -76,6 +76,10 @@ export default function AboutPage() {
           <p className="text-xs text-gray-600 leading-relaxed">
             {t('aboutDatasetCredit')}
           </p>
+          <p className="text-xs text-gray-600 leading-relaxed">
+            <strong>{t('aboutMapCreditTitle') || (t('lang') === 'en' ? 'Map Boundaries:' : 'মানচিত্রের সীমানা:')}</strong>{' '}
+            geoBoundaries / BBS / OCHA ROAP (CC BY 4.0)
+          </p>
           <div className="text-[11px] text-gray-500 pt-1">
             <strong>{t('aboutOfficialSource')}:</strong>{' '}
             <a

@@ -178,6 +178,28 @@ export default function WeatherReportPage({ initialLocation, initialData }) {
           accuracy,
         });
         setIsEditingLocation(false);
+
+        // Reverse lookup place name via proxy with fallback to district name
+        fetch(`/api/v1/geocode?lat=${rLat}&lon=${rLon}`)
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            const addr = data?.result?.address;
+            const place =
+              addr?.subdistrict ||
+              addr?.county ||
+              addr?.town ||
+              addr?.village ||
+              addr?.city_district ||
+              addr?.state_district;
+            if (place) {
+              setLocation((prev) => ({
+                ...prev,
+                name: place,
+                displayName: distName && place !== distName ? `${place}, ${distName}` : place,
+              }));
+            }
+          })
+          .catch(() => {});
       },
       (err) => {
         setIsLocating(false);
