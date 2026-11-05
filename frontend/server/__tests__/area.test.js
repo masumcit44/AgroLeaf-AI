@@ -308,7 +308,7 @@ describe('F23 Area Disease Map API', () => {
 
     // Direct insertion of a second row for Device 1 with a different week in window
     // (Testing that 2 rows from DEVICE_1 + 1 row from DEVICE_2 = 2 distinct devices, NOT 3)
-    const prevWeekTime = new Date(Date.now() - 3 * 86400000);
+    const prevWeekTime = new Date(Date.now() - 8 * 86400000);
     const prevWeek = getIsoWeek(prevWeekTime);
     await env.DB.prepare(
       `INSERT INTO area_reports (id, device_hash, district_code, iso_week, class, band, model_version, verified, created_at)

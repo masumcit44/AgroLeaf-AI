@@ -47,7 +47,7 @@ flowchart LR
 ---
 
 ## Key Features
-- **Private, on-device:** Zero cloud inference. Leaf photos stay on the user's phone. After the first visit the browser keeps the model cached, so gallery photos can be analysed without a connection (sample photos and a fresh first load still need the network).
+- **Private, on-device image inference:** Image diagnosis runs 100% on-device in the browser; leaf photos are never uploaded to any server. Once assets are cached by the Service Worker after the first visit, photo screening works completely offline. Optional auxiliary features (7-day weather forecast, GPS geocoding proxy, community alerts) require a network connection.
 - **Calibrated Abstention (Responsible AI):** Avoids reckless overconfidence. If lighting is poor, symptoms are atypical, or model confidence falls below threshold, it abstains honestly and instructs consulting local extension officers.
 - **Native Bangla Text + Audio Narration:** Bangla guidance with a pre-generated voice clip for every result screen, including each "not sure" reason (AI voice `bn-BD-NabanitaNeural`, labelled as such).
 - **Official Guidance, quoted:** where available, BAMIS/DAE advice is quoted verbatim with a link. The app's own disease text is preliminary and not yet reviewed by an agronomist (stated in the app).
@@ -93,7 +93,7 @@ flowchart LR
 | **Styling** | Tailwind CSS v4 | Lightweight, fully responsive mobile-first utility styling |
 | **In-Browser ML Runtime** | ONNX Runtime Web (`onnxruntime-web/wasm`) | Strict CPU WebAssembly build (14.16 MiB), avoiding 29.5 MiB JSEP overhead to stay under Cloudflare 25 MiB ceiling |
 | **Classifier Architecture** | EfficientNet-B0 (v10) | 8 outputs, input `1×3×320×320`, 15.3 MB float32 ONNX (earlier: MobileNetV3-Large v1, kept for rollback) |
-| **Backend & Database** | None (Static Architecture) | 100% static hosting, zero server maintenance, zero API cost, infinite scalability |
+| **Backend & Database** | Cloudflare Pages Functions + D1 (Edge) | Core image screening is 100% on-device (client-side WASM). Lightweight serverless Edge Functions handle optional online features (geocoding proxy, community outbreak alert aggregation via Cloudflare D1) with zero traditional servers. |
 | **Voice Advisory** | Static Pre-synthesized Audio | Zero-latency tap-to-play audio guidance in standard Bangladeshi Bangla |
 | **Hosting & Edge Delivery** | Cloudflare Pages | Global edge delivery with immutable asset caching headers |
 | **ML Training Pipeline** | PyTorch / TorchVision | Fully reproducible training, calibration, and evaluation scripts in `ml/` executed on Kaggle GPU |
@@ -139,7 +139,7 @@ Open `http://localhost:5173` in your browser. To simulate on-device testing, use
 ### 2. Run Test Suites & Linter
 ```bash
 cd frontend
-npm test        # Run all 44 Vitest unit & component tests
+npm test        # Run all 509 Vitest unit, component & integration tests (67 files, all passing)
 npm run lint    # Run Oxlint for zero-warning static analysis
 npm run build   # Production build with Cloudflare 25 MiB asset ceiling checks
 ```
